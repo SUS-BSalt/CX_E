@@ -1,0 +1,34 @@
+{
+    "name": "PlayerInputActions",
+    "maps": [
+        {
+            "name": "Dialog",
+            "id": "e47b2cae-d29d-4607-a276-45a28394f483",
+            "actions": [
+                {
+                    "name": "Next",
+                    "type": "Button",
+                    "id": "342427f3-50ff-415c-abff-0d0c80341903",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "91928f21-810e-46c9-8e5d-c7f77c656e86",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Next",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
