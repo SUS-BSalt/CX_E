@@ -7,12 +7,18 @@ using System.Linq;
 
 public class BookReader
 {
+    public BookReader(string BookPath)
+    {
+        ReadBookFile(BookPath);
+    }
+
     private ExcelPackage book;
     private ExcelWorksheet bookChapter;
     public int totalRows;
     public void ReadBookFile(string bookPath)
     {
-        book = new ExcelPackage(new FileInfo(bookPath));
+        string _bookPath = Application.streamingAssetsPath + "/" + bookPath;
+        book = new ExcelPackage(new FileInfo(_bookPath));
         bookChapter = book.Workbook.Worksheets[1];
         totalRows = GetLastUsedRow(bookChapter);
     }
@@ -35,12 +41,20 @@ public class BookReader
         }
         return row;
     }
+
+    /// <summary>
+    /// 取得书中内容
+    /// </summary>
+    /// <param name="row">从1开始</param>
+    /// <param name="columns">从1开始</param>
+    /// <returns></returns>
     public string GetConcept(int row,int columns)
     {
         if (row >= totalRows)
         {
             return "程序试图越界访问当前文字表所有行之外的行，所以这是一个bug";
         }
-        return bookChapter.Cells[row,columns].ToString();
+        return bookChapter.Cells[row,columns].Value?.ToString();
     }
+
 }

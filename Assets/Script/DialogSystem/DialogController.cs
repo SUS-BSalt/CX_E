@@ -14,9 +14,13 @@ public class DialogController : MonoBehaviour, IInputController
     {
         inputActions.Disable();
     }
-    private void Awake()
+    private void OnEnable()
     {
         inputActions.Dialog.Enable();
+    }
+    private void OnDisable()
+    {
+        inputActions.Dialog.Disable();
     }
     private void InitActionMap()
     {
