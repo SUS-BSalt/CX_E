@@ -14,22 +14,21 @@ public class DialogCharacterManager : MonoBehaviour
     public void RegisterCharacter(string ID)
     {
         int index = FindIDIndex(ID);//找到ID对应在表中的指数
-        if (characterDict.ContainsKey(bookChapter.Cells[index, 2].Value.ToString()))
+        if (characterDict.ContainsKey(CharacterData.GetConcept(index, 2)))
         {
             return;//当字典里有该角色时，不进行接下来的步骤
         }
-        GameObject prefab = AssetDatabase.LoadAssetAtPath(bookChapter.Cells[index, 4].Value.ToString(), typeof(GameObject)) as GameObject;//得到预制件
+        GameObject prefab = AssetDatabase.LoadAssetAtPath(CharacterData.GetConcept(index, 4), typeof(GameObject)) as GameObject;//得到预制件
         GameObject _Character = Instantiate(prefab);//实例化预制件
         _Character.transform.SetParent(transform);//设置为子物体
-        DialogCharacter newCharacter = new DialogCharacter(ID, bookChapter.Cells[index, 2].Value.ToString(), bookChapter.Cells[index, 3].Value.ToString(), _Character);//创建character类
+        DialogCharacter newCharacter = new DialogCharacter(ID, CharacterData.GetConcept(index, 2), CharacterData.GetConcept(index, 3), _Character);//创建character类
         newCharacter.rect.localScale = new Vector3(40, 40, 40);//调整新角色的缩放
         SetCharacterPos(newCharacter, new Vector2(0.1f, 0.416f));
-        characterDict.Add(bookChapter.Cells[index, 2].Value.ToString(), newCharacter);//注册到字典中，用名字而不是ID，为了方便访问
+        characterDict.Add(CharacterData.GetConcept(index, 2), newCharacter);//注册到字典中，用名字而不是ID，为了方便访问
         characterDict[newCharacter.name].body.SetActive(false);//让新角色从屏幕上消失
                                                                //characterDict[newCharacter.name].body.SetActive(true);//让新角色从屏幕上出现
                                                                //newCharacter.body.SetActive(false);
     }
-
 
     public void CharacterAppear(string _characterName)
     {
@@ -152,10 +151,10 @@ public class DialogCharacterManager : MonoBehaviour
     private void Awake()
     {
         characterDict = new Dictionary<string, DialogCharacter>();
-        CharacterData = new BookReader();
+        //CharacterData = new BookReader();
     }
 }
-}
+
 
 
 public class DialogCharacter

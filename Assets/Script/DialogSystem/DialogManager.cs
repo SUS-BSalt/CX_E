@@ -13,6 +13,7 @@ public class DialogManager : MonoBehaviour
     //public
     public DialogLogWindowManager logWindow;
     public DialogPrintingManager printWindow;
+    public DialogCharacterManager characterManager;
 
     public void ExecEvent(string EventString)
     {
@@ -36,9 +37,19 @@ public class DialogManager : MonoBehaviour
         else
         {
             bookMark += 1;
-            printWindow.StartNewTyping();
+            //printWindow.StartNewTyping();
         }
     }
+    public void StartTypingWord()
+    {
+        //printWindow.StartNewTyping();
+    }
+    public void StopTypingWord()
+    {
+
+    }
+
+
     public string ReadSentence(int _bookMark, bool isLogView)
     {
         if (isLogView)
@@ -46,9 +57,13 @@ public class DialogManager : MonoBehaviour
             
         }
         //bookReader.GetConcept(_bookMark);
+        return "";
     }
     public string NameMethod(int _bookMark)//处理正文的名字一格
     {
+        //TODO isSpeak是临时变量
+        bool isSpeak = true;
+        
         string nameString;
         try
         {
@@ -68,17 +83,17 @@ public class DialogManager : MonoBehaviour
 
         if (names.Count() == 1)
         {
-            characterController.PlayCharacterSpeakAnimation(names[0], isSpeak);
-            return "[" + characterController.GetCharacterColorInRichText(names[0]) + names[0] + "</color>" + "]";
+            characterManager.PlayCharacterSpeakAnimation(names[0], isSpeak);
+            return "[" + characterManager.GetCharacterColorInRichText(names[0]) + names[0] + "</color>" + "]";
         }
         else
         {
-            characterController.PlayCharacterSpeakAnimation(names[0], isSpeak);
-            output = "[" + characterController.GetCharacterColorInRichText(names[0]) + names[0] + "</color>";
+            characterManager.PlayCharacterSpeakAnimation(names[0], isSpeak);
+            output = "[" + characterManager.GetCharacterColorInRichText(names[0]) + names[0] + "</color>";
             for (int i = 1; i < names.Count(); i++)
             {
-                characterController.PlayCharacterSpeakAnimation(names[i], isSpeak);
-                output = output + "&" + characterController.GetCharacterColorInRichText(names[i]) + names[i] + "</color>";
+                characterManager.PlayCharacterSpeakAnimation(names[i], isSpeak);
+                output = output + "&" + characterManager.GetCharacterColorInRichText(names[i]) + names[i] + "</color>";
             }
             return output + "]";
         }
