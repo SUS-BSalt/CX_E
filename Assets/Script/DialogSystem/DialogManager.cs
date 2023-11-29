@@ -1,13 +1,15 @@
-using System.Collections;
+Ôªøusing System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class DialogManager : MonoBehaviour
 {
+    public string bookPathLanguageModify;
     public BookReader bookReader;
-    public int bookMark;
+    public int bookMark = 1;
 
     public DialogController controller;
     //public
@@ -19,13 +21,23 @@ public class DialogManager : MonoBehaviour
     {
 
     }
-    private void Awake()
-    {
 
+    public void SetLanguage(int LanguageIndex)
+    {
+        BookReader _LanguagePathReader = new("Book/Maps/LanguageMap.xlsx");
+        bookPathLanguageModify = _LanguagePathReader.GetConcept(LanguageIndex, 2);
+    }
+
+    private void Start()
+    {
+        SetLanguage(ConfigManager.Instance.data.Language);
+        SetBook("conversation/TestBook.xlsx");
     }
     public void SetBook(string BookPath)
     {
-        bookReader = new BookReader(BookPath);
+        print(Path.Combine(bookPathLanguageModify, BookPath));
+        //bookReader = new BookReader(bookPathLanguageModify + BookPath);
+        bookReader = new BookReader(Path.Combine(bookPathLanguageModify, BookPath));
     }
 
     public void OnClick()
@@ -37,7 +49,7 @@ public class DialogManager : MonoBehaviour
         else
         {
             bookMark += 1;
-            //printWindow.StartNewTyping();
+            printWindow.StartNewTyping(NameMethod(bookMark)+bookReader.GetConcept(bookMark,4));
         }
     }
     public void StartTypingWord()
@@ -59,15 +71,15 @@ public class DialogManager : MonoBehaviour
         //bookReader.GetConcept(_bookMark);
         return "";
     }
-    public string NameMethod(int _bookMark)//¥¶¿Ì’˝Œƒµƒ√˚◊÷“ª∏Ò
+    public string NameMethod(int _bookMark)//Â§ÑÁêÜÊ≠£ÊñáÁöÑÂêçÂ≠ó‰∏ÄÊ†º
     {
-        //TODO isSpeak «¡Ÿ ±±‰¡ø
+        //TODO isSpeakÊòØ‰∏¥Êó∂ÂèòÈáè
         bool isSpeak = true;
         
         string nameString;
         try
         {
-            nameString = bookReader.GetConcept(_bookMark, 1);
+            nameString = bookReader.GetConcept(_bookMark, 3);
         }
         catch
         {

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -7,6 +7,13 @@ using UnityEngine;
 public class ConfigManager : Singleton<ConfigManager>
 {
     public ConfigData data;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        LoadData();
+    }
+
 
     public void SaveData()
     {
@@ -45,7 +52,11 @@ public class ConfigManager : Singleton<ConfigManager>
 public class ConfigData
 {
     public int Language = 1;
-    public float MasterVolume;
-    public float MusicVolume;
-    public float EffectVolme;
-}
+    public float MasterVolume = 1;
+    public float MusicVolume = 1;
+    public float EffectVolme = 1;
+    public int ResolutionX = 1280;
+    public int ResolutionY = 720;
+    public bool isFullScreen = false;
+};
+

@@ -5,6 +5,11 @@ using UnityEngine;
 public class DialogController : MonoBehaviour, IInputController
 {
     public PlayerInputActions inputActions;
+
+    private void Awake()
+    {
+        inputActions = new();
+    }
     public void OnGetControll()
     {
         inputActions.Enable();

@@ -1,4 +1,4 @@
-using OfficeOpenXml;
+ï»¿using OfficeOpenXml;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,23 +10,23 @@ using UnityEngine.TextCore.Text;
 public class DialogCharacterManager : MonoBehaviour
 {
     public BookReader CharacterData;
-    public Dictionary<string, DialogCharacter> characterDict;//ÓÃ½ÇÉ«Ãû×Ö·ÃÎÊ£¬ÊÇÎªÁË·½±ã×÷ÕßĞ´ÎÄ
+    public Dictionary<string, DialogCharacter> characterDict;//ç”¨è§’è‰²åå­—è®¿é—®ï¼Œæ˜¯ä¸ºäº†æ–¹ä¾¿ä½œè€…å†™æ–‡
     public void RegisterCharacter(string ID)
     {
-        int index = FindIDIndex(ID);//ÕÒµ½ID¶ÔÓ¦ÔÚ±íÖĞµÄÖ¸Êı
+        int index = FindIDIndex(ID);//æ‰¾åˆ°IDå¯¹åº”åœ¨è¡¨ä¸­çš„æŒ‡æ•°
         if (characterDict.ContainsKey(CharacterData.GetConcept(index, 2)))
         {
-            return;//µ±×ÖµäÀïÓĞ¸Ã½ÇÉ«Ê±£¬²»½øĞĞ½ÓÏÂÀ´µÄ²½Öè
+            return;//å½“å­—å…¸é‡Œæœ‰è¯¥è§’è‰²æ—¶ï¼Œä¸è¿›è¡Œæ¥ä¸‹æ¥çš„æ­¥éª¤
         }
-        GameObject prefab = AssetDatabase.LoadAssetAtPath(CharacterData.GetConcept(index, 4), typeof(GameObject)) as GameObject;//µÃµ½Ô¤ÖÆ¼ş
-        GameObject _Character = Instantiate(prefab);//ÊµÀı»¯Ô¤ÖÆ¼ş
-        _Character.transform.SetParent(transform);//ÉèÖÃÎª×ÓÎïÌå
-        DialogCharacter newCharacter = new DialogCharacter(ID, CharacterData.GetConcept(index, 2), CharacterData.GetConcept(index, 3), _Character);//´´½¨characterÀà
-        newCharacter.rect.localScale = new Vector3(40, 40, 40);//µ÷ÕûĞÂ½ÇÉ«µÄËõ·Å
+        GameObject prefab = AssetDatabase.LoadAssetAtPath(CharacterData.GetConcept(index, 4), typeof(GameObject)) as GameObject;//å¾—åˆ°é¢„åˆ¶ä»¶
+        GameObject _Character = Instantiate(prefab);//å®ä¾‹åŒ–é¢„åˆ¶ä»¶
+        _Character.transform.SetParent(transform);//è®¾ç½®ä¸ºå­ç‰©ä½“
+        DialogCharacter newCharacter = new DialogCharacter(ID, CharacterData.GetConcept(index, 2), CharacterData.GetConcept(index, 3), _Character);//åˆ›å»ºcharacterç±»
+        newCharacter.rect.localScale = new Vector3(40, 40, 40);//è°ƒæ•´æ–°è§’è‰²çš„ç¼©æ”¾
         SetCharacterPos(newCharacter, new Vector2(0.1f, 0.416f));
-        characterDict.Add(CharacterData.GetConcept(index, 2), newCharacter);//×¢²áµ½×ÖµäÖĞ£¬ÓÃÃû×Ö¶ø²»ÊÇID£¬ÎªÁË·½±ã·ÃÎÊ
-        characterDict[newCharacter.name].body.SetActive(false);//ÈÃĞÂ½ÇÉ«´ÓÆÁÄ»ÉÏÏûÊ§
-                                                               //characterDict[newCharacter.name].body.SetActive(true);//ÈÃĞÂ½ÇÉ«´ÓÆÁÄ»ÉÏ³öÏÖ
+        characterDict.Add(CharacterData.GetConcept(index, 2), newCharacter);//æ³¨å†Œåˆ°å­—å…¸ä¸­ï¼Œç”¨åå­—è€Œä¸æ˜¯IDï¼Œä¸ºäº†æ–¹ä¾¿è®¿é—®
+        characterDict[newCharacter.name].body.SetActive(false);//è®©æ–°è§’è‰²ä»å±å¹•ä¸Šæ¶ˆå¤±
+                                                               //characterDict[newCharacter.name].body.SetActive(true);//è®©æ–°è§’è‰²ä»å±å¹•ä¸Šå‡ºç°
                                                                //newCharacter.body.SetActive(false);
     }
 
@@ -86,20 +86,20 @@ public class DialogCharacterManager : MonoBehaviour
         {
             //Debug.Log("Not Find " + characterName + "!");
         }
-    }//Ö±½ÓÖ¸¶¨²¥·ÅµÄ¶¯»­
-    public void PlayCharacterSpeakAnimation(string characterName, bool isSpeak)//¸ù¾İ½ÇÉ«µ±Ç°±íÇé£¬µ÷ÓÃ±íÇé¶ÔÓ¦µÄËµ»°¶¯»­,»òÕß»Ö¸´Ô­×´
+    }//ç›´æ¥æŒ‡å®šæ’­æ”¾çš„åŠ¨ç”»
+    public void PlayCharacterSpeakAnimation(string characterName, bool isSpeak)//æ ¹æ®è§’è‰²å½“å‰è¡¨æƒ…ï¼Œè°ƒç”¨è¡¨æƒ…å¯¹åº”çš„è¯´è¯åŠ¨ç”»,æˆ–è€…æ¢å¤åŸçŠ¶
     {
         try
         {
             if (isSpeak)
             {
                 PlayCharacterAnimation(characterName, characterDict[characterName].currentFace + "Speak");
-                //Debug.Log("ÕÅ×ìÁË");
+                //Debug.Log("å¼ å˜´äº†");
             }
             else
             {
                 PlayCharacterAnimation(characterName, characterDict[characterName].currentFace);
-                //Debug.Log("±Õ×ìÁË");
+                //Debug.Log("é—­å˜´äº†");
             }
         }
         catch
@@ -121,7 +121,7 @@ public class DialogCharacterManager : MonoBehaviour
         {
             if (CharacterData.GetConcept(index,1) == "")
             {
-                return 2;//Èç¹ûÎª¿Õ£¬·µ»Ø¹¤¾ßÈË
+                return 2;//å¦‚æœä¸ºç©ºï¼Œè¿”å›å·¥å…·äºº
             }
             else if (ID == CharacterData.GetConcept(index, 1))
             {
@@ -138,7 +138,7 @@ public class DialogCharacterManager : MonoBehaviour
         {
             if (CharacterData.GetConcept(index, 2) == "")
             {
-                return 2;//Èç¹ûÎª¿Õ£¬·µ»Ø¹¤¾ßÈË
+                return 2;//å¦‚æœä¸ºç©ºï¼Œè¿”å›å·¥å…·äºº
             }
             else if (characterName == CharacterData.GetConcept(index, 2))
             {
