@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,35 +6,25 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-/// <summary>
-/// 想要使用这个组件，将其挂在根节点后，在里面添加上unity自带的scrollRect UI控件，然后在
-/// </summary>
-public class RotationWindow : ScrollRect
+public class FuckRotationWindow : ScrollRect
 {
     [Header("必要组件")]
     public Canvas canvas;//组件所在的画布
 
-    /// <summary>
-    /// 这个组件不要同时勾选垂直与水平移动
-    /// </summary>
-    public ScrollRect scrollRect;
-
-    public RectTransform content;
-    public RectTransform Viewport;
     [Header("子物体以及焦点判定")]
     public int FocusObjIndex;//焦点子物体的编号
 
     [Header("状态")]
-    public bool isTouchUpBorder = false;//是否触摸到上边界
-    public bool isTouchBottomBorder = false;//是否触摸到下边界
-    public bool isControllSelf = false;//是否由这个组件控制滚动窗口
+    public bool isTouchUpBorder;//是否触摸到上边界
+    public bool isTouchBottomBorder;//是否触摸到下边界
+    public bool isControllSelf;//是否由这个组件控制滚动窗口
 
     [Header("控制窗口用参数")]
     private Vector2 previousPos;//处理拖拽用的，记录上一帧鼠标位置
 
     public class FocusObjectChangedEvent : UnityEvent<bool> { }//true是把头放到尾，false是尾放到头
     public FocusObjectChangedEvent onFocusObjectChanged;
-    private void Awake()
+    public new void Awake()
     {
         onValueChanged.AddListener(ChildResortCheck);
         //scrollRect.
@@ -51,7 +42,6 @@ public class RotationWindow : ScrollRect
     /// <param name="normalizedPosition"></param>
     public void ChildResortCheck(Vector2 normalizedPosition)
     {
-        print(normalizedPosition);
         if (normalizedPosition.x < 1 && normalizedPosition.x > 0 &&
             normalizedPosition.y < 1 && normalizedPosition.y > 0)
         {
@@ -59,22 +49,22 @@ public class RotationWindow : ScrollRect
         }
         if (normalizedPosition.x > 1 && !isTouchUpBorder)
         {
-            scrollRect.normalizedPosition = new Vector2(1 - GetChildSizeProportion(GetChildRectTransform(0), scrollRect.vertical), scrollRect.normalizedPosition.y);
+            this.normalizedPosition = new Vector2(1 - GetChildSizeProportion(GetChildRectTransform(0), vertical), this.normalizedPosition.y);
             ChildListChange(false);
         }
         else if (normalizedPosition.x < 0 && !isTouchBottomBorder)
         {
-            scrollRect.normalizedPosition = new Vector2(0 + GetChildSizeProportion(GetChildRectTransform(content.childCount - 1), scrollRect.vertical), scrollRect.normalizedPosition.y);
+            this.normalizedPosition = new Vector2(0 + GetChildSizeProportion(GetChildRectTransform(content.childCount - 1), vertical), this.normalizedPosition.y);
             ChildListChange(true);
         }
         if (normalizedPosition.y > 1 && !isTouchUpBorder)
         {
-            scrollRect.normalizedPosition = new Vector2(scrollRect.normalizedPosition.x, 1 - GetChildSizeProportion(GetChildRectTransform(0), scrollRect.vertical));
+            this.normalizedPosition = new Vector2(this.normalizedPosition.x, 1 - GetChildSizeProportion(GetChildRectTransform(0), vertical));
             ChildListChange(false);
         }
         else if (normalizedPosition.y < 0 && !isTouchBottomBorder)
         {
-            scrollRect.normalizedPosition = new Vector2(scrollRect.normalizedPosition.x, 0 + GetChildSizeProportion(GetChildRectTransform(content.childCount - 1), scrollRect.vertical));
+            this.normalizedPosition = new Vector2(this.normalizedPosition.x, 0 + GetChildSizeProportion(GetChildRectTransform(content.childCount - 1), vertical));
             ChildListChange(true);
         }
         //Debug.Log(scrollRect.normalizedPosition);
@@ -90,11 +80,11 @@ public class RotationWindow : ScrollRect
         if (isVerticalSort)
         {
             //(contentRect.rect.height - Viewport.rect.height) * Return = childRect.rect.height
-            return (childRect.rect.height / (content.rect.height - Viewport.rect.height));
+            return (childRect.rect.height / (content.rect.height - viewport.rect.height));
         }
         else
         {
-            return childRect.rect.width / (content.rect.height - Viewport.rect.height);
+            return childRect.rect.width / (content.rect.height - viewport.rect.height);
         }
     }
     /// <summary>
@@ -125,89 +115,51 @@ public class RotationWindow : ScrollRect
     }
     #endregion
     #region 控制这个RotationWindow的，从EventSystem那里搞来的接口以及配合其使用的方法
-    public void OnScroll(PointerEventData eventData)
-    {
-        float movingDistance;
-        if (!isControllSelf)
-        {
-            return;
-        }
-        if (eventData.scrollDelta.y > 0)
-        {
-            movingDistance = scrollSensitivity;
+    //void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
+    //{
+    //    previousPos = eventData.position;
+    //}
+    //void IDragHandler.OnDrag(PointerEventData eventData)
+    //{
+    //    if (!isControllSelf)
+    //    {
+    //        return;
+    //    }
+    //    Vector2 movingDistance = CaculateNormalizedDistanceOnScreen(previousPos, eventData.position);
+    //    previousPos = eventData.position;
+    //    MovingNormalizedDistance(movingDistance);
+    //}
 
-        }
-        else if (eventData.scrollDelta.y < 0)
-        {
-            movingDistance = -scrollSensitivity;
-        }
-        else
-        {
-            movingDistance = 0;
-        }
-        if (scrollRect.vertical)
-        {
-            MovingNormalizedDistance(new Vector2(0, movingDistance));
-        }
-        else
-        {
-            MovingNormalizedDistance(new Vector2(movingDistance, 0));
-        }
-    }
-    public void OnScrollCall(float direction)
+    //public new void OnBeginDrag(PointerEventData eventData)
+    //{
+    //    previousPos = eventData.position;
+    //}
+    //public new void OnDrag(PointerEventData eventData)
+    //{
+    //    if (!isControllSelf)
+    //    {
+    //        return;
+    //    }
+    //    Vector2 movingDistance = CaculateNormalizedDistanceOnScreen(previousPos, eventData.position);
+    //    previousPos = eventData.position;
+    //    MovingNormalizedDistance(movingDistance);
+    //}
+    public override void OnBeginDrag(PointerEventData eventData)
     {
-        float movingDistance;
-        if (direction > 0)
-        {
-            movingDistance = scrollSensitivity;
-
-        }
-        else if (direction < 0)
-        {
-            movingDistance = -scrollSensitivity;
-        }
-        else
-        {
-            movingDistance = 0;
-        }
-        if (vertical)
-        {
-            MovingNormalizedDistance(new Vector2(0, movingDistance));
-        }
-        else
-        {
-            MovingNormalizedDistance(new Vector2(movingDistance, 0));
-        }
-    }//方便其他函数调用，与OnScroll一模一样
-
-    public void OnBeginDrag(PointerEventData eventData)
-    {
+        print("get");
         previousPos = eventData.position;
     }
-
-    public void OnBeginDragCall(Vector2 mousePos)
+    public override void OnDrag(PointerEventData eventData)
     {
-        previousPos = mousePos;
-    }
-
-    public void OnDrag(PointerEventData eventData)
-    {
-        if (!isControllSelf)
-        {
-            return;
-        }
+        print("what?");
         Vector2 movingDistance = CaculateNormalizedDistanceOnScreen(previousPos, eventData.position);
         previousPos = eventData.position;
         MovingNormalizedDistance(movingDistance);
     }
-
-    public void OnDragCall(Vector2 mousePos)
+    public new void OnEndDrag(PointerEventData eventData)
     {
-        Vector2 movingDistance = CaculateNormalizedDistanceOnScreen(previousPos, mousePos);
-        previousPos = mousePos;
-        MovingNormalizedDistance(movingDistance);
-    }
 
+    }
     public void JumpToNext(bool isToNext)
     {
         float normalizedMoveDistance;
@@ -221,34 +173,34 @@ public class RotationWindow : ScrollRect
         }
         if (vertical)
         {
-            scrollRect.normalizedPosition = new Vector2(scrollRect.normalizedPosition.x, 0);
+            normalizedPosition = new Vector2(this.normalizedPosition.x, 0);
             MovingNormalizedDistance(new Vector2(0, normalizedMoveDistance));
-            scrollRect.normalizedPosition = new Vector2(scrollRect.normalizedPosition.x, 0);
+            normalizedPosition = new Vector2(this.normalizedPosition.x, 0);
         }
         else
         {
-            scrollRect.normalizedPosition = new Vector2(0, scrollRect.normalizedPosition.y);
+            this.normalizedPosition = new Vector2(0, this.normalizedPosition.y);
             MovingNormalizedDistance(new Vector2(normalizedMoveDistance, 0));
-            scrollRect.normalizedPosition = new Vector2(0, scrollRect.normalizedPosition.y);
+            this.normalizedPosition = new Vector2(0, this.normalizedPosition.y);
         }
-        Debug.Log("jump");
+        //Debug.Log("jump");
     }
     public void MovingNormalizedDistance(Vector2 distance)
     {
-        scrollRect.normalizedPosition = scrollRect.normalizedPosition + distance;
-        onValueChanged?.Invoke(scrollRect.normalizedPosition);
+        this.normalizedPosition = this.normalizedPosition + distance;
+        onValueChanged?.Invoke(this.normalizedPosition);
     }//负责所有的移动必须走它，然后它会调用valueChange事件
 
     public Vector2 CaculateNormalizedDistanceOnScreen(Vector2 startPos, Vector2 endPos)
     {
         Vector2 n_starPos = RectTransformUtility.PixelAdjustPoint(startPos, content, canvas);
         Vector2 n_endPos = RectTransformUtility.PixelAdjustPoint(endPos, content, canvas);
-        return ((n_starPos - n_endPos) / (content.rect.size - Viewport.rect.size));
+        return ((n_starPos - n_endPos) / (content.rect.size - viewport.rect.size));
     }
     public void MoveToNormalizePos(Vector2 normalizedPosition)
     {
-        scrollRect.velocity = new Vector2(0, 0);
-        MovingNormalizedDistance(normalizedPosition - scrollRect.normalizedPosition);
+        this.velocity = new Vector2(0, 0);
+        MovingNormalizedDistance(normalizedPosition - this.normalizedPosition);
     }
     public int GetNeighborObjIndex(int currentObjIndex, int relativePos)
     {
