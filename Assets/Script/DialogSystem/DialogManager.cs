@@ -35,7 +35,7 @@ public class DialogManager : MonoBehaviour
     }
     public void SetBook(string BookPath)
     {
-        print(Path.Combine(bookPathLanguageModify, BookPath));
+        //print(Path.Combine(bookPathLanguageModify, BookPath));
         //bookReader = new BookReader(bookPathLanguageModify + BookPath);
         bookReader = new BookReader(Path.Combine(bookPathLanguageModify, BookPath));
     }

@@ -35,7 +35,7 @@ public class ConfigManager : Singleton<ConfigManager>
         var PATH = Path.Combine(Application.streamingAssetsPath, "SaveData/Config.json");
         var JSON = File.ReadAllText(PATH);
         data = JsonUtility.FromJson<ConfigData>(JSON);
-        print("SuccessLoad");
+        //print("SuccessLoad");
     }
     public void PrintData()
     {
