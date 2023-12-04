@@ -6,12 +6,11 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(RotationWindowController))]
+
 public class RotationWindow : ScrollRect
 {
     [Header("必要组件")]
     public Canvas canvas;//组件所在的画布
-    private RotationWindowController controller;
 
     [Header("子物体以及焦点判定")]
     public int FocusObjIndex;//焦点子物体的编号
@@ -29,18 +28,9 @@ public class RotationWindow : ScrollRect
     public new void Awake()
     {
         onValueChanged.AddListener(ChildResortCheck);
-        controller = GetComponent<RotationWindowController>();
-        SetArgvFromController();
         //scrollRect.
         //scrollRect.onValueChanged.AddListener(TestValue);
     }
-    public void SetArgvFromController()
-    {
-        canvas = controller.canvas;
-        FocusObjIndex = controller.FocusObjIndex;
-        isControllSelf = controller.isControllSelf;
-    }
-
     public void TestValue(Vector2 normalizedPosition)
     {
         print(normalizedPosition);

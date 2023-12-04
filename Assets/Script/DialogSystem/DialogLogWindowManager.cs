@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class DialogLogWindowManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public MenuBase LogMenu;
+    public void UpdateLogMenu()
     {
-        
-    }
+        if (!LogMenu.gameObject.activeInHierarchy)//如果LogMenu活跃，才进行更新
+        {
+            return;
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

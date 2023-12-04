@@ -24,7 +24,7 @@ public class ConfigManager : Singleton<ConfigManager>
             File.WriteAllText(PATH,JSON);
             print("SuccessSave");
         }
-        catch (FileNotFoundException e)
+        catch (FileNotFoundException)
         {
 
         }
