@@ -6,10 +6,12 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class FuckRotationWindow : ScrollRect
+[RequireComponent(typeof(RotationWindowController))]
+public class RotationWindow : ScrollRect
 {
     [Header("必要组件")]
     public Canvas canvas;//组件所在的画布
+    private RotationWindowController controller;
 
     [Header("子物体以及焦点判定")]
     public int FocusObjIndex;//焦点子物体的编号
@@ -27,8 +29,16 @@ public class FuckRotationWindow : ScrollRect
     public new void Awake()
     {
         onValueChanged.AddListener(ChildResortCheck);
+        controller = GetComponent<RotationWindowController>();
+        SetArgvFromController();
         //scrollRect.
         //scrollRect.onValueChanged.AddListener(TestValue);
+    }
+    public void SetArgvFromController()
+    {
+        canvas = controller.canvas;
+        FocusObjIndex = controller.FocusObjIndex;
+        isControllSelf = controller.isControllSelf;
     }
 
     public void TestValue(Vector2 normalizedPosition)
@@ -49,23 +59,23 @@ public class FuckRotationWindow : ScrollRect
         }
         if (normalizedPosition.x > 1 && !isTouchUpBorder)
         {
-            this.normalizedPosition = new Vector2(1 - GetChildSizeProportion(GetChildRectTransform(0), vertical), this.normalizedPosition.y);
             ChildListChange(false);
+            this.normalizedPosition = new Vector2(1 - GetChildSizeProportion(GetChildRectTransform(0), vertical), this.normalizedPosition.y);
         }
         else if (normalizedPosition.x < 0 && !isTouchBottomBorder)
         {
-            this.normalizedPosition = new Vector2(0 + GetChildSizeProportion(GetChildRectTransform(content.childCount - 1), vertical), this.normalizedPosition.y);
             ChildListChange(true);
+            this.normalizedPosition = new Vector2(0 + GetChildSizeProportion(GetChildRectTransform(content.childCount - 1), vertical), this.normalizedPosition.y);
         }
         if (normalizedPosition.y > 1 && !isTouchUpBorder)
         {
-            this.normalizedPosition = new Vector2(this.normalizedPosition.x, 1 - GetChildSizeProportion(GetChildRectTransform(0), vertical));
             ChildListChange(false);
+            this.normalizedPosition = new Vector2(this.normalizedPosition.x, 1 - GetChildSizeProportion(GetChildRectTransform(0), vertical));
         }
         else if (normalizedPosition.y < 0 && !isTouchBottomBorder)
         {
-            this.normalizedPosition = new Vector2(this.normalizedPosition.x, 0 + GetChildSizeProportion(GetChildRectTransform(content.childCount - 1), vertical));
             ChildListChange(true);
+            this.normalizedPosition = new Vector2(this.normalizedPosition.x, 0 + GetChildSizeProportion(GetChildRectTransform(content.childCount - 1), vertical));
         }
         //Debug.Log(scrollRect.normalizedPosition);
     }
@@ -146,12 +156,12 @@ public class FuckRotationWindow : ScrollRect
     //}
     public override void OnBeginDrag(PointerEventData eventData)
     {
-        print("get");
+        //print("get");
         previousPos = eventData.position;
     }
     public override void OnDrag(PointerEventData eventData)
     {
-        print("what?");
+        //print("what?");
         Vector2 movingDistance = CaculateNormalizedDistanceOnScreen(previousPos, eventData.position);
         previousPos = eventData.position;
         MovingNormalizedDistance(movingDistance);
