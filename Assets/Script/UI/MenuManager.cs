@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class MenuManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public List<MenuBase> ActiveMenu;
+    public void MenuTransition(MenuBase oldMenu, MenuBase targetMenu)
     {
         
     }
-
-    // Update is called once per frame
-    void Update()
+    public void MenuTransition_1(MenuBase targetMenu)
     {
-        
+
     }
 }
