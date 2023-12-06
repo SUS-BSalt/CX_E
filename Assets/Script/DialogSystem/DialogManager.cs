@@ -103,7 +103,7 @@ public class DialogManager : MonoBehaviour
             return new string[0];
         }
 
-        if (nameString == "")
+        if (nameString == "NoData")
         {
             return new string[0];
         }

@@ -23,6 +23,7 @@ public class RotationWindow : ScrollRect
     [Header("控制窗口用参数")]
     private Vector2 previousPos;//处理拖拽用的，记录上一帧鼠标位置
 
+    [Serializable]
     public class FocusObjectChangedEvent : UnityEvent<bool> { }//true是把头放到尾，false是尾放到头
     public FocusObjectChangedEvent onFocusObjectChanged;
     public new void Awake()
@@ -111,6 +112,7 @@ public class RotationWindow : ScrollRect
         {
             content.GetChild(content.childCount - 1).SetAsFirstSibling();
         }
+        print("Rotation");
         onFocusObjectChanged?.Invoke(direction);
     }
     #endregion
