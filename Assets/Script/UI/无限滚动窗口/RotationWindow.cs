@@ -51,22 +51,24 @@ public class RotationWindow : ScrollRect
         if (normalizedPosition.x > 1 && !isTouchUpBorder)
         {
             ChildListChange(false);
-            this.normalizedPosition = new Vector2(1 - GetChildSizeProportion(GetChildRectTransform(0), vertical), this.normalizedPosition.y);
+            //this.normalizedPosition = new Vector2(1 - GetChildSizeProportion(GetChildRectTransform(0), vertical), this.normalizedPosition.y);
         }
         else if (normalizedPosition.x < 0 && !isTouchBottomBorder)
         {
             ChildListChange(true);
-            this.normalizedPosition = new Vector2(0 + GetChildSizeProportion(GetChildRectTransform(content.childCount - 1), vertical), this.normalizedPosition.y);
+            //this.normalizedPosition = new Vector2(0 + GetChildSizeProportion(GetChildRectTransform(content.childCount - 1), vertical), this.normalizedPosition.y);
         }
         if (normalizedPosition.y > 1 && !isTouchUpBorder)
         {
+            //print(normalizedPosition);
             ChildListChange(false);
-            this.normalizedPosition = new Vector2(this.normalizedPosition.x, 1 - GetChildSizeProportion(GetChildRectTransform(0), vertical));
+            MovingNormalizedDistance( new Vector2(0, -1 * GetChildSizeProportion(GetChildRectTransform(0)).y));
         }
         else if (normalizedPosition.y < 0 && !isTouchBottomBorder)
         {
+            
             ChildListChange(true);
-            this.normalizedPosition = new Vector2(this.normalizedPosition.x, 0 + GetChildSizeProportion(GetChildRectTransform(content.childCount - 1), vertical));
+            MovingNormalizedDistance(new Vector2(0, GetChildSizeProportion(GetChildRectTransform(content.childCount - 1)).y));
         }
         //Debug.Log(scrollRect.normalizedPosition);
     }
@@ -74,19 +76,10 @@ public class RotationWindow : ScrollRect
     /// 获取子物体在content窗口的占比
     /// </summary>
     /// <param name="childRect"></param>
-    /// <param name="isVerticalSort">这个参数决定其返回的是水平方向的比例，还是垂直方向的比例</param>
     /// <returns></returns>
-    public float GetChildSizeProportion(RectTransform childRect, bool isVerticalSort)
+    public Vector2 GetChildSizeProportion(RectTransform childRect)
     {
-        if (isVerticalSort)
-        {
-            //(contentRect.rect.height - Viewport.rect.height) * Return = childRect.rect.height
-            return (childRect.rect.height / (content.rect.height - viewport.rect.height));
-        }
-        else
-        {
-            return childRect.rect.width / (content.rect.height - viewport.rect.height);
-        }
+        return new Vector2(childRect.rect.width / (content.rect.width - viewport.rect.width), (childRect.rect.height / (content.rect.height - viewport.rect.height)));
     }
     /// <summary>
     /// 通过index取得子物体的RectTransform组件
@@ -112,40 +105,11 @@ public class RotationWindow : ScrollRect
         {
             content.GetChild(content.childCount - 1).SetAsFirstSibling();
         }
-        print("Rotation");
+        //print("Rotation"+direction);
         onFocusObjectChanged?.Invoke(direction);
     }
     #endregion
     #region 控制这个RotationWindow的，从EventSystem那里搞来的接口以及配合其使用的方法
-    //void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
-    //{
-    //    previousPos = eventData.position;
-    //}
-    //void IDragHandler.OnDrag(PointerEventData eventData)
-    //{
-    //    if (!isControllSelf)
-    //    {
-    //        return;
-    //    }
-    //    Vector2 movingDistance = CaculateNormalizedDistanceOnScreen(previousPos, eventData.position);
-    //    previousPos = eventData.position;
-    //    MovingNormalizedDistance(movingDistance);
-    //}
-
-    //public new void OnBeginDrag(PointerEventData eventData)
-    //{
-    //    previousPos = eventData.position;
-    //}
-    //public new void OnDrag(PointerEventData eventData)
-    //{
-    //    if (!isControllSelf)
-    //    {
-    //        return;
-    //    }
-    //    Vector2 movingDistance = CaculateNormalizedDistanceOnScreen(previousPos, eventData.position);
-    //    previousPos = eventData.position;
-    //    MovingNormalizedDistance(movingDistance);
-    //}
     public override void OnBeginDrag(PointerEventData eventData)
     {
         //print("get");
@@ -155,6 +119,7 @@ public class RotationWindow : ScrollRect
     {
         //print("what?");
         Vector2 movingDistance = CaculateNormalizedDistanceOnScreen(previousPos, eventData.position);
+        //print(movingDistance);
         previousPos = eventData.position;
         MovingNormalizedDistance(movingDistance);
     }
@@ -162,31 +127,31 @@ public class RotationWindow : ScrollRect
     {
 
     }
-    public void JumpToNext(bool isToNext)
-    {
-        float normalizedMoveDistance;
-        if (isToNext)
-        {
-            normalizedMoveDistance = -GetChildSizeProportion(GetChildRectTransform(FocusObjIndex), vertical);
-        }
-        else
-        {
-            normalizedMoveDistance = GetChildSizeProportion(GetChildRectTransform(GetNeighborObjIndex(FocusObjIndex, -1)), vertical);
-        }
-        if (vertical)
-        {
-            normalizedPosition = new Vector2(this.normalizedPosition.x, 0);
-            MovingNormalizedDistance(new Vector2(0, normalizedMoveDistance));
-            normalizedPosition = new Vector2(this.normalizedPosition.x, 0);
-        }
-        else
-        {
-            this.normalizedPosition = new Vector2(0, this.normalizedPosition.y);
-            MovingNormalizedDistance(new Vector2(normalizedMoveDistance, 0));
-            this.normalizedPosition = new Vector2(0, this.normalizedPosition.y);
-        }
-        //Debug.Log("jump");
-    }
+    //public void JumpToNext(bool isToNext)
+    //{
+    //    float normalizedMoveDistance;
+    //    if (isToNext)
+    //    {
+    //        normalizedMoveDistance = -GetChildSizeProportion(GetChildRectTransform(FocusObjIndex), vertical);
+    //    }
+    //    else
+    //    {
+    //        normalizedMoveDistance = GetChildSizeProportion(GetChildRectTransform(GetNeighborObjIndex(FocusObjIndex, -1)), vertical);
+    //    }
+    //    if (vertical)
+    //    {
+    //        normalizedPosition = new Vector2(this.normalizedPosition.x, 0);
+    //        MovingNormalizedDistance(new Vector2(0, normalizedMoveDistance));
+    //        normalizedPosition = new Vector2(this.normalizedPosition.x, 0);
+    //    }
+    //    else
+    //    {
+    //        this.normalizedPosition = new Vector2(0, this.normalizedPosition.y);
+    //        MovingNormalizedDistance(new Vector2(normalizedMoveDistance, 0));
+    //        this.normalizedPosition = new Vector2(0, this.normalizedPosition.y);
+    //    }
+    //    //Debug.Log("jump");
+    //}
     public void MovingNormalizedDistance(Vector2 distance)
     {
         this.normalizedPosition = this.normalizedPosition + distance;
