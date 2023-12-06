@@ -42,7 +42,6 @@ public class DialogManager : MonoBehaviour
 
     public void OnClick()
     {
-        print("get");
         if (printWindow.isTyping)
         {
             printWindow.StopCurrentTyping();
