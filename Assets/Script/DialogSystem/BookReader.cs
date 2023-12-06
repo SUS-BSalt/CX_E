@@ -50,9 +50,9 @@ public class BookReader
     /// <returns></returns>
     public string GetConcept(int row,int columns)
     {
-        if (row >= totalRows)
+        if (row >= totalRows || row <= 1)
         {
-            return "程序试图越界访问当前文字表所有行之外的行，所以这是一个bug";
+            return "NoData";
         }
         return bookChapter.Cells[row,columns].Value?.ToString();
     }

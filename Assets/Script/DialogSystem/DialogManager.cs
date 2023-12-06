@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Rendering.CameraUI;
 
 public class DialogManager : MonoBehaviour
 {
@@ -22,15 +23,14 @@ public class DialogManager : MonoBehaviour
 
     }
 
-    public void SetLanguage(int LanguageIndex)
+    public void SetLanguage()
     {
-        BookReader _LanguagePathReader = new("Book/Maps/LanguageMap.xlsx");
-        bookPathLanguageModify = _LanguagePathReader.GetConcept(LanguageIndex, 2);
+        bookPathLanguageModify = DataManager.Instance.LanguageData[DataManager.Instance.ConfigData["Language"]]["Path"];
     }
 
     private void Start()
     {
-        SetLanguage(ConfigManager.Instance.data.Language);
+        SetLanguage();
         SetBook("conversation/TestBook.xlsx");
     }
     public void SetBook(string BookPath)
@@ -42,6 +42,7 @@ public class DialogManager : MonoBehaviour
 
     public void OnClick()
     {
+        print("get");
         if (printWindow.isTyping)
         {
             printWindow.StopCurrentTyping();
@@ -49,8 +50,15 @@ public class DialogManager : MonoBehaviour
         else
         {
             bookMark += 1;
-            printWindow.StartNewTyping(NameMethod(bookMark)+bookReader.GetConcept(bookMark,4));
+            printWindow.StartNewTyping(NameMethod(bookMark) + bookReader.GetConcept(bookMark, 4));
+            logWindow.RefreshLogMenu(bookMark);
         }
+    }
+    public string GetLogString(int _bookMark)
+    {
+        string nameString = CombineSpiltedNameArry(SpiltNameNode(_bookMark));
+        string textString = GetCleanMainText(_bookMark);
+        return nameString + textString;
     }
     public void StartTypingWord()
     {
@@ -76,6 +84,16 @@ public class DialogManager : MonoBehaviour
         //TODO isSpeak是临时变量
         bool isSpeak = true;
         
+        string[] names = SpiltNameNode(_bookMark);
+
+        foreach(string name in names)
+        {
+            characterManager.PlayCharacterSpeakAnimation(name, isSpeak);
+        }
+        return CombineSpiltedNameArry(names);
+    }
+    public string[] SpiltNameNode(int _bookMark)
+    {
         string nameString;
         try
         {
@@ -83,31 +101,77 @@ public class DialogManager : MonoBehaviour
         }
         catch
         {
-            return "";
+            return new string[0];
         }
 
         if (nameString == "")
         {
+            return new string[0];
+        }
+        return nameString.Split("+");
+    }//将正文名字格拆开
+    public string CombineSpiltedNameArry(string[] names)
+    {
+        string output;
+        if (names.Count() == 0)
+        {
             return "";
         }
-        string output = "";
-        string[] names = nameString.Split("+");
-
         if (names.Count() == 1)
         {
-            characterManager.PlayCharacterSpeakAnimation(names[0], isSpeak);
             return "[" + characterManager.GetCharacterColorInRichText(names[0]) + names[0] + "</color>" + "]";
         }
         else
         {
-            characterManager.PlayCharacterSpeakAnimation(names[0], isSpeak);
             output = "[" + characterManager.GetCharacterColorInRichText(names[0]) + names[0] + "</color>";
             for (int i = 1; i < names.Count(); i++)
             {
-                characterManager.PlayCharacterSpeakAnimation(names[i], isSpeak);
                 output = output + "&" + characterManager.GetCharacterColorInRichText(names[i]) + names[i] + "</color>";
             }
             return output + "]";
         }
+    }//将拆开后的名字格合起来
+
+    public string GetCleanMainText(int _bookMark)
+    {
+        int currentWordIndex = 0;
+        string TargetText = bookReader.GetConcept(_bookMark, 4);
+        string CurrentText = "";
+
+        while (currentWordIndex < TargetText.Length)
+        {
+            if (TargetText[currentWordIndex].ToString() == "$")
+            {
+                currentWordIndex++;
+                CurrentText += TargetText[currentWordIndex].ToString();
+                currentWordIndex++;//指向下一个字符
+            }//当遇到$字符时，直接把下一个字符输出到屏幕上，不做特殊处理
+            else if (TargetText[currentWordIndex].ToString() == "[")
+            {
+                do
+                {
+                    CurrentText += TargetText[currentWordIndex].ToString();
+                    currentWordIndex++;
+                }
+                while (TargetText[currentWordIndex].ToString() != "]");//
+                CurrentText += TargetText[currentWordIndex].ToString();
+                currentWordIndex++;//指向下一个字符
+            }//当遇到[方括号时，直接把括号内，包括括号本身输出，不对括号内的特殊符号做处理
+            else if (TargetText[currentWordIndex].ToString() == "{")
+            {
+                currentWordIndex++;//跳过{
+                while (TargetText[currentWordIndex].ToString() != "}")
+                {
+                    currentWordIndex++;
+                }//跳过所有{}
+                currentWordIndex++;//指向下一个字符
+            }//当遇到{花括号时，意味着有自定义的方法需要执行，全部跳过
+            else
+            {
+                CurrentText += TargetText[currentWordIndex].ToString();
+                currentWordIndex++;//指向下一个字符
+            }//不是特殊符号，正常输出
+        }
+        return CurrentText;
     }
 }
