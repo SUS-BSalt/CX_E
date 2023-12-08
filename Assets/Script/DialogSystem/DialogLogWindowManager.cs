@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class DialogLogWindowManager : MonoBehaviour
 {
+    public Button LogsEnterButton;
     public DialogManager Manager;
     public GameObject LogMenu;
     public RotationWindow rotationWindow;
@@ -13,6 +14,12 @@ public class DialogLogWindowManager : MonoBehaviour
     private void Awake()
     {
         rotationWindow.onFocusObjectChanged.AddListener(UpdateLogMenu);
+        LogsEnterButton.onClick.AddListener(OnOpenLogMenu);
+    }
+
+    public void OnOpenLogMenu()
+    {
+        RefreshLogMenu(Manager.bookMark);
     }
 
     public void CleanLogMenu()
@@ -52,9 +59,16 @@ public class DialogLogWindowManager : MonoBehaviour
         }
         //print("UB" + rotationWindow.isTouchUpBorder);
         //print("BB" + rotationWindow.isTouchBottomBorder);
-        for (int i = 0; i < rotationWindow.content.childCount; i++)
+
+        if (updateDirection)
         {
-            rotationWindow.content.GetChild(i).GetChild(0).GetComponent<Text>().text = Manager.GetLogString(bookMarkLogs - rotationWindow.content.childCount + i + 1);
+            rotationWindow.content.GetChild(rotationWindow.content.childCount - 1).GetChild(0).GetComponent<Text>().text = 
+                Manager.GetLogString(bookMarkLogs - rotationWindow.content.childCount + rotationWindow.content.childCount);
+        }
+        else
+        {
+            rotationWindow.content.GetChild(0).GetChild(0).GetComponent<Text>().text =
+                Manager.GetLogString(bookMarkLogs - rotationWindow.content.childCount + 1);
         }
     }//每当rotationWindow焦点物体变动时调用，根据变动方向更新头部或尾部的text框
     public void RefreshLogMenu(int bookMark)

@@ -44,12 +44,12 @@ public class DialogManager : MonoBehaviour
     {
         if (printWindow.isTyping)
         {
-            printWindow.StopCurrentTyping();
+            StopTypingWord();
         }
         else
         {
             bookMark += 1;
-            printWindow.StartNewTyping(NameMethod(bookMark) + bookReader.GetConcept(bookMark, 4));
+            StartTypingWord();
             logWindow.RefreshLogMenu(bookMark);
         }
     }
@@ -59,13 +59,18 @@ public class DialogManager : MonoBehaviour
         string textString = GetCleanMainText(_bookMark);
         return nameString + textString;
     }
+    /// <summary>
+    /// 开始打印文字
+    /// </summary>
     public void StartTypingWord()
     {
+        printWindow.StartNewTyping(NameMethod(bookMark) + bookReader.GetConcept(bookMark, 4));
         //printWindow.StartNewTyping();
     }
     public void StopTypingWord()
     {
-
+        characterManager.StopAllCharactersSpeak();
+        printWindow.StopCurrentTyping();
     }
 
 

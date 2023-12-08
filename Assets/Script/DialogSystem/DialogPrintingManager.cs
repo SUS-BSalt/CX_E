@@ -163,6 +163,8 @@ public class DialogPrintingManager : MonoBehaviour
         }
         //TODO 这里可能需要重置部分参数
         isTyping = false;
+
+        dialogManager.StopTypingWord();
     }
 
     public void StartNewTyping(string _TargetText)

@@ -9,6 +9,9 @@ using UnityEngine;
 public class DataManager : Singleton<DataManager>
 {
     public Dictionary<string,string> ConfigData;
+
+    public Dictionary<string, string> CharacterName;
+
     public Dictionary<string, Dictionary<string, string>> CharacterData;
     public Dictionary<string, Dictionary<string, string>> LanguageData;
 
@@ -43,6 +46,16 @@ public class DataManager : Singleton<DataManager>
         tempJson = File.ReadAllText(tempPath);
         LanguageData = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(tempJson);
 
+        GetNameData();
+    }
+    public void GetNameData()
+    {
+        string tempPath;
+        string tempJson;
+
+        tempPath = Path.Combine(Application.streamingAssetsPath, LanguageData[ConfigData["Language"]]["Path"],"CharacterNameMap.json");
+        tempJson = File.ReadAllText(tempPath);
+        CharacterName = JsonConvert.DeserializeObject<Dictionary<string, string>>(tempJson);
     }
 }
 
