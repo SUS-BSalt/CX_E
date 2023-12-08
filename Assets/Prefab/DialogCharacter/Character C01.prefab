@@ -212,7 +212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterIndex: C01
-  color: 255,255,255
+  color: '#D8BAFF'
   faceList:
   - {fileID: 11400000, guid: ed1286a3dac943442b59807248165dff, type: 2}
   currentFace: {fileID: 0}

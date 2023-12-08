@@ -1833,6 +1833,9 @@ MonoBehaviour:
   logWindow: {fileID: 902856208}
   printWindow: {fileID: 902856207}
   characterManager: {fileID: 902856210}
+  plotTrigger:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &902856207
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3947,7 +3950,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8916157289619937247, guid: 29e0c76d6351e5442b41b16200252caa, type: 3}
       propertyPath: m_Name
-      value: Character 001
+      value: Character C01
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -14,6 +14,7 @@ public class DataManager : Singleton<DataManager>
 
     public Dictionary<string, Dictionary<string, string>> CharacterData;
     public Dictionary<string, Dictionary<string, string>> LanguageData;
+    public const string NODATA = "NoData";
 
     protected override void Awake()
     {

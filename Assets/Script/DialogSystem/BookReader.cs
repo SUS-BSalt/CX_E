@@ -50,11 +50,14 @@ public class BookReader
     /// <returns></returns>
     public string GetConcept(int row,int columns)
     {
-        if (row >= totalRows || row <= 1)
+        try
+        {
+            return bookChapter.Cells[row,columns].Value.ToString();
+        }
+        catch
         {
             return "NoData";
         }
-        return bookChapter.Cells[row,columns].Value?.ToString();
     }
 
 

@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using static UnityEditor.Rendering.CameraUI;
 
@@ -18,11 +20,66 @@ public class DialogManager : MonoBehaviour
     public DialogPrintingManager printWindow;
     public DialogCharacterManager characterManager;
 
+    [Serializable]
+    public class PlotTrigger : UnityEvent<string> { }
+    public PlotTrigger plotTrigger;
     public void ExecEvent(string EventString)
     {
+        //Debug.Log(eventString);
+        string[] eventArgv = EventString.Split("-");
+        switch (eventArgv[0])
+        {
+            case "SetPos":
+                {
+                    characterManager.SetCharacterPos(eventArgv[1], new Vector2(float.Parse(eventArgv[2]), float.Parse(eventArgv[3])));
+                    break;
+                }
+            case "SetFace":
+                {
+                    characterManager.SetCharacterFace(eventArgv[1], eventArgv[2]);
+                    break;
+                }
+            case "Appear":
+                {
+                    characterManager.CharacterAppear(eventArgv[1]);
+                    break;
+                }
+            case "Disappear":
+                {
+                    characterManager.CharacterDisappear(eventArgv[1]);
+                    break;
+                }
+            case "Audio":
+                {
+                    
+                    break;
+                }
+            case "Music":
+                {
 
+                    break;
+                }
+            case "Trigger":
+                {
+                    plotTrigger?.Invoke(eventArgv[1]);
+                    break;
+                }
+        }
     }
 
+    public void ExecPreEvent(string preEventString)
+    {
+        print(preEventString);
+        if(preEventString == DataManager.NODATA)
+        {
+            return;
+        }
+        string[] events = preEventString.Split("+");
+        foreach (string _event in events)
+        {
+            ExecEvent(_event);
+        }
+    }
     public void SetLanguage()
     {
         bookPathLanguageModify = DataManager.Instance.LanguageData[DataManager.Instance.ConfigData["Language"]]["Path"];
@@ -49,6 +106,7 @@ public class DialogManager : MonoBehaviour
         else
         {
             bookMark += 1;
+            ExecPreEvent(bookReader.GetConcept(bookMark, 1));
             StartTypingWord();
             logWindow.RefreshLogMenu(bookMark);
         }

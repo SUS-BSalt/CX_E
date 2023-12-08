@@ -40,11 +40,17 @@ public class DialogCharacterManager : MonoBehaviour
     {
 
     }
+    /// <summary>
+    /// 设置人物在画面窗口的百分比处位置
+    /// </summary>
+    /// <param name="_characterName">角色名称</param>
+    /// <param name="anchorPos">百分比位置</param>
     public void SetCharacterPos(string _characterName, Vector2 anchorPos)
     {
         try
         {
-
+            characterDict[_characterName].rect.anchorMax = anchorPos;
+            characterDict[_characterName].rect.anchorMin = anchorPos;
         }
         catch
         {
@@ -53,7 +59,15 @@ public class DialogCharacterManager : MonoBehaviour
     }
     public void SetCharacterFace(string _characterName, string face)
     {
+        try
+        {
+            characterDict[_characterName].ChangeFace(face);
 
+        }
+        catch
+        {
+
+        }
     }
     public void PlayCharacterSpeakAnimation(string characterName, bool isSpeak)//根据角色当前表情，调用表情对应的说话动画,或者恢复原状
     {
