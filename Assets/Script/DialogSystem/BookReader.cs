@@ -12,11 +12,14 @@ public class BookReader
         ReadBookFile(BookPath);
     }
 
+    public string BookPath;
+
     private ExcelPackage book;
     private ExcelWorksheet bookChapter;
     public int totalRows;
     public void ReadBookFile(string bookPath)
     {
+        BookPath = bookPath;
         string _bookPath = Path.Combine(Application.streamingAssetsPath, bookPath);
         book = new ExcelPackage(new FileInfo(_bookPath));
         bookChapter = book.Workbook.Worksheets[1];

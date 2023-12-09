@@ -8,7 +8,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using static UnityEditor.Rendering.CameraUI;
 
-public class DialogManager : MonoBehaviour
+public class DialogManager : Singleton<DialogManager>
 {
     public string bookPathLanguageModify;
     public BookReader bookReader;
@@ -64,12 +64,29 @@ public class DialogManager : MonoBehaviour
                     plotTrigger?.Invoke(eventArgv[1]);
                     break;
                 }
+            case "Jump":
+                {
+                    bookMark = int.Parse(eventArgv[1]);
+                    break;
+                }
+            case "Chapter":
+                {
+                    bookReader.ChangeBookChapter(int.Parse(eventArgv[1]));
+                    bookMark = 2;
+                    break;
+                }
+            case "Book":
+                {
+                    SetBook(eventArgv[1]);
+                    bookMark = 2;
+                    break;
+                }
         }
     }
 
     public void ExecPreEvent(string preEventString)
     {
-        print(preEventString);
+        //print(preEventString);
         if(preEventString == DataManager.NODATA)
         {
             return;
@@ -88,13 +105,19 @@ public class DialogManager : MonoBehaviour
     private void Start()
     {
         SetLanguage();
-        SetBook("conversation/TestBook.xlsx");
+        //print(bookPathLanguageModify);
+        SetBook(DataManager.Instance.playerSaveData.bookPath, DataManager.Instance.playerSaveData.bookMark);
+        
     }
-    public void SetBook(string BookPath)
+    public void SetBook(string BookPath, int _bookMark = 1)
     {
         //print(Path.Combine(bookPathLanguageModify, BookPath));
         //bookReader = new BookReader(bookPathLanguageModify + BookPath);
-        bookReader = new BookReader(Path.Combine(bookPathLanguageModify, BookPath));
+        string path = Path.Combine(bookPathLanguageModify, BookPath);
+
+        print(path);
+        bookReader = new BookReader(path);
+        bookMark = _bookMark;
     }
 
     public void OnClick()
