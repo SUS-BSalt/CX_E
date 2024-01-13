@@ -5,9 +5,15 @@ using System.IO;
 using Newtonsoft.Json;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using UnityEngine;
+using CI.QuickSave;
+using static SaveManager;
 
+/// <summary>
+/// 把所有的，需要与本地文件交换的，各个模块的各种数据类全扔这，让所有的
+/// </summary>
 public class DataManager : Singleton<DataManager>
 {
+
     public Dictionary<string,string> ConfigData;
 
     public Dictionary<string, string> CharacterName;
@@ -17,8 +23,43 @@ public class DataManager : Singleton<DataManager>
 
     public PlayerSaveData playerSaveData;
 
+    public static readonly string NODATA = "NoData";
 
-    public const string NODATA = "NoData";
+    QuickSaveReader reader { get; set; }
+    QuickSaveWriter writer { get; set; }
+    /// <summary>
+    /// 因为这个类基于QuickSave插件搭建，所以方法也是基于其设计进行的拓展
+    /// </summary>
+    /// <param name="fileName">存档文件的名字，不用加后缀</param>
+    public void LoadSaveFile(string fileName)
+    {
+        writer = QuickSaveWriter.Create(fileName);
+        reader = QuickSaveReader.Create(fileName);
+    }
+
+    public T GetData<T>(string key)
+    {
+        T data = reader.Read<T>(key);
+        return data;
+    }
+    /// <summary>
+    /// 更新数据，写入本地还需要调用CommitData
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="key">键</param>
+    /// <param name="data">任何可以序列化的东西</param>
+    public void UpdateData<T>(string key, T data)
+    {
+        writer.Write<T>(key, data);
+    }
+    /// <summary>
+    /// 将数据写入本地
+    /// </summary>
+    public void CommitData()
+    {
+        writer.Commit();
+    }
+
 
     protected override void Awake()
     {
