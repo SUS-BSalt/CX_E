@@ -86,7 +86,7 @@ public class DialogManager : Singleton<DialogManager>
     public void ExecPreEvent(string preEventString)
     {
         //print(preEventString);
-        if(preEventString == DataManager.NODATA)
+        if(preEventString == DataManager_Old.NODATA)
         {
             return;
         }
@@ -98,14 +98,14 @@ public class DialogManager : Singleton<DialogManager>
     }
     public void SetLanguage()
     {
-        bookPathLanguageModify = DataManager.Instance.LanguageData[DataManager.Instance.ConfigData["Language"]]["Path"];
+        bookPathLanguageModify = DataManager_Old.Instance.LanguageData[DataManager_Old.Instance.ConfigData["Language"]]["Path"];
     }
 
     private void Start()
     {
         SetLanguage();
         //print(bookPathLanguageModify);
-        SetBook(DataManager.Instance.playerSaveData.bookPath, DataManager.Instance.playerSaveData.bookMark);
+        SetBook(DataManager_Old.Instance.playerSaveData.bookPath, DataManager_Old.Instance.playerSaveData.bookMark);
         
     }
     public void SetBook(string BookPath, int _bookMark = 1)

@@ -83,6 +83,11 @@ public class SaveManager : Singleton<SaveManager>
         }
     }
 
+    public void GetAllKeys()
+    {
+        reader.GetAllKeys();
+    }
+
     public void SaveToFile(string fileName)
     {
         currentSaveFileName = fileName;

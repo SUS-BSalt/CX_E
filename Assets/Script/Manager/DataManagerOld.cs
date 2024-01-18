@@ -11,12 +11,8 @@ using UnityEngine.Events;
 /// <summary>
 /// 把所有的，需要与本地文件交换的，各个模块的各种数据类全扔这，让所有的
 /// </summary>
-public class DataManager : Singleton<DataManager>
+public class DataManager_Old : Singleton<DataManager_Old>
 {
-    public UnityEvent Load;
-    public UnityEvent Saved;
-
-
     public Dictionary<string,string> ConfigData;
 
     public Dictionary<string, string> CharacterName;

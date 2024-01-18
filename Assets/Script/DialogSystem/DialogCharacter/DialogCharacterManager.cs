@@ -127,7 +127,7 @@ public class DialogCharacterManager : MonoBehaviour
         characterDict = new Dictionary<string, DialogCharacter>();
         foreach (DialogCharacter character in characterList)
         {
-            characterDict.Add(DataManager.Instance.CharacterName[character.characterIndex], character);
+            characterDict.Add(DataManager_Old.Instance.CharacterName[character.characterIndex], character);
         }
         //CharacterData = new BookReader();
     }
