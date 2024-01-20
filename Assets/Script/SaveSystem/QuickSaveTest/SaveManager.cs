@@ -11,6 +11,8 @@ using UnityEngine.Events;
 /// 每个模块自行编写保存时与加载时的方法，并分别挂在LoadEvent与SaveEvent上。
 /// 获取数据可以用LoadData，存入数据可以用SaveData。
 /// 
+/// 操作基于SaveField，它是直接链接本地文件到游戏的一个实例，Load与Save都是对当前的SaveField进行操作
+/// 
 /// 使用了QuickSave插件，它的思路是在读取时创建一个Reader，在写入时创建一个Writer，它俩在内存里的指向*不一样！*。
 /// 也就是说，如果你同时创建了一个Reader与一个Writer，在修改了数据并用Writer执行写入后，再使用Reader会发现，读取的依然是旧数据。
 /// 所以每当你执行了一次写入，你就需要重新创建一次Reader。
@@ -23,7 +25,7 @@ public class SaveManager : Singleton<SaveManager>
     public UnityEvent SaveEvent;
 
     [SerializeField]
-    private string currentSaveFileName;
+    private SaveField currentSaveField;
 
     /// <summary>
     /// 增强鲁棒性设计
@@ -40,10 +42,15 @@ public class SaveManager : Singleton<SaveManager>
     /// 每当本地的存档文件发生变动时，应当重新调用这个方法
     /// </summary>
     /// <param name="fileName">存档文件的名字，不用加后缀</param>
-    public void LoadFromFile(string fileName)
+
+    public void ChangeSaveField(SaveField saveField)
     {
-        currentSaveFileName = fileName;
-        reader = QuickSaveReader.Create(fileName);
+        currentSaveField = saveField;
+    }
+
+    public void LoadFromFile()
+    {
+        reader = QuickSaveReader.Create(currentSaveField.gameObject.name);
         LoadEvent?.Invoke();
         isReaderDirty = false;
     }
@@ -61,7 +68,7 @@ public class SaveManager : Singleton<SaveManager>
         T data;
         if (isReaderDirty)
         {
-            LoadFromFile(currentSaveFileName);
+            LoadFromFile();
         }
 
         if (reader.TryRead<T>(key,out data))
@@ -71,29 +78,26 @@ public class SaveManager : Singleton<SaveManager>
         throw new System.Exception(NODATA);
     }
 
-    public void testry()
-    {
-        try
-        {
-            LoadData<int>("ss");
-        }
-        catch (System.Exception e)
-        {
-            print(e.Message);
-        }
-    }
 
     public void GetAllKeys()
     {
         reader.GetAllKeys();
     }
 
-    public void SaveToFile(string fileName)
+    public void SaveToFile()
     {
-        currentSaveFileName = fileName;
-        writer = QuickSaveWriter.Create(fileName);
+        //创建写入器
+        writer = QuickSaveWriter.Create(currentSaveField.gameObject.name);
+        //更新并写入存档头信息
+        currentSaveField.CreatHeader();
+        SaveData<SaveDataHeader>("Header", currentSaveField.header);
+        //让其他模块进行数据保存
         SaveEvent?.Invoke();
+        //提交保存
         writer.Commit();
+        currentSaveField.LoadHeader();
+        //print(currentSaveField.header.LastModifyTime.ToString());
+        //脏标记存档
         isReaderDirty = true;
     }
 
