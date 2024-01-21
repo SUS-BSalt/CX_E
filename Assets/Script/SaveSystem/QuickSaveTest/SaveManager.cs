@@ -95,6 +95,7 @@ public class SaveManager : Singleton<SaveManager>
         SaveEvent?.Invoke();
         //提交保存
         writer.Commit();
+        //重新载入savefile的文件头
         currentSaveField.LoadHeader();
         //print(currentSaveField.header.LastModifyTime.ToString());
         //脏标记存档

@@ -1,14 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SaveSysMSG : MonoBehaviour
 {
     public SaveField selectedSaveField;
 
+    public Button savebut;
+    public Button loadbut;
+
     public void SelectSaveField(GameObject gameObject)
     {
         selectedSaveField = gameObject.GetComponent<SaveField>();
+
+        if (savebut != null)
+        {
+            savebut.interactable = selectedSaveField.canSave;
+        }
+        if (loadbut != null)
+        {
+            loadbut.interactable = selectedSaveField.canLoad;
+        }
+        
         //print(gameObject.name);
     }
     public void NewGame()

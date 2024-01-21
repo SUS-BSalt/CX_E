@@ -12,8 +12,8 @@ public class SaveField : MonoBehaviour
     [SerializeField]
     public string SaveFileName;
     public SaveDataHeader header;
-    public bool canSave;
-    public bool canLoad;
+    public bool canSave = true;
+    public bool canLoad = true;
     public bool isSaveFileExist;
 
     public Text text;
@@ -33,11 +33,14 @@ public class SaveField : MonoBehaviour
             }
             else
             {
+                canLoad = false;
                 print(gameObject.name + "大概是文件损坏");
             }
         }
         catch (QuickSaveException)
         {
+            isSaveFileExist = false;
+            canLoad = false;
             print(gameObject.name + "文件不存在");
         }
     }

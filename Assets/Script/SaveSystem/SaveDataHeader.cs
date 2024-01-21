@@ -6,4 +6,5 @@ using UnityEngine;
 public class SaveDataHeader
 {
     public DateTime LastModifyTime;
+    public string ErroMSG;
 }

@@ -12,6 +12,7 @@ public class DialogManager : Singleton<DialogManager>
     public string bookPathLanguageModify;
     public BookReader bookReader;
     public int bookMark = 1;
+    public DialogDataClass data;
 
     public DialogController controller;
     //public
@@ -22,6 +23,20 @@ public class DialogManager : Singleton<DialogManager>
     [Serializable]
     public class PlotTrigger : UnityEvent<string> { }
     public PlotTrigger plotTrigger;
+
+    public void OnLoad()
+    {
+        data = SaveManager.Instance.LoadData<DialogDataClass>("Dialog");
+        bookMark = data.bookMark;
+        SetBook(data.currentBookPath);
+        bookReader.ChangeBookChapter(data.currentBookChapter);
+
+    }
+    public void OnSave()
+    {
+        SaveManager.Instance.SaveData<DialogDataClass>("Dialog",data);
+    }
+
     public void ExecEvent(string EventString)
     {
         //Debug.Log(eventString);
@@ -98,11 +113,13 @@ public class DialogManager : Singleton<DialogManager>
     }
     public void SetLanguage()
     {
-        bookPathLanguageModify = DataManager_Old.Instance.LanguageData[DataManager_Old.Instance.ConfigData["Language"]]["Path"];
+        bookPathLanguageModify = "Book/CN/";
+        //print("setLan");
     }
 
-    private void Start()
+    private void OnEnable()
     {
+        //print("Lan？");
         SetLanguage();
         //print(bookPathLanguageModify);
         SetBook(DataManager_Old.Instance.playerSaveData.bookPath, DataManager_Old.Instance.playerSaveData.bookMark);
@@ -113,9 +130,10 @@ public class DialogManager : Singleton<DialogManager>
         //print(Path.Combine(bookPathLanguageModify, BookPath));
         //bookReader = new BookReader(bookPathLanguageModify + BookPath);
         string path = Path.Combine(bookPathLanguageModify, BookPath);
-
-        print(path);
+        //print(bookPathLanguageModify);
+        //print(path);
         bookReader = new BookReader(path);
+
         bookMark = _bookMark;
     }
 
@@ -138,7 +156,7 @@ public class DialogManager : Singleton<DialogManager>
         string nameString = CombineSpiltedNameArry(SpiltNameNode(_bookMark));
         string textString = GetCleanMainText(_bookMark);
         return nameString + textString;
-    }
+    }//干净
     /// <summary>
     /// 开始打印文字
     /// </summary>
@@ -215,7 +233,6 @@ public class DialogManager : Singleton<DialogManager>
             return output + "]";
         }
     }//将拆开后的名字格合起来
-
     public string GetCleanMainText(int _bookMark)
     {
         int currentWordIndex = 0;
@@ -258,4 +275,12 @@ public class DialogManager : Singleton<DialogManager>
         }
         return CurrentText;
     }
+}
+
+public class DialogDataClass
+{
+    public int bookMark = 1;
+    public string currentBookPath;
+    public int currentBookChapter;
+
 }
