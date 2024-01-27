@@ -16,4 +16,13 @@ public class Starting : MonoBehaviour
         print("fuck");
         LoadingMenu.SetActive(false);
     }
+    public void StartTestingScence()
+    {
+        LoadingMenu.SetActive(true);
+        Dialog.gameObject.SetActive(true);
+        Dialog.SetBook("test.xlsx");
+        Dialog.OnClick();
+        print("fuck");
+        LoadingMenu.SetActive(false);
+    }
 }

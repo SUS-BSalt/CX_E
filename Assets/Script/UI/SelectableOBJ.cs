@@ -8,11 +8,31 @@ using UnityEngine.UI;
 public class SelectableOBJ : Selectable
 {
     public UnityEvent<GameObject> BeSelected;
+    public UnityEvent<GameObject> UnSelected;
+    public UnityEvent<GameObject> BeHighlight;
+    public UnityEvent<GameObject> UnHighlight;
     public override void OnSelect(BaseEventData eventData)
     {
         base.OnSelect(eventData);
         BeSelected?.Invoke(gameObject);
         //print(gameObject.name);
+    }
+    public override void OnDeselect(BaseEventData eventData)
+    {
+        base.OnDeselect(eventData);
+        UnSelected?.Invoke(gameObject);
+    }
+    protected override void DoStateTransition(SelectionState state, bool instant)
+    {
+        base.DoStateTransition(state, instant);
+        if (state == SelectionState.Highlighted)
+        {
+            BeHighlight?.Invoke(gameObject);
+        }
+        else if(state == SelectionState.Normal)
+        {
+            UnHighlight?.Invoke(gameObject);
+        }
     }
 
     //public override void OnPointerEnter(PointerEventData eventData)
