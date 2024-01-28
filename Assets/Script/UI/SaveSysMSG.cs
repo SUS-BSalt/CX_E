@@ -31,11 +31,13 @@ public class SaveSysMSG : MonoBehaviour
     }
     public void Load()
     {
+        print("SaveSysMSG Load");
         SaveManager.Instance.ChangeSaveField(selectedSaveField);
         SaveManager.Instance.LoadFromFile();
     }
     public void Save()
     {
+        print("SaveSysMSG Save");
         SaveManager.Instance.ChangeSaveField(selectedSaveField);
         SaveManager.Instance.SaveToFile();
     }

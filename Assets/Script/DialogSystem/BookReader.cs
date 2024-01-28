@@ -7,16 +7,14 @@ using System.Linq;
 
 public class BookReader
 {
+    public string BookPath;
+    private ExcelPackage book;
+    private ExcelWorksheet bookChapter;
+    public int totalRows;
     public BookReader(string BookPath)
     {
         ReadBookFile(BookPath);
     }
-
-    public string BookPath;
-
-    private ExcelPackage book;
-    private ExcelWorksheet bookChapter;
-    public int totalRows;
     public void ReadBookFile(string bookPath)
     {
         BookPath = bookPath;

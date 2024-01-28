@@ -53,6 +53,25 @@ public class SaveManager : Singleton<SaveManager>
         reader = QuickSaveReader.Create(currentSaveField.gameObject.name);
         LoadEvent?.Invoke();
         isReaderDirty = false;
+        print("Load From "+ currentSaveField.gameObject.name);
+    }
+    public void SaveToFile()
+    {
+        print("Save To " + currentSaveField.gameObject.name);
+        //创建写入器
+        writer = QuickSaveWriter.Create(currentSaveField.gameObject.name);
+        //更新并写入存档头信息
+        currentSaveField.CreatHeader();
+        SaveData<SaveDataHeader>("Header", currentSaveField.header);
+        //让其他模块进行数据保存
+        SaveEvent?.Invoke();
+        //提交保存
+        writer.Commit();
+        //重新载入savefile的文件头
+        currentSaveField.LoadHeader();
+        //print(currentSaveField.header.LastModifyTime.ToString());
+        //脏标记存档
+        isReaderDirty = true;
     }
 
 
@@ -76,30 +95,6 @@ public class SaveManager : Singleton<SaveManager>
             return data;
         }
         throw new System.Exception(NODATA);
-    }
-
-
-    public void GetAllKeys()
-    {
-        reader.GetAllKeys();
-    }
-
-    public void SaveToFile()
-    {
-        //创建写入器
-        writer = QuickSaveWriter.Create(currentSaveField.gameObject.name);
-        //更新并写入存档头信息
-        currentSaveField.CreatHeader();
-        SaveData<SaveDataHeader>("Header", currentSaveField.header);
-        //让其他模块进行数据保存
-        SaveEvent?.Invoke();
-        //提交保存
-        writer.Commit();
-        //重新载入savefile的文件头
-        currentSaveField.LoadHeader();
-        //print(currentSaveField.header.LastModifyTime.ToString());
-        //脏标记存档
-        isReaderDirty = true;
     }
 
     /// <summary>

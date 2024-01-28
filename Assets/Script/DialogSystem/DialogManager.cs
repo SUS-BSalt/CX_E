@@ -9,11 +9,13 @@ using UnityEngine.UI;
 
 public class DialogManager : Singleton<DialogManager>
 {
+    public DialogDataClass data = new DialogDataClass();
     public string bookPathLanguageModify;
-    public BookReader bookReader;
-    public int bookMark = 1;
-    public DialogDataClass data;
+    public string bookPath { get { return data.currentBookPath; } set { data.currentBookPath = value; } }
+    public int bookMark { get { return data.bookMark; } set { data.bookMark = value; } }
+    public int bookChapter { get { return data.currentBookChapter; } set { data.currentBookChapter = value; } }
 
+    public BookReader bookReader;
     public DialogController controller;
     //public
     public DialogLogWindowManager logWindow;
@@ -26,15 +28,16 @@ public class DialogManager : Singleton<DialogManager>
 
     public void OnLoad()
     {
+        SetLanguage();
         data = SaveManager.Instance.LoadData<DialogDataClass>("Dialog");
-        bookMark = data.bookMark;
-        SetBook(data.currentBookPath);
+        SetBook(bookPath,bookMark);
         bookReader.ChangeBookChapter(data.currentBookChapter);
-
+        print("loadDialog");
     }
     public void OnSave()
     {
         SaveManager.Instance.SaveData<DialogDataClass>("Dialog",data);
+        print("saveDialog");
     }
 
     public void ExecEvent(string EventString)
@@ -85,7 +88,8 @@ public class DialogManager : Singleton<DialogManager>
                 }
             case "Chapter":
                 {
-                    bookReader.ChangeBookChapter(int.Parse(eventArgv[1]));
+                    bookChapter = int.Parse(eventArgv[1]);
+                    bookReader.ChangeBookChapter(bookChapter);
                     bookMark = 2;
                     break;
                 }
@@ -122,7 +126,7 @@ public class DialogManager : Singleton<DialogManager>
         //print("Lan？");
         SetLanguage();
         //print(bookPathLanguageModify);
-        SetBook(DataManager_Old.Instance.playerSaveData.bookPath, DataManager_Old.Instance.playerSaveData.bookMark);
+        //SetBook(DataManager_Old.Instance.playerSaveData.bookPath, DataManager_Old.Instance.playerSaveData.bookMark);
         
     }
     public void SetBook(string BookPath, int _bookMark = 1)
@@ -131,7 +135,8 @@ public class DialogManager : Singleton<DialogManager>
         //bookReader = new BookReader(bookPathLanguageModify + BookPath);
         string path = Path.Combine(bookPathLanguageModify, BookPath);
         //print(bookPathLanguageModify);
-        //print(path);
+        print(path);
+        bookPath = BookPath;
         bookReader = new BookReader(path);
 
         bookMark = _bookMark;
@@ -277,10 +282,16 @@ public class DialogManager : Singleton<DialogManager>
     }
 }
 
-public class DialogDataClass
+public struct DialogDataClass
 {
-    public int bookMark = 1;
+    public int bookMark;
     public string currentBookPath;
     public int currentBookChapter;
 
+    DialogDataClass(int _bookMark = 1, string _currentBookPath = "", int _currentBookChapter = 1)
+    {
+        bookMark = _bookMark;
+        currentBookPath = _currentBookPath;
+        currentBookChapter = _currentBookChapter;
+    }
 }

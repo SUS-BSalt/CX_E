@@ -6,6 +6,7 @@ public class Starting : MonoBehaviour
 {
     public DialogManager Dialog;
     public GameObject LoadingMenu;
+    public GameObject MainMenu;
     public void StartEveryThing()
     {
         LoadingMenu.SetActive(true);
@@ -13,6 +14,7 @@ public class Starting : MonoBehaviour
         Dialog.gameObject.SetActive(true);
         Dialog.SetBook("Conversation/01.xlsx");
         Dialog.OnClick();
+        MainMenu.SetActive(false);
         print("fuck");
         LoadingMenu.SetActive(false);
     }
@@ -22,7 +24,17 @@ public class Starting : MonoBehaviour
         Dialog.gameObject.SetActive(true);
         Dialog.SetBook("test.xlsx");
         Dialog.OnClick();
+        MainMenu.SetActive(false);
         print("fuck");
         LoadingMenu.SetActive(false);
+    }
+    public void OnLoad()
+    {
+        Dialog.gameObject.SetActive(true);
+        Dialog.OnLoad();
+    }
+    public void OnSave()
+    {
+        Dialog.OnSave();
     }
 }

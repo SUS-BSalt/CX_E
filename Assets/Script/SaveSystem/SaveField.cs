@@ -20,6 +20,8 @@ public class SaveField : MonoBehaviour
 
     public void LoadHeader()
     {
+        canSave = true;
+        canLoad = true;
         text.text = "NoData";
         QuickSaveReader reader;
         try
