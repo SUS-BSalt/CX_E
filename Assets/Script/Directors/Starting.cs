@@ -30,11 +30,13 @@ public class Starting : MonoBehaviour
     }
     public void OnLoad()
     {
+        print("Director Load");
         Dialog.gameObject.SetActive(true);
         Dialog.OnLoad();
     }
     public void OnSave()
     {
+        print("Director Save");
         Dialog.OnSave();
     }
 }

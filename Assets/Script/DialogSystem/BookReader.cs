@@ -20,7 +20,7 @@ public class BookReader
         BookPath = bookPath;
         string _bookPath = Path.Combine(Application.streamingAssetsPath, bookPath);
         //Debug.Log(Application.streamingAssetsPath);
-        Debug.Log(_bookPath);
+        //Debug.Log(_bookPath);
         book = new ExcelPackage(new FileInfo(_bookPath));
         bookChapter = book.Workbook.Worksheets[1];
         totalRows = GetLastUsedRow(bookChapter);

@@ -53,7 +53,7 @@ public class SaveField : MonoBehaviour
         header.LastModifyTime = DateTime.Now;
     }
 
-    private void Awake()
+    private void OnEnable()
     {
         LoadHeader();
     }

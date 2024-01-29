@@ -135,7 +135,7 @@ public class DialogManager : Singleton<DialogManager>
         //bookReader = new BookReader(bookPathLanguageModify + BookPath);
         string path = Path.Combine(bookPathLanguageModify, BookPath);
         //print(bookPathLanguageModify);
-        print(path);
+        //print(path);
         bookPath = BookPath;
         bookReader = new BookReader(path);
 
@@ -281,7 +281,7 @@ public class DialogManager : Singleton<DialogManager>
         return CurrentText;
     }
 }
-
+[Serializable]
 public struct DialogDataClass
 {
     public int bookMark;

@@ -37,7 +37,7 @@ public class SaveSysMSG : MonoBehaviour
     }
     public void Save()
     {
-        print("SaveSysMSG Save");
+        //print("SaveSysMSG Save");
         SaveManager.Instance.ChangeSaveField(selectedSaveField);
         SaveManager.Instance.SaveToFile();
     }

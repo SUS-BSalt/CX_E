@@ -50,9 +50,11 @@ public class SaveManager : Singleton<SaveManager>
 
     public void LoadFromFile()
     {
+        print("fuck debug");
+        
         reader = QuickSaveReader.Create(currentSaveField.gameObject.name);
-        LoadEvent?.Invoke();
         isReaderDirty = false;
+        LoadEvent?.Invoke();
         print("Load From "+ currentSaveField.gameObject.name);
     }
     public void SaveToFile()
@@ -64,9 +66,11 @@ public class SaveManager : Singleton<SaveManager>
         currentSaveField.CreatHeader();
         SaveData<SaveDataHeader>("Header", currentSaveField.header);
         //让其他模块进行数据保存
+        print("开始保存");
         SaveEvent?.Invoke();
         //提交保存
         writer.Commit();
+        print("保存提交");
         //重新载入savefile的文件头
         currentSaveField.LoadHeader();
         //print(currentSaveField.header.LastModifyTime.ToString());
@@ -85,10 +89,11 @@ public class SaveManager : Singleton<SaveManager>
     public T LoadData<T>(string key)
     {
         T data;
-        if (isReaderDirty)
-        {
-            LoadFromFile();
-        }
+        //if (isReaderDirty)
+        //{
+        //    reader.Reload();
+        //    //LoadFromFile();
+        //}
 
         if (reader.TryRead<T>(key,out data))
         {
