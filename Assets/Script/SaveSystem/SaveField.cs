@@ -36,14 +36,14 @@ public class SaveField : MonoBehaviour
             else
             {
                 canLoad = false;
-                print(gameObject.name + "大概是文件损坏");
+                //print(gameObject.name + "大概是文件损坏");
             }
         }
         catch (QuickSaveException)
         {
             isSaveFileExist = false;
             canLoad = false;
-            print(gameObject.name + "文件不存在");
+            //print(gameObject.name + "文件不存在");
         }
     }
 

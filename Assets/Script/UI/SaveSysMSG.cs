@@ -7,12 +7,17 @@ public class SaveSysMSG : MonoBehaviour
 {
     public SaveField selectedSaveField;
 
+    public Text text;
+
     public Button savebut;
     public Button loadbut;
+
 
     public void SelectSaveField(GameObject gameObject)
     {
         selectedSaveField = gameObject.GetComponent<SaveField>();
+
+        text.text = gameObject.name;
 
         if (savebut != null)
         {
