@@ -24,8 +24,11 @@ public class Starting : MonoBehaviour
         Dialog.gameObject.SetActive(true);
         Dialog.SetBook("test.xlsx");
         Dialog.OnClick();
+        //print(Dialog.data.bookMark + "why?");
+        //print(Dialog.data.currentBookChapter+"why?");
+
         MainMenu.SetActive(false);
-        print("fuck");
+        //print("fuck");
         LoadingMenu.SetActive(false);
     }
     public void OnLoad()

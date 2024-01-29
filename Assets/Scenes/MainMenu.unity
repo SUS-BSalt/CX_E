@@ -3384,7 +3384,6 @@ GameObject:
   m_Component:
   - component: {fileID: 720930590}
   - component: {fileID: 720930591}
-  - component: {fileID: 720930592}
   m_Layer: 0
   m_Name: Director
   m_TagString: Untagged
@@ -3422,18 +3421,6 @@ MonoBehaviour:
   Dialog: {fileID: 1815984504}
   LoadingMenu: {fileID: 1065507596}
   MainMenu: {fileID: 208318970}
---- !u!114 &720930592
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 720930589}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac0c94375eb028849b893e12035d08f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &756694010
 GameObject:
   m_ObjectHideFlags: 0
@@ -5903,7 +5890,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   currentSaveField: {fileID: 0}
-  isReaderDirty: 0
+  isSaveFieldChanged: 0
 --- !u!4 &1340529166
 Transform:
   m_ObjectHideFlags: 0
@@ -7962,6 +7949,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d885955fc1817c743ac7354a045c4d20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  data:
+    bookMark: 0
+    currentBookPath: 
+    currentBookChapter: 0
   bookPathLanguageModify: 
   controller: {fileID: 1815984506}
   logWindow: {fileID: 1815984509}

@@ -18,6 +18,9 @@ using UnityEngine.Events;
 /// 所以每当你执行了一次写入，你就需要重新创建一次Reader。
 /// 经过我初步考虑后（1.13.2024），决定让Reader常驻，而令Writter作为临时变量，仅在需要保存时创建，并在写入后脏标记Reader。
 /// 当使用Reader时，首先检查脏标记，若为脏，则重新加载一遍文件，干净的话便可随意使用。
+/// 
+/// (1.29.2024)别寄吧惦记你那脏标记与按需读取了
+/// 按需读取与自由的选择存档文件只能选一个，否则系统复杂度会增加很多，一份数据如果第一次没完全读完，这时候你想把存档存到另一个地方去，剩下没读完的数据你咋办？
 /// </summary>
 public class SaveManager : Singleton<SaveManager>
 {
@@ -31,7 +34,7 @@ public class SaveManager : Singleton<SaveManager>
     /// 增强鲁棒性设计
     /// </summary>
     [SerializeField]
-    private bool isReaderDirty;
+    private bool isSaveFieldChanged;
     QuickSaveReader reader { get; set; }
     QuickSaveWriter writer { get; set; }
 
@@ -46,6 +49,7 @@ public class SaveManager : Singleton<SaveManager>
     public void ChangeSaveField(SaveField saveField)
     {
         currentSaveField = saveField;
+        //isSaveFieldChanged = true;
     }
 
     public void LoadFromFile()
@@ -53,7 +57,6 @@ public class SaveManager : Singleton<SaveManager>
         print("fuck debug");
         
         reader = QuickSaveReader.Create(currentSaveField.gameObject.name);
-        isReaderDirty = false;
         LoadEvent?.Invoke();
         print("Load From "+ currentSaveField.gameObject.name);
     }
@@ -74,8 +77,6 @@ public class SaveManager : Singleton<SaveManager>
         //重新载入savefile的文件头
         currentSaveField.LoadHeader();
         //print(currentSaveField.header.LastModifyTime.ToString());
-        //脏标记存档
-        isReaderDirty = true;
     }
 
 
@@ -89,9 +90,9 @@ public class SaveManager : Singleton<SaveManager>
     public T LoadData<T>(string key)
     {
         T data;
-        //if (isReaderDirty)
+        //if (isSaveFieldChanged)
         //{
-        //    reader.Reload();
+        //    reader = QuickSaveReader.Create(currentSaveField.gameObject.name);
         //    //LoadFromFile();
         //}
 
@@ -111,6 +112,5 @@ public class SaveManager : Singleton<SaveManager>
     public void SaveData<T>(string key, T data)
     {
         writer.Write<T>(key, data);
-        isReaderDirty = true;
     }
 }
