@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 public class DialogManager : Singleton<DialogManager>
 {
-    public DialogDataClass data = new DialogDataClass(1,"",1);
+    public DialogDataClass data;
     public string bookPathLanguageModify;
     public string bookPath { get { return data.currentBookPath; } set { data.currentBookPath = value; } }
     public int bookMark { get { return data.bookMark; } set { data.bookMark = value; } }
@@ -32,6 +32,8 @@ public class DialogManager : Singleton<DialogManager>
         data = SaveManager.Instance.LoadData<DialogDataClass>("Dialog");
         SetBook(bookPath,bookMark);
         bookReader.ChangeBookChapter(data.currentBookChapter);
+        bookMark -= 1;
+        OnClick();
         print("loadDialog");
     }
     public void OnSave()
@@ -131,7 +133,6 @@ public class DialogManager : Singleton<DialogManager>
     }
     public void SetBook(string BookPath, int _bookMark = 1)
     {
-        print(bookMark);
         //print(Path.Combine(bookPathLanguageModify, BookPath));
         //bookReader = new BookReader(bookPathLanguageModify + BookPath);
         string path = Path.Combine(bookPathLanguageModify, BookPath);
@@ -291,7 +292,6 @@ public struct DialogDataClass
 
     public DialogDataClass(int _bookMark = 1, string _currentBookPath = "", int _currentBookChapter = 1)
     {
-        Debug.Log("where fuck you are?");
         this.bookMark = _bookMark;
         currentBookPath = _currentBookPath;
         currentBookChapter = _currentBookChapter;
