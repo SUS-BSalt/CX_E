@@ -113,14 +113,28 @@ public class RotationWindow : ScrollRect
     public override void OnBeginDrag(PointerEventData eventData)
     {
         //print("get");
-        previousPos = eventData.position;
+        //previousPos = eventData.position;
+        
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(viewRect, eventData.position, eventData.pressEventCamera, out previousPos);
     }
     public override void OnDrag(PointerEventData eventData)
     {
+        UpdateBounds();
+
+        Vector2 localCursor;
+        if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(viewRect, eventData.position, eventData.pressEventCamera, out localCursor))
+            return;
+
+        var pointerDelta = previousPos -  localCursor;
+
+
+        Vector2 movingDistance = (pointerDelta / (content.rect.size - viewport.rect.size));
+
         //print("what?");
-        Vector2 movingDistance = CaculateNormalizedDistanceOnScreen(previousPos, eventData.position);
+        //Vector2 movingDistance = CaculateNormalizedDistanceOnScreen(previousPos, eventData.position);
         //print(movingDistance);
-        previousPos = eventData.position;
+
+        previousPos = localCursor;
         MovingNormalizedDistance(movingDistance);
     }
     public new void OnEndDrag(PointerEventData eventData)

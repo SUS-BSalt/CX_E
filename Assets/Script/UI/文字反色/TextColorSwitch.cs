@@ -5,36 +5,63 @@ using UnityEngine.UI;
 
 public class TextColorSwitch : MonoBehaviour
 {
-    /// <summary>
-    /// 注意设置的颜色的透明度
-    /// </summary>
-    public Color colorA;
-    public Color colorB;
+    public Color A;
+    public Color B;
     public Text text;
-    public bool isColorA = true;
-    public void Start()
+    public bool isA = true;
+    public bool isATheDefault = true;
+    private void Start()
     {
-        ToColorA();
-    }
-    public void Switch()
-    {
-        if (isColorA)
+        if (isATheDefault)
         {
-            ToColorB();
+            ToA();
         }
         else
         {
-            ToColorA();
+            ToB();
         }
     }
-    public void ToColorA()
+    public void Switch()
     {
-        text.color = colorA;
-        isColorA = true;
+        if (isA)
+        {
+            ToB();
+        }
+        else
+        {
+            ToA();
+        }
     }
-    public void ToColorB()
+    public void Switch(bool isToDefault)
     {
-        text.color = colorB;
-        isColorA = false;
+        if ((isToDefault & isATheDefault) || (!isToDefault & !isATheDefault))
+        {
+            ToA();
+        }
+        else
+        {
+            ToB();
+        }
+    }
+    public void SwitchFlip(bool isLeaveDefault)//鉴于有的选手默认状态为true，有的选手默认状态为false，所以提供了这个翻转的方法
+    {
+        if ((!isLeaveDefault & isATheDefault) || (isLeaveDefault & !isATheDefault))
+        {
+            ToA();
+        }
+        else
+        {
+            ToB();
+        }
+    }
+    public void ToA()
+    {
+        text.color = A;
+        isA = true;
+    }
+    public void ToB()
+    {
+        text.color = B;
+        isA = false;
     }
 }
