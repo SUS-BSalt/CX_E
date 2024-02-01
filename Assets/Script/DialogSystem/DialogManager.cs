@@ -33,12 +33,14 @@ public class DialogManager : Singleton<DialogManager>
         SetBook(bookPath,bookMark);
         bookReader.ChangeBookChapter(data.currentBookChapter);
         bookMark -= 1;
+        characterManager.OnLoad();
         OnClick();
         print("loadDialog");
     }
     public void OnSave()
     {
         SaveManager.Instance.SaveData<DialogDataClass>("Dialog",data);
+        characterManager.OnSave();
         print("saveDialog");
     }
 
@@ -284,11 +286,12 @@ public class DialogManager : Singleton<DialogManager>
     }
 }
 [Serializable]
-public struct DialogDataClass
+public class DialogDataClass
 {
     public int bookMark;
     public string currentBookPath;
     public int currentBookChapter;
+
 
     public DialogDataClass(int _bookMark = 1, string _currentBookPath = "", int _currentBookChapter = 1)
     {

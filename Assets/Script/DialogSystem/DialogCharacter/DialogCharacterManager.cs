@@ -9,21 +9,51 @@ using UnityEngine.TextCore.Text;
 
 public class DialogCharacterManager : MonoBehaviour
 {
+    public DialogCharacterManagerData data;
+    
     public BookReader CharacterData;
 
-    public List<DialogCharacter> characterList;
+    public List<DialogCharacter> characterList;//它的目的仅限于方便的批量导入角色信息到下面的字典里
+
     public Dictionary<string, DialogCharacter> characterDict;//用角色名字访问，是为了方便作者写文
+    public Dictionary<string,DialogcharacterDataStruct> charactersData { get { return data.charactersData; }set { data.charactersData = value; } }
 
 
+    public void OnSave()
+    {
+        foreach (string characters in characterDict.Keys)
+        {
+            data.charactersData[characters] = characterDict[characters].data;
+        }
+        SaveManager.Instance.SaveData<DialogCharacterManagerData>("DialogCharacterManagerData",data);
+    }
+    public void OnLoad()
+    {
+        data = SaveManager.Instance.LoadData<DialogCharacterManagerData>("DialogCharacterManagerData");
+        foreach(string characters in characterDict.Keys)
+        {
+            characterDict[characters].data = data.charactersData[characters];
+            if (characterDict[characters].isOnStage)
+            {
+                characterDict[characters].OnAppear();
+            }
+        }
+
+    }
+    public void SetCharacter(string _characterName, string face, Vector2 anchorPos)
+    {
+        SetCharacterFace(_characterName, face);
+        SetCharacterPos(_characterName, anchorPos);
+    }
 
     public void CharacterAppear(string _characterName)
     {
-        characterDict[_characterName].gameObject.SetActive(true);
+        characterDict[_characterName].OnAppear();
 
     }
     public void CharacterDisappear(string _characterName)
     {
-        characterDict[_characterName].gameObject.SetActive(false);
+        characterDict[_characterName].OnDisappear();
     }
     public string GetCharacterColorInRichText(string _characterName)
     {
@@ -49,8 +79,7 @@ public class DialogCharacterManager : MonoBehaviour
     {
         try
         {
-            characterDict[_characterName].rect.anchorMax = anchorPos;
-            characterDict[_characterName].rect.anchorMin = anchorPos;
+            characterDict[_characterName].ChangePos(anchorPos);
         }
         catch
         {
@@ -122,13 +151,23 @@ public class DialogCharacterManager : MonoBehaviour
             index++;
         }
     }
-    private void Start()
+    private void Awake()
     {
+        data = new();
         characterDict = new Dictionary<string, DialogCharacter>();
+        charactersData = new Dictionary<string, DialogcharacterDataStruct>();
         foreach (DialogCharacter character in characterList)
         {
             characterDict.Add(DataManager_Old.Instance.CharacterName[character.characterIndex], character);
+            charactersData.Add(DataManager_Old.Instance.CharacterName[character.characterIndex], character.data);
         }
+        print("where are you");
         //CharacterData = new BookReader();
     }
 }
+
+public class DialogCharacterManagerData
+{
+    public Dictionary<string,DialogcharacterDataStruct> charactersData;
+}
+
