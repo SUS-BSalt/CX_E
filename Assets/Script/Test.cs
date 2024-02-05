@@ -1,12 +1,13 @@
 using CI.QuickSave;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using UnityEngine;
 
 public class Test : MonoBehaviour
 {
-    private void OnEnable()
+    public virtual void Dune()
     {
-        print(gameObject.name);
+        print("It's Dune");
     }
 }

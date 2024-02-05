@@ -43,4 +43,9 @@ public class Starting : MonoBehaviour
         print("Director Save");
         Dialog.OnSave();
     }
+
+    public void StartTradingScence()
+    {
+
+    }
 }
