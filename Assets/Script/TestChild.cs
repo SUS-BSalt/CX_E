@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class TestChild : Test
 {
-    public override void Dune()
+    public int b;
+    public TestChild()
     {
-        print("DC");
+        b = 2;
     }
 }
