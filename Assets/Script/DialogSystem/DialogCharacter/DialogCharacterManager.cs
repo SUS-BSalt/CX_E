@@ -37,6 +37,10 @@ public class DialogCharacterManager : MonoBehaviour
             {
                 characterDict[characters].OnAppear();
             }
+            else
+            {
+                characterDict[characters].gameObject.SetActive(false);
+            }
         }
 
     }
