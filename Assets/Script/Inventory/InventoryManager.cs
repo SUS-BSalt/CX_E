@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,8 +18,8 @@ public class InventoryManager : Singleton<InventoryManager>
     {
         return ItemHubDict[HubID];
     }
-    public void PushItemToHub(ItemData item, string HubID)
+    public void PushItemToHub(ItemObjBase item, string HubID)
     {
-        //ItemHubDict[HubID]
+
     }
 }
