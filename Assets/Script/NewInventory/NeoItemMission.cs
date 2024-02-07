@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Neo;
 
-public class TradeManager : MonoBehaviour
+namespace Neo
 {
-    public void UpdateValueOnScreen()
+    public class NeoItemMission : NeoItemBase
     {
-
     }
+
 }
