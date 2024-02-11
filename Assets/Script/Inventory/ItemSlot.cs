@@ -5,19 +5,26 @@ using UnityEngine;
 using Newtonsoft.Json;
 using System;
 using UnityEngine.Events;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Information;
+using Unity.VisualScripting;
+
 
 /// <summary>
 /// 
 /// </summary>
-public class ItemSlot : MonoBehaviour
+public class ItemSlot
 {
     public UnityEvent SlotChanged;
+
+    public ItemSlotDataClass data;
     public enum SlotType
     {
-        mission, matter, speach, other
+        mission, matter, speach, other, allType
     }
     public SlotType type;
+    [Serialize]
     public ItemBase item;
+    public string itemName;
     public int stackingNumber;
     public ItemSlot(SlotType _type)
     {
@@ -28,18 +35,27 @@ public class ItemSlot : MonoBehaviour
         return item.AreTheySame(_item);
     }
     /// <summary>
-    /// 测试该slot能否堆叠给定数量的物品
+    /// 测试该slot能否堆叠给定物品，不包括数量检测
     /// </summary>
     /// <param name="_item">测试物品</param>
     /// <param name="number">给定数量</param>
     /// <returns></returns>
-    public bool CanStackingMore(ItemBase _item, int number = 1)
+    public bool CanThisStack(ItemBase _item)
     {
-        if (item == null & item.canStacking & number <= _item.stackingLimite)//slot为空,且要添加的数量小于堆叠限制时，返回真
+        if(_item == null)//传入物品为空，返回false
+        {
+            return false;
+        }
+        if (_item.ItemType.SlotType != type && type != SlotType.allType)// 如果物品的存储类型与该slot不兼容，返回false
+        {
+            return false;
+        }
+
+        if (item == null)//如果slot为空,返回真
         {
             return true;
         }
-        if(item.AreTheySame(_item) & item.canStacking & (stackingNumber + number <= item.stackingLimite))//slot内已有的物品可以合并，且没到堆叠上限，返回真
+        if(item.AreTheySame(_item) & item.canStacking)//slot内已有的物品，且可以合并，返回真
         {
             return true;
         }
@@ -50,18 +66,18 @@ public class ItemSlot : MonoBehaviour
     }
     
     /// <summary>
-    /// 将给定数量物品堆叠到该slot，返回[没能够]堆叠进该slot的物品数量
+    /// 将给定数量物品堆叠到该slot，返回[￥没能￥]堆叠进该slot的物品数量
     /// </summary>
     /// <param name="_item">物品</param>
     /// <param name="_number">堆叠数量</param>
     /// <returns></returns>
     public int StackingItem(ItemBase _item, int _number)
     {
-        if (!item.canStacking || !item.AreTheySame(_item))// 如果物品不一样，或物品无法堆叠，则原样返回请求数量
+        if (!CanThisStack(_item))
         {
             return _number;
         }
-        int _FreeSpace = item.stackingLimite - stackingNumber;
+        int _FreeSpace = _item.stackingLimite - stackingNumber;
         int _addNumber;
         int _returnNumber;
         if(_number > _FreeSpace)
@@ -104,7 +120,11 @@ public class ItemSlot : MonoBehaviour
     }
     private bool AddItem(ItemBase _item,int _addNumber = 1)
     {
-        if (!CanStackingMore(_item, _addNumber))//如果无法添加该数量的物品，返回false
+        if (!CanThisStack(_item))//如果无法添加该物品，返回false
+        {
+            return false;
+        }
+        if (stackingNumber + _addNumber > _item.stackingLimite)//slot空间不足时，返回false
         {
             return false;
         }
@@ -118,6 +138,7 @@ public class ItemSlot : MonoBehaviour
             stackingNumber += _addNumber;
         }
         SlotChanged?.Invoke();
+        itemName =  item.GetType().ToString();
         return true;
     }
     /// <summary>
@@ -142,9 +163,18 @@ public class ItemSlot : MonoBehaviour
     public void CleanSlot()
     {
         item = null;
+        itemName = "";
         stackingNumber = 0;
         SlotChanged?.Invoke();
     }
 
+}
+
+public class ItemSlotDataClass
+{
+    public SlotType slotType;
+    public int stackingNumber;
+    public string ItemClassName;
+    public string ItemProfileInfo;
 }
 

@@ -1,8 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
-
-public class TestChild : Test
+[Serializable]
+public class TestClass
 {
-
+    public int a = 1;
+    [Serialize]
+    public TestClassB b;
 }
+
+
+

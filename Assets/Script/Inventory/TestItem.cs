@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,14 +6,22 @@ using UnityEngine;
 public class TestItem : ItemBase
 {
 
-    public const string ItemName = "TestItem";
-    
+    public new const string ItemClassName = "TestItem";
+    public int someBrandNewMember = 1;
+    public void someBrandNewMethod(string _msg)
+    {
+        Debug.Log("_msg");
+    }
 
     public TestItem(string _JsonString)
     {
         SetProfileFromJson(_JsonString);
+        ItemType = Resources.Load<ItemTypeOther>("SO/ItemTypeOther");
     }
-
+    public TestItem()
+    {
+        ItemType = Resources.Load<ItemTypeOther>("SO/ItemTypeOther");
+    }
     public override void SetProfileFromJson(string _JsonString)
     {
         

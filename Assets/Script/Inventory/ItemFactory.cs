@@ -1,23 +1,27 @@
 using System;
+using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ItemFactory : Singleton<ItemFactory>
 {
-    public static ItemBase CreateItem(string _ItemName, string _JsonString)
+    public static ItemBase CreateItem(string _ItemClassName, string _ItemProfileJsonString)
     {
-        switch (_ItemName)
+        Type type = Assembly.GetExecutingAssembly().GetType(_ItemClassName);
+        if (type == null)
         {
-            case TestItem.ItemName:
-                {
-                    return new TestItem(_JsonString);
-                }
-            default:
-                {
-                    throw new Exception("没找到对应物品");
-                }
+            throw new Exception("没找到该物品：" + _ItemClassName);
         }
+        ConstructorInfo constructor = type.GetConstructor(Type.EmptyTypes);
+        if (constructor == null)
+        {
+            throw new Exception("该物品类没提供无参构造方法" + _ItemClassName);
+        }
+        object instance = constructor.Invoke(null);
+        ItemBase item = instance as ItemBase;
+        item.SetProfileFromJson(_ItemProfileJsonString);
+        return item;
         
     }
 }

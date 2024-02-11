@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public abstract class ItemBase
 {
     public const string ItemClassName = "ItemBase";
     public string ItemID;
+    public ItemTypeBase ItemType;
     /// <summary>
     /// 物品是否可堆叠
     /// </summary>
