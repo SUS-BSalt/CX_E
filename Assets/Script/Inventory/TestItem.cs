@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class TestItem : ItemBase
 {
-
-    public new const string ItemClassName = "TestItem";
     public int someBrandNewMember = 1;
     public void someBrandNewMethod(string _msg)
     {

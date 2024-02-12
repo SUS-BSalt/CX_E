@@ -7,8 +7,17 @@ using UnityEngine;
 public class TestClass
 {
     public int a = 1;
-    [Serialize]
-    public TestClassB b;
+    public virtual void Method()
+    {
+        Debug.Log("ClassA");
+    }
+}
+public class TestClassB : TestClass
+{
+    public override void Method()
+    {
+        Debug.Log("ClassB");
+    }
 }
 
 

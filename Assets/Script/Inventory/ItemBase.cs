@@ -5,7 +5,6 @@ using UnityEngine;
 
 public abstract class ItemBase
 {
-    public const string ItemClassName = "ItemBase";
     public string ItemID;
     public ItemTypeBase ItemType;
     /// <summary>

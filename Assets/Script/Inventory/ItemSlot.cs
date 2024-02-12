@@ -1,4 +1,3 @@
-using Neo;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +11,7 @@ using Unity.VisualScripting;
 /// <summary>
 /// 
 /// </summary>
+[Serializable]
 public class ItemSlot
 {
     public UnityEvent SlotChanged;
@@ -24,8 +24,9 @@ public class ItemSlot
     public SlotType type;
     [Serialize]
     public ItemBase item;
-    public string itemName;
-    public int stackingNumber;
+    public string itemClassName;
+    public const string NO_ITEM = "NO_ITEM";
+    public int stackingQuantity;
     public ItemSlot(SlotType _type)
     {
         type = _type;
@@ -77,7 +78,7 @@ public class ItemSlot
         {
             return _number;
         }
-        int _FreeSpace = _item.stackingLimite - stackingNumber;
+        int _FreeSpace = _item.stackingLimite - stackingQuantity;
         int _addNumber;
         int _returnNumber;
         if(_number > _FreeSpace)
@@ -107,9 +108,9 @@ public class ItemSlot
             return 0;
         }
         int _minusNumber;
-        if (_number > stackingNumber)
+        if (_number > stackingQuantity)
         {
-            _minusNumber = stackingNumber;
+            _minusNumber = stackingQuantity;
         }
         else
         {
@@ -124,21 +125,21 @@ public class ItemSlot
         {
             return false;
         }
-        if (stackingNumber + _addNumber > _item.stackingLimite)//slot空间不足时，返回false
+        if (stackingQuantity + _addNumber > _item.stackingLimite)//slot空间不足时，返回false
         {
             return false;
         }
         if(item == null)
         {
             item = _item;
-            stackingNumber = _addNumber;
+            stackingQuantity = _addNumber;
         }
         else
         {
-            stackingNumber += _addNumber;
+            stackingQuantity += _addNumber;
         }
         SlotChanged?.Invoke();
-        itemName =  item.GetType().ToString();
+        itemClassName =  item.GetType().ToString();
         return true;
     }
     /// <summary>
@@ -148,12 +149,12 @@ public class ItemSlot
     /// <returns></returns>
     public bool RemoveItem(int removeNumber = 1)
     {
-        if(stackingNumber - removeNumber < 0)
+        if(stackingQuantity - removeNumber < 0)
         {
             return false;
         }
-        stackingNumber -= removeNumber;
-        if (stackingNumber == 0)
+        stackingQuantity -= removeNumber;
+        if (stackingQuantity == 0)
         {
             CleanSlot();
         }
@@ -163,8 +164,8 @@ public class ItemSlot
     public void CleanSlot()
     {
         item = null;
-        itemName = "";
-        stackingNumber = 0;
+        itemClassName = NO_ITEM;
+        stackingQuantity = 0;
         SlotChanged?.Invoke();
     }
 
@@ -172,8 +173,8 @@ public class ItemSlot
 
 public class ItemSlotDataClass
 {
-    public SlotType slotType;
-    public int stackingNumber;
+    public ItemSlot.SlotType slotType;
+    public int stackingQuantity;
     public string ItemClassName;
     public string ItemProfileInfo;
 }
