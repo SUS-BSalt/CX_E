@@ -56,9 +56,11 @@ public class Inventory : MonoBehaviour
     public int RequestItem(ItemBase item, int number)
     {
         int get = 0;
-        foreach (ItemSlot slot in slots)
+        print("where Are you?");
+        print(slots.Count);
+        for (int i = slots.Count-1;  i >= 0; i--)
         {
-            get += slot.RequestItem(item, number - get);
+            get += slots[i].RequestItem(item, number - get);
             if (get == number)
             {
                 break;

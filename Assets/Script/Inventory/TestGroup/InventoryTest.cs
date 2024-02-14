@@ -9,10 +9,13 @@ public class InventoryTest : MonoBehaviour
     {
         inventory.AddSlot(ItemSlot.SlotType.allType);
     }
-    public void AddItem()
+    public void AddItem(int number)
     {
-        inventory.AddItem(new TestItem(""), 1);
-
+        print(inventory.AddItem(new TestItem(""), number));
+    }
+    public void GetItem(int number)
+    {
+        print(inventory.RequestItem(new TestItem(""), number));
     }
     public void t2()
     {

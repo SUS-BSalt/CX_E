@@ -51,7 +51,7 @@ public class SaveManager : Singleton<SaveManager>
         currentSaveField = saveField;
         //isSaveFieldChanged = true;
     }
-
+    
     public void LoadFromFile()
     {
         print("fuck debug");

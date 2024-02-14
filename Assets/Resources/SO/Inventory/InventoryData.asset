@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: InventoryData
   m_EditorClassIdentifier: Assembly-CSharp::InventoryDataClass
-  InventroyID: 
+  InventroyID: Player
   ItemSlotType: 
   ItemStackingQuantity: 
   ItemClassName: []
