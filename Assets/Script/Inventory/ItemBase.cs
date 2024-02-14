@@ -3,10 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 一个物品，除了要实现以下的函数外
+/// 还需要注意实例化ItemType
+/// 提供一个无参的构造函数
+/// ItemFactory会利用这个无参构造函数创建物品实例，随后调用SetProfileFromJson方法，对实例进行配置
+/// </summary>
 public abstract class ItemBase
 {
     public string ItemID;
-    public ItemTypeBase ItemType;
+    /// <summary>
+    /// 物品的类型，用来决定如何将他们分类，放入哪些slot
+    ///  别忘了在构造函数中实例它
+    /// </summary>
+    public abstract ItemTypeBase ItemType { set; get; }
     /// <summary>
     /// 物品是否可堆叠
     /// </summary>
@@ -31,8 +41,8 @@ public abstract class ItemBase
     /// UI模块调用这货得到一个可以显示在屏幕上的玩意，而那个gameobj上不会挂物品的实例，它只会是一个用来显示的皮囊，物品实例真正所在的地方应该在Inventory系统里面
     /// </summary>
     /// <returns></returns>
-    public abstract GameObject GetInstance();
+    public abstract GameObject GetInstance(string _Profile);
 
     public abstract bool AreTheySame(ItemBase _otherItem);
-    public abstract ItemBase getADeepCopy();
+    public abstract ItemBase GetADeepCopy();
 }

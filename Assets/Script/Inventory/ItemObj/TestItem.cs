@@ -6,6 +6,8 @@ using UnityEngine;
 public class TestItem : ItemBase
 {
     public int someBrandNewMember = 1;
+    public override ItemTypeBase ItemType { get; set; }
+
     public void someBrandNewMethod(string _msg)
     {
         Debug.Log("_msg");
@@ -14,18 +16,18 @@ public class TestItem : ItemBase
     public TestItem(string _JsonString)
     {
         SetProfileFromJson(_JsonString);
-        ItemType = Resources.Load<ItemTypeOther>("SO/ItemTypeOther");
+        ItemType = Resources.Load<ItemTypeBase>("SO/Inventory/ItemType/TypeOther");
     }
     public TestItem()
     {
-        ItemType = Resources.Load<ItemTypeOther>("SO/ItemTypeOther");
+        ItemType = Resources.Load<ItemTypeBase>("SO/Inventory/ItemType/TypeOther");
     }
     public override void SetProfileFromJson(string _JsonString)
     {
         
     }
 
-    public override GameObject GetInstance()
+    public override GameObject GetInstance(string _Profile)
     {
         throw new System.NotImplementedException();
     }
@@ -47,7 +49,7 @@ public class TestItem : ItemBase
         }
     }
 
-    public override ItemBase getADeepCopy()
+    public override ItemBase GetADeepCopy()
     {
         return new TestItem("{}");
     }

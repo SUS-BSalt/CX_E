@@ -13,11 +13,16 @@ public class InventoryTest : MonoBehaviour
     {
         print(inventory.AddItem(new TestItem(""), number));
     }
+
     public void GetItem(int number)
     {
         print(inventory.RequestItem(new TestItem(""), number));
     }
-    public void t2()
+    public void t2(string MissionName)
+    {
+        print(inventory.AddItem(new TestMissionItem(MissionName,"",5),1));
+    }
+    public void t3()
     {
 
     }
