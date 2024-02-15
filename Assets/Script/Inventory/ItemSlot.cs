@@ -19,7 +19,7 @@ public class ItemSlot
     public ItemSlotDataClass data;
     public enum SlotType
     {
-        mission, matter, speach, other, allType
+        allType,mission,matter,information,relation,other
     }
     public SlotType type;
     [Serialize]
