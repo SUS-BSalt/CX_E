@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab6687885c726a5489b7c3b1aeaf87cf, type: 3}
   m_Name: TypeMission
   m_EditorClassIdentifier: 
-  SlotType: 0
+  SlotType: 1

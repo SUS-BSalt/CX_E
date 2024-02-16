@@ -67,7 +67,9 @@ public class TestMissionItem : ItemBase,ITimeLimitItem
 
     public override GameObject GetInstance(string _Profile)
     {
-        throw new System.Exception("该物体暂无实体");
+        var obj = Resources.Load<GameObject>("Prefab/Inventory/Money");
+        return obj;
+        //throw new System.Exception("该物体暂无实体");
     }
 
     public override string GetProfileJson()

@@ -5,24 +5,34 @@ using UnityEngine;
 public class InventoryTest : MonoBehaviour
 {
     public Inventory inventory;
+    public InventoryUI ui;
+
     public void AddSlot()
     {
-        inventory.AddSlot(ItemSlot.SlotType.allType);
+        inventory.AddSlot(ItemSlot.SlotType.mission);
     }
-    public void AddItem(int number)
+    public void AddItem(string MissionName)
     {
-        print(inventory.AddItem(new TestItem(""), number));
+        print(inventory.AddItem(new TestMissionItem(MissionName, "", 5), 1));
     }
 
-    public void GetItem(int number)
+    public void GetItem(string MissionName)
     {
-        print(inventory.RequestItem(new TestItem(""), number));
+        print(inventory.RequestItem(new TestMissionItem(MissionName, "", 5), 1));
+    }
+    public void RemoveCleanSlot()
+    {
+        inventory.RemoveCleanSlot();
     }
     public void t2(string MissionName)
     {
-        print(inventory.AddItem(new TestMissionItem(MissionName,"",5),1));
+        ui.LinkToInventory(inventory);
     }
     public void t3()
+    {
+        
+    }
+    public void t4()
     {
 
     }

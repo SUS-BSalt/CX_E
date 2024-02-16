@@ -11,9 +11,5 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
   m_Name: InventoryData
-  m_EditorClassIdentifier: Assembly-CSharp::InventoryDataClass
+  m_EditorClassIdentifier: Assembly-CSharp::InventoryDataSO
   InventroyID: Player
-  ItemSlotType: 
-  ItemStackingQuantity: 
-  ItemClassName: []
-  ItemProfileJson: []

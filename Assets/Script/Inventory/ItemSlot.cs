@@ -14,6 +14,11 @@ using Unity.VisualScripting;
 [Serializable]
 public class ItemSlot
 {
+    /// <summary>
+    /// 这里不用unityevent是因为unityevent本质还是一个需要实例化的类型，它并不线程安全
+    /// </summary>
+    //public delegate void SlotChangedDelegate();
+    //public SlotChangedDelegate SlotChanged;
     public UnityEvent SlotChanged;
 
     public ItemSlotDataClass data;
@@ -30,6 +35,22 @@ public class ItemSlot
     public ItemSlot(SlotType _type)
     {
         type = _type;
+        SlotChanged = new UnityEvent();
+    }
+    /// <summary>
+    /// 取得当前item的用于显示在屏幕上的UI元素
+    /// </summary>
+    /// <returns></returns>
+    public GameObject GetItemUIIsntance()
+    {
+        if (item != null)
+        {
+            return item.GetInstance("");
+        }
+        else
+        {
+            return null;
+        }
     }
     public bool CompareToSlotedItem(ItemBase _item)
     {
@@ -74,8 +95,10 @@ public class ItemSlot
     /// <returns></returns>
     public int StackingItem(ItemBase _item, int _number)
     {
+
         if (!CanThisStack(_item))
         {
+            //Debug.Log("are you?");
             return _number;
         }
         int _FreeSpace = _item.stackingLimite - stackingQuantity;
@@ -168,6 +191,7 @@ public class ItemSlot
         stackingQuantity = 0;
         SlotChanged?.Invoke();
     }
+
 
 }
 

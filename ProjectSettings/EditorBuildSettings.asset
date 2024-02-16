@@ -11,9 +11,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/SaveTest.unity
     guid: 7e97bd8282081f5478508bc85bd15c7f
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MainMenu.unity
     guid: 50185613d2a7f6a459b9ad44a404c035
+  - enabled: 1
+    path: Assets/Scenes/New Scene.unity
+    guid: 881cfe30147c578438dec547dd80b49d
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: cb97869d266200b40a05d2ef4bab8b4e, type: 2}
     com.unity.localization.settings: {fileID: 11400000, guid: 7aa42e2b3d9043540b93487cc2b468a2, type: 2}

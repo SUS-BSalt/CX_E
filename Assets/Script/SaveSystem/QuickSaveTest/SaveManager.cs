@@ -54,26 +54,26 @@ public class SaveManager : Singleton<SaveManager>
     
     public void LoadFromFile()
     {
-        print("fuck debug");
+        //print("fuck debug");
         
         reader = QuickSaveReader.Create(currentSaveField.gameObject.name);
         LoadEvent?.Invoke();
-        print("Load From "+ currentSaveField.gameObject.name);
+        //print("Load From "+ currentSaveField.gameObject.name);
     }
     public void SaveToFile()
     {
-        print("Save To " + currentSaveField.gameObject.name);
+        //print("Save To " + currentSaveField.gameObject.name);
         //创建写入器
         writer = QuickSaveWriter.Create(currentSaveField.gameObject.name);
         //更新并写入存档头信息
         currentSaveField.CreatHeader();
         SaveData<SaveDataHeader>("Header", currentSaveField.header);
         //让其他模块进行数据保存
-        print("开始保存");
+        //print("开始保存");
         SaveEvent?.Invoke();
         //提交保存
         writer.Commit();
-        print("保存提交");
+        //print("保存提交");
         //重新载入savefile的文件头
         currentSaveField.LoadHeader();
         //print(currentSaveField.header.LastModifyTime.ToString());
