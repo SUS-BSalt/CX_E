@@ -11,7 +11,6 @@ using UnityEngine.UI;
 /// </summary>
 public class Inventory : MonoBehaviour
 {
-    public Text text;
     public string InventoryID;
 
     [SerializeField]
@@ -78,14 +77,10 @@ public class Inventory : MonoBehaviour
     }
     public void OnSave()
     {
-        text.text = "保存1";
-        text.text = (data == null).ToString();
         if (data == null)
         {
-            text.text = "保存2";
             data = new();
         }
-        text.text = "保存3";
         data.Clear();
         foreach(ItemSlot slot in slots)
         {
@@ -107,9 +102,7 @@ public class Inventory : MonoBehaviour
     }
     public void OnLoad()
     {
-        text.text = "加载1";
         var _data = SaveManager.Instance.LoadData<InventoryDataClass>("Inventory" + InventoryID);
-        text.text = "加载2";
         data = _data;
         slots.Clear();
         for(int i = 0; i < data.ItemSlotType.Count; i++)
