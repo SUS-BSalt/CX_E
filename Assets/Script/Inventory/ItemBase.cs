@@ -11,7 +11,7 @@ using UnityEngine;
 /// </summary>
 public abstract class ItemBase
 {
-    public string ItemID;
+    public int ItemID;
     /// <summary>
     /// 物品的类型，用来决定如何将他们分类，放入哪些slot
     ///  别忘了在构造函数中实例它
@@ -37,6 +37,9 @@ public abstract class ItemBase
     /// </summary>
     /// <param name="_JsonString"></param>
     public abstract void SetProfileFromJson(string _JsonString);
+
+
+
     /// <summary>
     /// UI模块调用这货得到一个可以显示在屏幕上的玩意，而那个gameobj上不会挂物品的实例，它只会是一个用来显示的皮囊，物品实例真正所在的地方应该在Inventory系统里面
     /// </summary>
