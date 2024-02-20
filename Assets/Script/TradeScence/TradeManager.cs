@@ -26,13 +26,3 @@ public class TradeManager : MonoBehaviour
     }
 
 }
-
-public class ItemValueBuffBase
-{
-    public string BuffName;
-    public string BuffDescribe;
-    public virtual int ValueCheck(ItemBase _item)
-    {
-        return _item.value;
-    }
-}
