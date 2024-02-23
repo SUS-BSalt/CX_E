@@ -53,4 +53,9 @@ public class TestItem : ItemBase
     {
         return new TestItem("{}");
     }
+
+    public override void SetProfileFromTable(ITableDataReader tableReader, int rowIndex)
+    {
+        throw new NotImplementedException();
+    }
 }

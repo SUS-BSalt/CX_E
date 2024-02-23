@@ -92,4 +92,8 @@ public class TestMissionItem : ItemBase,ITimeLimitItem
         throw new System.NotImplementedException();
     }
 
+    public override void SetProfileFromTable(ITableDataReader tableReader, int rowIndex)
+    {
+        
+    }
 }

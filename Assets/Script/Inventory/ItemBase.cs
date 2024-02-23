@@ -37,7 +37,7 @@ public abstract class ItemBase
     /// </summary>
     /// <param name="_JsonString"></param>
     public abstract void SetProfileFromJson(string _JsonString);
-
+    public abstract void SetProfileFromTable(ITableDataReader tableReader,int rowIndex);
 
 
     /// <summary>

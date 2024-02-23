@@ -6,7 +6,25 @@ using UnityEngine;
 
 public class ItemFactory : Singleton<ItemFactory>
 {
+    public const int NULL_ITEM_ID = 1;
     public static ItemBase CreateItem(string _ItemClassName, string _ItemProfileJsonString)
+    {
+        ItemBase item = CreateItemInstance(_ItemClassName);
+        item.SetProfileFromJson(_ItemProfileJsonString);
+        return item;
+    }
+    public static ItemBase CreateItem(ITableDataReader ItemTable,int ItemID, string _ItemProfileJsonString)
+    {
+        if(ItemID == NULL_ITEM_ID)
+        {
+            return null;
+        }
+        ItemBase item = CreateItemInstance(ItemTable.GetData<string>(ItemID, 1, 1));
+        item.SetProfileFromTable(ItemTable, ItemID);
+        item.SetProfileFromJson(_ItemProfileJsonString);
+        return item;
+    }
+    private static ItemBase CreateItemInstance(string _ItemClassName)
     {
         Type type = Assembly.GetExecutingAssembly().GetType(_ItemClassName);
         if (type == null)
@@ -20,9 +38,7 @@ public class ItemFactory : Singleton<ItemFactory>
         }
         object instance = constructor.Invoke(null);
         ItemBase item = instance as ItemBase;
-        item.SetProfileFromJson(_ItemProfileJsonString);
         return item;
-        
     }
 }
 

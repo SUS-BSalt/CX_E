@@ -26,16 +26,23 @@ public class ItemSlot
     {
         allType,mission,matter,information,relation,other
     }
-    public SlotType type;
+    public SlotType type { get { return data.slotType; } set { data.slotType = value; } }
     [Serialize]
     public ItemBase item;
     public string itemClassName;
     public const string NO_ITEM = "NO_ITEM";
-    public int stackingQuantity;
+    public const int Null_ITEM_ID = 1;
+    public int stackingQuantity { get { return data.stackingQuantity; } set { data.stackingQuantity = value; } }
     public ItemSlot(SlotType _type)
     {
         type = _type;
         SlotChanged = new UnityEvent();
+    }
+
+    public ItemSlot(ItemSlotDataClass data)
+    {
+        this.data = data;
+        this.item = ItemFactory.CreateItem(GameDataManager.Instance.Tables["ItemData"], data.ItemID, data.ItemProfileInfo);
     }
     /// <summary>
     /// 取得当前item的用于显示在屏幕上的UI元素
@@ -199,7 +206,7 @@ public class ItemSlotDataClass
 {
     public ItemSlot.SlotType slotType;
     public int stackingQuantity;
-    public string ItemClassName;
+    public int ItemID;
     public string ItemProfileInfo;
 }
 

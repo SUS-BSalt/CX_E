@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -73,7 +74,6 @@ public class DataManager_Old : Singleton<DataManager_Old>
         string ConfigPATH = Path.Combine(Application.streamingAssetsPath, "GameData/Config.json");
         string ConfigJson = JsonConvert.SerializeObject(ConfigData, Formatting.Indented);
         File.WriteAllText(ConfigPATH, ConfigJson);
-
     }
     public void LoadData()
     {

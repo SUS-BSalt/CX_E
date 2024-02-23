@@ -63,3 +63,25 @@ public class XlsxReader : ITableDataReader
         return GetLastUsedRow(excelPackage.Workbook.Worksheets[sheet]);
     }
 }
+
+public class TableDataSO : ScriptableObject
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    public string filePath;
+    public string tableName;
+    public enum FileType { xlsx}
+    public FileType fileType;
+    public ITableDataReader GetTable()
+    {
+        switch (fileType)
+        {
+            case (FileType.xlsx):
+                {
+                    return new XlsxReader(filePath);
+                }
+        }
+        throw new System.Exception("can't get table");
+    }
+}
