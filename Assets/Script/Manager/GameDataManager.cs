@@ -10,12 +10,15 @@ public class GameDataManager : Singleton<GameDataManager>
     /// </summary>
     [SerializeField]
     private List<TableDataSO> tableDataSoList;
-    void Start()
+
+    protected override void Awake()
     {
-        foreach(TableDataSO table in tableDataSoList)
+        base.Awake();
+
+        foreach (TableDataSO table in tableDataSoList)
         {
             Tables.Add(table.tableName, table.GetTable());
-        }    
+        }
     }
 }
 

@@ -42,7 +42,7 @@ public class ItemSlot
     public ItemSlot(ItemSlotDataClass data)
     {
         this.data = data;
-        this.item = ItemFactory.CreateItem(GameDataManager.Instance.Tables["ItemData"], data.ItemID, data.ItemProfileInfo);
+        this.item = ItemFactory.CreateItem(data.ItemID, data.ItemProfileInfo);
     }
     /// <summary>
     /// 取得当前item的用于显示在屏幕上的UI元素

@@ -8,41 +8,44 @@ using System.Linq;
 
 public interface ITableDataReader
 {
-    public T GetData<T>(int row, int col, int sheet);
-    public int SheetLength(int sheet);
+    public T GetData<T>(int row, int col);
+    public int TotalRows { get; }
 }
 
 public class XlsxReader : ITableDataReader
 {
     public string FilePath { get; private set; }
-    private ExcelPackage excelPackage;
-    public int totalRows;
-    public T GetData<T>(int row, int col, int sheet = 1)
+    public int TotalRows { get { return totalRows; } }
+    private int totalRows;
+    private ExcelWorksheet excelWorksheet;
+    private int sheet;
+    public T GetData<T>(int row, int col)
     {
         T data;
         try
         {
-            data = excelPackage.Workbook.Worksheets[sheet].Cells[row, col].ConvertTo<T>();
+            data = excelWorksheet.Cells[row, col].ConvertTo<T>();
             return data;
         }
         catch
         {
 
-            Debug.Log($"在{FilePath}文件{row}行{col}列{sheet}章处的数据无法读取为：“" + typeof(T).FullName + "”类型");
+            Debug.Log($"在{FilePath}文件第{sheet}Sheet-{row}行-{col}列处的数据无法读取为：“" + typeof(T).FullName + "”类型");
             throw new System.Exception("DataConvertFaile");
         }
     }
-    public XlsxReader(string _FilePath)
+    public XlsxReader(string _FilePath,int sheet)
     {
-        ReadXlsxFile(_FilePath);
+        ReadXlsxFile(_FilePath,sheet);
     }
-    public void ReadXlsxFile(string _FilePath)
+    public void ReadXlsxFile(string _FilePath,int sheet)
     {
-        FilePath = _FilePath;
-        string trueFilePath = Path.Combine(Application.streamingAssetsPath, _FilePath);
+        this.sheet = sheet;
         //Debug.Log(Application.streamingAssetsPath);
         //Debug.Log(_bookPath);
-        excelPackage = new ExcelPackage(new FileInfo(trueFilePath));
+        var excelPackage = new ExcelPackage(new FileInfo(_FilePath));
+        excelWorksheet = excelPackage.Workbook.Worksheets[sheet];
+        totalRows = GetLastUsedRow(excelWorksheet);
     }
     private int GetLastUsedRow(ExcelWorksheet sheet)
     {
@@ -58,30 +61,5 @@ public class XlsxReader : ITableDataReader
         }
         return row;
     }
-    public int SheetLength(int sheet)
-    {
-        return GetLastUsedRow(excelPackage.Workbook.Worksheets[sheet]);
-    }
 }
 
-public class TableDataSO : ScriptableObject
-{
-    /// <summary>
-    /// 
-    /// </summary>
-    public string filePath;
-    public string tableName;
-    public enum FileType { xlsx}
-    public FileType fileType;
-    public ITableDataReader GetTable()
-    {
-        switch (fileType)
-        {
-            case (FileType.xlsx):
-                {
-                    return new XlsxReader(filePath);
-                }
-        }
-        throw new System.Exception("can't get table");
-    }
-}

@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.VisualScripting;
 
 public class ItemFactory : Singleton<ItemFactory>
 {
@@ -13,13 +14,14 @@ public class ItemFactory : Singleton<ItemFactory>
         item.SetProfileFromJson(_ItemProfileJsonString);
         return item;
     }
-    public static ItemBase CreateItem(ITableDataReader ItemTable,int ItemID, string _ItemProfileJsonString)
+    public static ItemBase CreateItem(int ItemID, string _ItemProfileJsonString)
     {
         if(ItemID == NULL_ITEM_ID)
         {
             return null;
         }
-        ItemBase item = CreateItemInstance(ItemTable.GetData<string>(ItemID, 1, 1));
+        ITableDataReader ItemTable = GameDataManager.Instance.Tables["ItemData"];
+        ItemBase item = CreateItemInstance(ItemTable.GetData<string>(ItemID, 1));
         item.SetProfileFromTable(ItemTable, ItemID);
         item.SetProfileFromJson(_ItemProfileJsonString);
         return item;
