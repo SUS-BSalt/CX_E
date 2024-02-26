@@ -9,12 +9,12 @@ using UnityEngine.UI;
 /// <summary>
 /// 对Inventory来说，slot实际上是“空间”概念的具象，Inventory需要slot的概念来规定空间的安排，而它不应该做更多事了，slot如何显示，显示在哪之类的信息该是由UI来全权负责
 /// </summary>
-public class Inventory : MonoBehaviour
+public class Inventory
 {
-    public string InventoryID;
+    public string InventoryID { get { return data.InventoryID; } set { data.InventoryID = value; } }
 
     [SerializeField]
-    private InventoryDataClass data;
+    public InventoryDataClass data;
     [Serialize]
     public List<ItemSlot> slots;
     public UnityEvent SlotListChanged;
@@ -56,6 +56,22 @@ public class Inventory : MonoBehaviour
         }
         return left;
     }
+    public void AddItemWithAddSlotAuto(ItemBase item, int number)
+    {
+        int left = number;
+        while(true)
+        {
+            left = AddItem(item, left);
+            if(left != 0)
+            {
+                AddSlot(item.ItemType.SlotType);
+            }
+            if(left == 0)
+            {
+                break;
+            }
+        }
+    }
     /// <summary>
     /// 请求物品，返回实际请求到的物品的数量
     /// </summary>
@@ -74,16 +90,6 @@ public class Inventory : MonoBehaviour
             }
         }
         return get;
-    }
-    public void SetInventory(string InventoryID)
-    {
-        data = InventoryManager.Instance.GetData(InventoryID);
-        OnLoad();
-    }
-    public void InventoryQuit()
-    {
-        OnSave();
-        InventoryManager.Instance.SetData(data);
     }
     public void OnSave()
     {

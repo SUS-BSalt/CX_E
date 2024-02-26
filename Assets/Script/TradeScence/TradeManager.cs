@@ -8,6 +8,7 @@ public class TradeManager : MonoBehaviour
     public int rightValue;
     public Inventory TraderLeft;
     public Inventory TraderRight;
+
     public void PushItemToInventory()
     {
 
