@@ -75,6 +75,16 @@ public class Inventory : MonoBehaviour
         }
         return get;
     }
+    public void SetInventory(string InventoryID)
+    {
+        data = InventoryManager.Instance.GetData(InventoryID);
+        OnLoad();
+    }
+    public void InventoryQuit()
+    {
+        OnSave();
+        InventoryManager.Instance.SetData(data);
+    }
     public void OnSave()
     {
         if (data == null)
@@ -84,36 +94,16 @@ public class Inventory : MonoBehaviour
         data.Clear();
         foreach(ItemSlot slot in slots)
         {
-            data.ItemSlotType.Add(slot.type);
-            data.ItemStackingQuantity.Add(slot.stackingQuantity);
-            if (slot.item == null)
-            {
-                data.ItemClassName.Add(ItemSlot.NO_ITEM);
-                data.ItemProfileJson.Add("{}");
-            }
-            else
-            {
-                data.ItemClassName.Add(slot.item.GetType().ToString());
-                data.ItemProfileJson.Add(slot.item.GetProfileJson());
-            }
+            slot.OnSave();
+            data.ItemSlotData.Add(slot.data);
         }
-        SaveManager.Instance.SaveData<InventoryDataClass>("Inventory" + InventoryID, data);
-
     }
     public void OnLoad()
     {
-        var _data = SaveManager.Instance.LoadData<InventoryDataClass>("Inventory" + InventoryID);
-        data = _data;
         slots.Clear();
-        for(int i = 0; i < data.ItemSlotType.Count; i++)
+        for(int i = 0; i < data.ItemSlotData.Count; i++)
         {
-            slots.Add(new(data.ItemSlotType[i]));
-            if (data.ItemClassName[i] == ItemSlot.NO_ITEM)
-            {
-                continue;
-            }
-            ItemBase _item =  ItemFactory.CreateItem(data.ItemClassName[i], data.ItemProfileJson[i]);
-            slots[i].StackingItem(_item, data.ItemStackingQuantity[i]);
+            slots.Add(new(data.ItemSlotData[i]));
         }
         SlotListChanged?.Invoke();
 
@@ -122,26 +112,18 @@ public class Inventory : MonoBehaviour
 public class InventoryDataClass
 {
     public string InventoryID;
-    [Serialize]
-    public List<ItemSlot.SlotType> ItemSlotType;
-    [Serialize]
-    public List<int> ItemStackingQuantity;
-    [Serialize]
-    public List<string> ItemClassName;
-    [Serialize]
-    public List<string> ItemProfileJson;
+    public List<ItemSlotDataClass> ItemSlotData;
     public InventoryDataClass()
     {
-        ItemSlotType = new();
-        ItemStackingQuantity = new();
-        ItemClassName = new();
-        ItemProfileJson = new();
+        ItemSlotData = new();
+    }
+    public InventoryDataClass(string InventoryID)
+    {
+        ItemSlotData = new();
+        this.InventoryID = InventoryID;
     }
     public void Clear()
     {
-        ItemSlotType.Clear();
-        ItemStackingQuantity.Clear();
-        ItemClassName.Clear();
-        ItemProfileJson.Clear();
+        ItemSlotData.Clear();
     }
 }

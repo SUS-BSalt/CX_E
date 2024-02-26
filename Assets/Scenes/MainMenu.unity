@@ -15515,7 +15515,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tableDataSoList:
-  - {fileID: 11400000, guid: e2778c8ba517b60449962344d32e462b, type: 2}
+  - {fileID: 11400000, guid: 96730fae3d80a6445b6369e44fa98a55, type: 2}
 --- !u!1 &1354737132
 GameObject:
   m_ObjectHideFlags: 0

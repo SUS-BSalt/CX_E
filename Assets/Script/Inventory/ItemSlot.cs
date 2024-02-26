@@ -27,11 +27,11 @@ public class ItemSlot
         allType,mission,matter,information,relation,other
     }
     public SlotType type { get { return data.slotType; } set { data.slotType = value; } }
+    public int ItemID { get { return data.ItemID; } set { data.ItemID = value; } }
     [Serialize]
     public ItemBase item;
     public string itemClassName;
     public const string NO_ITEM = "NO_ITEM";
-    public const int Null_ITEM_ID = 1;
     public int stackingQuantity { get { return data.stackingQuantity; } set { data.stackingQuantity = value; } }
     public ItemSlot(SlotType _type)
     {
@@ -41,8 +41,7 @@ public class ItemSlot
 
     public ItemSlot(ItemSlotDataClass data)
     {
-        this.data = data;
-        this.item = ItemFactory.CreateItem(data.ItemID, data.ItemProfileInfo);
+        OnLoad(data);
     }
     /// <summary>
     /// 取得当前item的用于显示在屏幕上的UI元素
@@ -170,6 +169,7 @@ public class ItemSlot
         }
         SlotChanged?.Invoke();
         itemClassName =  item.GetType().ToString();
+        ItemID = item.ItemID;
         return true;
     }
     /// <summary>
@@ -195,10 +195,27 @@ public class ItemSlot
     {
         item = null;
         itemClassName = NO_ITEM;
+        ItemID = ItemFactory.NULL_ITEM_ID;
         stackingQuantity = 0;
         SlotChanged?.Invoke();
     }
 
+    public void OnSave()
+    {
+        if(item != null)
+        {
+            data.ItemProfileInfo = item.GetProfileJson();
+        }
+        else
+        {
+            data.ItemID = ItemFactory.NULL_ITEM_ID;
+        }
+    }
+    public void OnLoad(ItemSlotDataClass data)
+    {
+        this.data = data;
+        this.item = ItemFactory.CreateItem(data.ItemID, data.ItemProfileInfo);
+    }
 
 }
 
