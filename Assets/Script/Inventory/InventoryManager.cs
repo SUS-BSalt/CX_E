@@ -41,6 +41,17 @@ public class InventoryManager : Singleton<InventoryManager>
         }
         return InventoryData[InventoryID];
     }
+    public Inventory GetInventory(string InventoryID)
+    {
+        if (!InventoryData.ContainsKey(InventoryID))
+        {
+            Inventory inventory = new();
+            inventory.data = GetData(InventoryID);
+            inventory.OnLoad();
+            Inventorys.Add(inventory.InventoryID, inventory);
+        }
+        return Inventorys[InventoryID];
+    }
     public void SetData(InventoryDataClass data)
     {
         if (!InventoryData.ContainsKey(data.InventoryID))
@@ -54,7 +65,6 @@ public class InventoryManager : Singleton<InventoryManager>
     }
     public void AddItemToInventory(string InventoryID,int ItemID,string ItemProfileString, int number)
     {
-
         var item = ItemFactory.CreateItem(ItemID, ItemProfileString);
         Inventorys[InventoryID].AddItemWithAddSlotAuto(item, number);
     }

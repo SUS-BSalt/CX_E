@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class InventoryUI : MonoBehaviour
 {
@@ -22,6 +23,7 @@ public class InventoryUI : MonoBehaviour
     public GameObject relationBar;
     public GameObject relationSlot;
 
+    public UnityEvent<GameObject> UIOnSelect;
     public void LinkToInventory(Inventory _inventory)
     {
         if(inventory != null)
@@ -106,5 +108,6 @@ public class InventoryUI : MonoBehaviour
     public void SlotBeSelect(ItemSlotUI slotUI)
     {
         currentSelectSlot = slotUI;
+        UIOnSelect?.Invoke(this.gameObject);
     }
 }
