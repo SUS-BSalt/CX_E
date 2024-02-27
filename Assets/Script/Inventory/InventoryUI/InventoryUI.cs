@@ -24,6 +24,10 @@ public class InventoryUI : MonoBehaviour
     public GameObject relationSlot;
 
     public UnityEvent<GameObject> UIOnSelect;
+    public void Awake()
+    {
+        UIOnSelect = new();
+    }
     public void LinkToInventory(Inventory _inventory)
     {
         if(inventory != null)
@@ -31,6 +35,7 @@ public class InventoryUI : MonoBehaviour
             inventory.SlotListChanged.RemoveListener(UpdateUI);
         }
         inventory = _inventory;
+        //print(inventory.SlotListChanged == null);
         inventory.SlotListChanged.AddListener(UpdateUI);
         UpdateUI();
     }

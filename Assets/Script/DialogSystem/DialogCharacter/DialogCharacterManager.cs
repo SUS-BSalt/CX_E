@@ -161,7 +161,7 @@ public class DialogCharacterManager : MonoBehaviour
             characterDict.Add(DataManager_Old.Instance.CharacterName[character.characterIndex], character);
             charactersData.Add(DataManager_Old.Instance.CharacterName[character.characterIndex], character.data);
         }
-        print("where are you");
+        //print("where are you");
         //CharacterData = new BookReader();
     }
 }

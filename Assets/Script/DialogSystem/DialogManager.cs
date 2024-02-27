@@ -83,6 +83,7 @@ public class DialogManager : Singleton<DialogManager>
             case "Trigger":
                 {
                     plotTrigger?.Invoke(eventArgv);
+
                     break;
                 }
             case "Jump":

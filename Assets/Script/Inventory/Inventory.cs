@@ -18,6 +18,11 @@ public class Inventory
     [Serialize]
     public List<ItemSlot> slots;
     public UnityEvent SlotListChanged;
+    public Inventory()
+    {
+        SlotListChanged = new UnityEvent();
+        slots = new();
+    }
     public void CleanSlots()
     {
         slots = new();
