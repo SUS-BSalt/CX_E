@@ -5,6 +5,8 @@ using UnityEngine;
 public class Starting : MonoBehaviour
 {
     public DialogManager Dialog;
+    public TradeManager Trader;
+    public InventoryManager Inventory;
     public GameObject LoadingMenu;
     public GameObject MainMenu;
     public void StartEveryThing()
@@ -32,16 +34,35 @@ public class Starting : MonoBehaviour
         //print("fuck");
         LoadingMenu.SetActive(false);
     }
+    public void GamePlot(string[] argv)
+    {
+        switch (argv[1])
+        {
+            case ("Add"):
+                {
+                    InventoryManager.Instance.AddItemToInventory(argv[2], int.Parse(argv[3]), argv[4], int.Parse(argv[5]));
+                    break;
+                }
+            case ("Trade"):
+                {
+                    Trader.StartTrader(argv[2]);
+                    break;
+                }
+        }
+    }
     public void OnLoad()
     {
         print("Director Load");
         Dialog.gameObject.SetActive(true);
         Dialog.OnLoad();
+        
+        Inventory.OnLoad();
     }
     public void OnSave()
     {
         print("Director Save");
         Dialog.OnSave();
+        Inventory.OnSave();
     }
 
     public void StartTradingScence()

@@ -14,7 +14,7 @@ public class GameDataManager : Singleton<GameDataManager>
     protected override void Awake()
     {
         base.Awake();
-
+        Tables = new();
         foreach (TableDataSO table in tableDataSoList)
         {
             Tables.Add(table.tableName, table.GetTable());

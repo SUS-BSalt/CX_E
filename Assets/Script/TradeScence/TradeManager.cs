@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class TradeManager : MonoBehaviour
 {
+    public GameObject TraderObj;
     public int leftValue;
     public int rightValue;
     public InventoryUI TraderLeft;
@@ -18,7 +19,23 @@ public class TradeManager : MonoBehaviour
     public ButtonOBJ ButtonTraderPlayer;
     public ButtonOBJ ButtonTraderRight;
     public ButtonOBJ ButtonTraderTarget;
-
+    public void StartTrader(string TargetInventoryID)
+    {
+        TraderObj.SetActive(true);
+        LinkToInventory(TargetInventoryID);
+    }
+    public void CloseTrader()
+    {
+        TraderObj.SetActive(false);
+        ButtonTraderLeft.onClick.RemoveAllListeners();
+        ButtonTraderPlayer.onClick.RemoveAllListeners();
+        ButtonTraderRight.onClick.RemoveAllListeners();
+        ButtonTraderTarget.onClick.RemoveAllListeners();
+        TraderLeft.UIOnSelect.RemoveAllListeners();
+        TraderRight.UIOnSelect.RemoveAllListeners();
+        TraderTarget.UIOnSelect.RemoveAllListeners();
+        TraderPlayer.UIOnSelect.RemoveAllListeners();
+    }
     public void LinkToInventory(string TargetInventoryID)
     {
         ButtonTraderLeft.onClick.AddListener(ButtonTraderLeftMethod);

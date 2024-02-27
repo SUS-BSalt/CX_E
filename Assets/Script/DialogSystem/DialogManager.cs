@@ -23,7 +23,7 @@ public class DialogManager : Singleton<DialogManager>
     public DialogCharacterManager characterManager;
 
     [Serializable]
-    public class PlotTrigger : UnityEvent<string> { }
+    public class PlotTrigger : UnityEvent<string[]> { }
     public PlotTrigger plotTrigger;
 
     public void OnLoad()
@@ -82,7 +82,7 @@ public class DialogManager : Singleton<DialogManager>
                 }
             case "Trigger":
                 {
-                    plotTrigger?.Invoke(eventArgv[1]);
+                    plotTrigger?.Invoke(eventArgv);
                     break;
                 }
             case "Jump":
