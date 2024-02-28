@@ -10,6 +10,7 @@ public class InventoryManager : Singleton<InventoryManager>
 {
     public Dictionary<string, InventoryDataClass> InventoryData;
     public Dictionary<string, Inventory> Inventorys;
+    
     protected override void Awake()
     {
         base.Awake();

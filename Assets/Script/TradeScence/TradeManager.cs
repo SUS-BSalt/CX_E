@@ -2,23 +2,33 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class TradeManager : MonoBehaviour
 {
     public GameObject TraderObj;
     public int leftValue;
     public int rightValue;
+    [Space]
     public InventoryUI TraderLeft;
     public InventoryUI TraderRight;
     public InventoryUI TraderPlayer;
     public InventoryUI TraderTarget;
+    [Space]
     private Inventory TraderLeftI;
     private Inventory TraderRightI;
     public GameObject currentSelect;
+    [Space]
     public ButtonOBJ ButtonTraderLeft;
     public ButtonOBJ ButtonTraderPlayer;
     public ButtonOBJ ButtonTraderRight;
     public ButtonOBJ ButtonTraderTarget;
+    public enum TradeEndType { Failed, FavorableToPlayer , Equal, FavorableToNPC}
+    public UnityEvent<TradeEndType> TradeEnd;
+    public void Awake()
+    {
+        TradeEnd = new();
+    }
     public void StartTrader(string TargetInventoryID)
     {
         TraderObj.SetActive(true);
