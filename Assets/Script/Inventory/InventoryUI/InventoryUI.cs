@@ -24,6 +24,7 @@ public class InventoryUI : MonoBehaviour
     public GameObject relationSlot;
 
     public UnityEvent<GameObject> UIOnSelect;
+    public UnityEvent<GameObject> SelectedSlot;
     public void Awake()
     {
         UIOnSelect = new();
@@ -103,6 +104,7 @@ public class InventoryUI : MonoBehaviour
                     obj = null;
                     break;
                 }
+
         }
 
         var _slotUI = obj.GetComponent<ItemSlotUI>();

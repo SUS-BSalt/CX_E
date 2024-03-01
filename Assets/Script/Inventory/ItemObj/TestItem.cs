@@ -7,6 +7,8 @@ public class TestItem : ItemBase
 {
     public int someBrandNewMember = 1;
     public override ItemTypeBase ItemType { get; set; }
+    public override int ItemID { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public override ItemMSGBoard MSG { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     public void someBrandNewMethod(string _msg)
     {

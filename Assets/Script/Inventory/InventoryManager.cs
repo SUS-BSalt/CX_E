@@ -74,7 +74,7 @@ public class InventoryManager : Singleton<InventoryManager>
     public void AddItemToInventory(string InventoryID,int ItemID,string ItemProfileString, int number)
     {
         var item = ItemFactory.CreateItem(ItemID, ItemProfileString);
-        Inventorys[InventoryID].AddItemWithAddSlotAuto(item, number);
+        GetInventory(InventoryID).AddItemWithAddSlotAuto(item, number);
     }
     public int RequestItemFromInventory(string InventoryID, int ItemID, string ItemProfileString, int number)
     {

@@ -11,12 +11,13 @@ using UnityEngine;
 /// </summary>
 public abstract class ItemBase
 {
-    public int ItemID;
+    public abstract int ItemID { get; set; }
     /// <summary>
     /// 物品的类型，用来决定如何将他们分类，放入哪些slot
     ///  别忘了在构造函数中实例它
     /// </summary>
     public abstract ItemTypeBase ItemType { set; get; }
+    public abstract ItemMSGBoard MSG { get; set; }
     /// <summary>
     /// 物品是否可堆叠
     /// </summary>

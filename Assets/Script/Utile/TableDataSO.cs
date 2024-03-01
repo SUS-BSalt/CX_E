@@ -20,6 +20,7 @@ public class TableDataSO : ScriptableObject
     public ITableDataReader GetTable()
     {
         string trueFilePath = Path.Combine(Application.streamingAssetsPath, filePath);
+        //Debug.Log(trueFilePath);
         switch (fileType)
         {
             case (FileType.xlsx):

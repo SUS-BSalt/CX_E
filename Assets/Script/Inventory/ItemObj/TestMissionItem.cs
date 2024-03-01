@@ -17,7 +17,8 @@ public class TestMissionItem : ItemBase,ITimeLimitItem
     public int leftTime { get { return data.leftTime; } set { data.leftTime = value; } }
 
     public override ItemTypeBase ItemType { get; set; }
-    
+    public override int ItemID { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+    public override ItemMSGBoard MSG { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
     public TestMissionItem()
     {

@@ -24,13 +24,14 @@ public class XlsxReader : ITableDataReader
         T data;
         try
         {
-            data = excelWorksheet.Cells[row, col].ConvertTo<T>();
+            data = excelWorksheet.Cells[row, col].Value.ConvertTo<T>();
             return data;
         }
         catch
         {
-
             Debug.Log($"在{FilePath}文件第{sheet}Sheet-{row}行-{col}列处的数据无法读取为：“" + typeof(T).FullName + "”类型");
+            Debug.Log("文件读取："+!(excelWorksheet == null));
+            Debug.Log("数据存在：" + !(excelWorksheet == null));
             throw new System.Exception("DataConvertFaile");
         }
     }
@@ -40,6 +41,8 @@ public class XlsxReader : ITableDataReader
     }
     public void ReadXlsxFile(string _FilePath,int sheet)
     {
+        //Debug.Log(_FilePath);
+        this.FilePath = _FilePath;
         this.sheet = sheet;
         //Debug.Log(Application.streamingAssetsPath);
         //Debug.Log(_bookPath);

@@ -35,6 +35,7 @@ public class ItemSlot
     public int stackingQuantity { get { return data.stackingQuantity; } set { data.stackingQuantity = value; } }
     public ItemSlot(SlotType _type)
     {
+        data = new();
         type = _type;
         SlotChanged = new UnityEvent();
     }

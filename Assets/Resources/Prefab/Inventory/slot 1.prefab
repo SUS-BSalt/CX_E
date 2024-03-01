@@ -94,12 +94,10 @@ MonoBehaviour:
     SlotChanged:
       m_PersistentCalls:
         m_Calls: []
-    type: 0
     itemClassName: 
-    stackingQuantity: 0
   itemObj: {fileID: 0}
   numberText: {fileID: 2612051790327761110}
-  UGUIElement: {fileID: 0}
+  UGUIElement: {fileID: 7110800722152561602}
   OnSelect:
     m_PersistentCalls:
       m_Calls: []

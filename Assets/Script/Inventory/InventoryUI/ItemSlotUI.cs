@@ -11,6 +11,7 @@ public class ItemSlotUI : MonoBehaviour
     public Text numberText;
     public Selectable UGUIElement;
     public UnityEvent<ItemSlotUI> OnSelect;
+
     public void LinkToSlot(ItemSlot _slot)
     {
         if(slot != null)
@@ -20,7 +21,6 @@ public class ItemSlotUI : MonoBehaviour
         }
         slot = _slot;
         UpdateSlotUI();
-        print(_slot.SlotChanged == null);
         //_slot.SlotChanged += this.UpdateSlotUI;
         slot.SlotChanged.AddListener(UpdateSlotUI);
     }
@@ -46,6 +46,8 @@ public class ItemSlotUI : MonoBehaviour
         {
             itemObj = Instantiate(itemObj, new Vector3(0, 0, 0), Quaternion.identity);
             itemObj.transform.SetParent(transform, false);
+            itemObj.transform.SetAsFirstSibling();
+
         }
     }
     public void BeSelect()
