@@ -47,7 +47,7 @@ public class DialogManager : Singleton<DialogManager>
     public void ExecEvent(string EventString)
     {
         //Debug.Log(eventString);
-        string[] eventArgv = EventString.Split("-");
+        string[] eventArgv = EventString.Replace("\n","").Replace("\t","").Split("-");
         switch (eventArgv[0])
         {
             case "SetPos":

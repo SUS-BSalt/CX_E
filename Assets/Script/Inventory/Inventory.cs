@@ -11,6 +11,7 @@ using UnityEngine.UI;
 /// </summary>
 public class Inventory
 {
+    public List<BuffBase> buffs;
     public string InventoryID { get { return data.InventoryID; } set { data.InventoryID = value; } }
 
     [SerializeField]
@@ -22,6 +23,7 @@ public class Inventory
     {
         SlotListChanged = new UnityEvent();
         slots = new();
+        buffs = new();
     }
     public void CleanSlots()
     {
@@ -37,6 +39,9 @@ public class Inventory
         slots.Add(new ItemSlot(type));
         SlotListChanged?.Invoke();
     }
+    /// <summary>
+    /// Çå³ý¿ÕµÄSlot
+    /// </summary>
     public void RemoveCleanSlot()
     {
         slots.RemoveAll(_slot => _slot.item == null);
@@ -108,29 +113,51 @@ public class Inventory
             slot.OnSave();
             data.ItemSlotData.Add(slot.data);
         }
+        foreach(BuffBase buff in buffs)
+        {
+            data.BuffNames.Add(buff.GetType().ToString());
+        }
     }
     public void OnLoad()
     {
         slots.Clear();
+        buffs.Clear();
         for(int i = 0; i < data.ItemSlotData.Count; i++)
         {
             slots.Add(new(data.ItemSlotData[i]));
         }
         SlotListChanged?.Invoke();
+        foreach(string buffname in data.BuffNames)
+        {
+            buffs.Add(BuffFactory.CreateBuffInstance(buffname));
+        }
 
+    }
+    public int GetItemValueAfterBuff(ItemBase item)
+    {
+        int value = 0;
+
+        foreach(BuffBase buff in buffs)
+        {
+            value += buff.ValueCheck(item) - item.value;
+        }
+        return value + item.value;
     }
 }
 public class InventoryDataClass
 {
     public string InventoryID;
     public List<ItemSlotDataClass> ItemSlotData;
+    public List<string> BuffNames;
     public InventoryDataClass()
     {
         ItemSlotData = new();
+        BuffNames = new();
     }
     public InventoryDataClass(string InventoryID)
     {
         ItemSlotData = new();
+        BuffNames = new();
         this.InventoryID = InventoryID;
     }
     public void Clear()

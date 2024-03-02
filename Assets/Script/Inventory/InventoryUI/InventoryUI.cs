@@ -25,10 +25,6 @@ public class InventoryUI : MonoBehaviour
 
     public UnityEvent<GameObject> UIOnSelect;
     public UnityEvent<GameObject> SelectedSlot;
-    public void Awake()
-    {
-        UIOnSelect = new();
-    }
     public void LinkToInventory(Inventory _inventory)
     {
         if(inventory != null)
@@ -116,5 +112,6 @@ public class InventoryUI : MonoBehaviour
     {
         currentSelectSlot = slotUI;
         UIOnSelect?.Invoke(this.gameObject);
+        //print("here?");
     }
 }

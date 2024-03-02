@@ -78,7 +78,7 @@ public class ItemMoney : ItemBase
 
     public override GameObject GetInstance(string _Profile)
     {
-        return  Resources.Load<GameObject>("Prefab/Inventory/Money");
+        return  Resources.Load<GameObject>("Prefab/Inventory/ItemOBJ/Money");
     }
 
     public override string GetProfileJson()
@@ -100,3 +100,5 @@ public class ItemMoney : ItemBase
         _MSG.ItemValueDescribe = value.ToString();
     }
 }
+
+
