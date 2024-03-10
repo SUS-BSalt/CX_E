@@ -101,6 +101,14 @@ public class Inventory
         }
         return get;
     }
+    public int FindItem(ItemBase item)
+    {
+        return 0;
+    }
+    public int FindItem(string _itemID)
+    {
+        return 0;
+    }
     public void OnSave()
     {
         if (data == null)
