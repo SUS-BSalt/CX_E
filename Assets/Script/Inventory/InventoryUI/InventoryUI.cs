@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+public delegate void _SlotUnselect();
 public class InventoryUI : MonoBehaviour
 {
     public Inventory inventory;
@@ -23,8 +24,9 @@ public class InventoryUI : MonoBehaviour
     public GameObject relationBar;
     public GameObject relationSlot;
 
-    public UnityEvent<GameObject> UIOnSelect;
-    public UnityEvent<GameObject> SelectedSlot;
+    public _ItemSlotOnSelect SlotOnSelect;
+    public event _SlotUnselect SlotOnUnselect;
+    public event _ItemSlotOnSelect SlotOnClick;
     public void LinkToInventory(Inventory _inventory)
     {
         if(inventory != null)
@@ -104,14 +106,24 @@ public class InventoryUI : MonoBehaviour
         }
 
         var _slotUI = obj.GetComponent<ItemSlotUI>();
-        _slotUI.OnSelect.AddListener(SlotBeSelect);
+        _slotUI.OnSelect +=SlotBeSelect;
+        _slotUI.OnUnselect += SlotBeUnselect;
+        _slotUI.OnClick += SlotBeClick;
         _slotUI.LinkToSlot(slot);
         slotUI.Add(_slotUI);
     }
     public void SlotBeSelect(ItemSlotUI slotUI)
     {
-        currentSelectSlot = slotUI;
-        UIOnSelect?.Invoke(this.gameObject);
+        SlotOnSelect?.Invoke(slotUI);
         //print("here?");
+    }
+    public void SlotBeUnselect(ItemSlotUI slotUI)
+    {
+        SlotOnUnselect?.Invoke();
+        //print("here?");
+    }
+    public void SlotBeClick(ItemSlotUI slotUI)
+    {
+        SlotOnClick?.Invoke(slotUI);
     }
 }

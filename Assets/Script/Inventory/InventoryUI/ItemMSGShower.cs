@@ -15,20 +15,24 @@ public class ItemMSGShower : MonoBehaviour
 
     private void Start()
     {
-        inventoryUI.UIOnSelect.AddListener(UpdateView);
-        inventoryUI2.UIOnSelect.AddListener(UpdateView);
+        inventoryUI.SlotOnSelect +=UpdateView;
+        inventoryUI.SlotOnUnselect += CleanView;
+        inventoryUI2.SlotOnSelect += UpdateView;
+        inventoryUI2.SlotOnUnselect += CleanView;
     }
-    public void UpdateView(GameObject gameObject)
+    public void UpdateView(ItemSlotUI slotUI)
     {
-        var UI = gameObject.GetComponent<InventoryUI>();
-        if (UI.currentSelectSlot.slot.item == null)
-        {
-            return;
-        }
-        var _MSG = UI.currentSelectSlot.slot.item.MSG;
+        var _MSG = slotUI.slot.item.MSG;
         ItemName.text = _MSG.ItemName;
         ItemDescribe.text = _MSG.ItemDescribe;
         ItemValueDescribe.text = _MSG.ItemValueDescribe;
         ItemLeftTime.text = _MSG.ItemLeftTime;
+    }
+    public void CleanView()
+    {
+        ItemName.text = "";
+        ItemDescribe.text = "";
+        ItemValueDescribe.text = "";
+        ItemLeftTime.text = "";
     }
 }

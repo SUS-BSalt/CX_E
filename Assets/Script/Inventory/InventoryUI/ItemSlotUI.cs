@@ -4,14 +4,22 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
+public delegate void _ItemSlotOnSelect(ItemSlotUI SelectedItemSlotUI);
 public class ItemSlotUI : MonoBehaviour
 {
     public ItemSlot slot;
     public GameObject itemObj;
     public Text numberText;
-    public Selectable UGUIElement;
-    public UnityEvent<ItemSlotUI> OnSelect;
-
+    public ButtonOBJ UGUIElement;
+    public event _ItemSlotOnSelect OnSelect;
+    public event _ItemSlotOnSelect OnUnselect;
+    public event _ItemSlotOnSelect OnClick;
+    private void Awake()
+    {
+        UGUIElement.BeHighlight.AddListener(ctx=>OnSelect?.Invoke(this));
+        UGUIElement.UnHighlight.AddListener(ctx => OnUnselect?.Invoke(this));
+        UGUIElement.onClick.AddListener(() => OnClick?.Invoke(this));
+    }
     public void LinkToSlot(ItemSlot _slot)
     {
         if(slot != null)
@@ -49,9 +57,5 @@ public class ItemSlotUI : MonoBehaviour
             itemObj.transform.SetAsFirstSibling();
 
         }
-    }
-    public void BeSelect()
-    {
-        OnSelect?.Invoke(this);
     }
 }
