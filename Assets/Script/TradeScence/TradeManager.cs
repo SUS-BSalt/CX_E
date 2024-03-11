@@ -55,10 +55,10 @@ public class TradeManager : MonoBehaviour
     {
         FinishButton.onClick.AddListener(FinishMethod);
         RejectButton.onClick.AddListener(RejectMethod);
-        ButtonTraderLeft.onClick.AddListener(ButtonTraderLeftMethod);
-        ButtonTraderPlayer.onClick.AddListener(ButtonTraderPlayerMethod);
-        ButtonTraderRight.onClick.AddListener(ButtonTraderRightMethod);
-        ButtonTraderTarget.onClick.AddListener(ButtonTraderRightMethod);
+        ButtonTraderLeft.onClick.AddListener(()=>PushItemFromSelectToTarget(TraderLeft, TraderPlayer));
+        ButtonTraderPlayer.onClick.AddListener(()=>PushItemFromSelectToTarget(TraderPlayer, TraderLeft));
+        ButtonTraderRight.onClick.AddListener(()=>PushItemFromSelectToTarget(TraderRight, TraderTarget));
+        ButtonTraderTarget.onClick.AddListener(()=>PushItemFromSelectToTarget(TraderTarget, TraderRight));
         TraderLeftI = new();
         TraderLeft.LinkToInventory(TraderLeftI);
         TraderLeft.UIOnSelect.AddListener(UIOnSelect);
@@ -88,22 +88,6 @@ public class TradeManager : MonoBehaviour
         Select.inventory.RemoveCleanSlot();
         Target.inventory.RemoveCleanSlot();
         UpdateValueOnScreen();
-    }
-    public void ButtonTraderLeftMethod()
-    {
-        PushItemFromSelectToTarget(TraderLeft, TraderPlayer);
-    }
-    public void ButtonTraderPlayerMethod()
-    {
-        PushItemFromSelectToTarget(TraderPlayer, TraderLeft);
-    }
-    public void ButtonTraderRightMethod()
-    {
-        PushItemFromSelectToTarget(TraderRight, TraderTarget);
-    }
-    public void ButtonTraderTargetMethod()
-    {
-        PushItemFromSelectToTarget(TraderTarget, TraderRight);
     }
 
     public void CombineInventory()
