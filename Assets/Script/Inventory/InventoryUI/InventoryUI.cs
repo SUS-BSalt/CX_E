@@ -29,11 +29,11 @@ public class InventoryUI : MonoBehaviour
     {
         if(inventory != null)
         {
-            inventory.SlotListChanged.RemoveListener(UpdateUI);
+            inventory.SlotListChanged -= UpdateUI;
         }
         inventory = _inventory;
         //print(inventory.SlotListChanged == null);
-        inventory.SlotListChanged.AddListener(UpdateUI);
+        inventory.SlotListChanged += UpdateUI;
         UpdateUI();
     }
     public void UpdateUI()

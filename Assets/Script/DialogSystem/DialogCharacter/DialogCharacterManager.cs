@@ -18,7 +18,17 @@ public class DialogCharacterManager : MonoBehaviour
     public Dictionary<string, DialogCharacter> characterDict;//用角色名字访问，是为了方便作者写文
     public Dictionary<string,DialogcharacterDataStruct> charactersData { get { return data.charactersData; }set { data.charactersData = value; } }
 
-
+    public void ResetView()
+    {
+        foreach (string characters in characterDict.Keys)
+        {
+            characterDict[characters].data = data.charactersData[characters];
+            if (characterDict[characters].isOnStage)
+            {
+                characterDict[characters].OnDisappear();
+            }
+        }
+    }
     public void OnSave()
     {
         foreach (string characters in characterDict.Keys)

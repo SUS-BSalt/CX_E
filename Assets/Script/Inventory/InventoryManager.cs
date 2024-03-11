@@ -20,7 +20,11 @@ public class InventoryManager : Singleton<InventoryManager>
         SaveManager.Instance.SaveEvent.AddListener(OnSave);
         SaveManager.Instance.LoadEvent.AddListener(OnLoad);
     }
-
+    public void New()
+    {
+        InventoryData = new();
+        Inventorys = new();
+    }
     public void OnSave()
     {
         foreach(Inventory i in Inventorys.Values)

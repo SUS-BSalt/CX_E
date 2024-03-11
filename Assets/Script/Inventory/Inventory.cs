@@ -5,23 +5,23 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-
+public delegate void SlotListChangedDelegate();
 /// <summary>
 /// 对Inventory来说，slot实际上是“空间”概念的具象，Inventory需要slot的概念来规定空间的安排，而它不应该做更多事了，slot如何显示，显示在哪之类的信息该是由UI来全权负责
 /// </summary>
-public class Inventory
+public class Inventory : IModel
 {
-    public List<BuffBase> buffs;
     public string InventoryID { get { return data.InventoryID; } set { data.InventoryID = value; } }
+    
+    public List<BuffBase> buffs;
 
     [SerializeField]
     public InventoryDataClass data;
     [Serialize]
     public List<ItemSlot> slots;
-    public UnityEvent SlotListChanged;
+    public SlotListChangedDelegate SlotListChanged;
     public Inventory()
     {
-        SlotListChanged = new UnityEvent();
         slots = new();
         buffs = new();
     }

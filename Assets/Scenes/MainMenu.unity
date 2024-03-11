@@ -4110,7 +4110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0c94375eb028849b893e12035d08f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testString: '{1-{5}-{5}}'
+  testString: '{1-{5{}{}{}}-{5}}'
 --- !u!4 &239664236
 Transform:
   m_ObjectHideFlags: 0
@@ -9099,6 +9099,7 @@ GameObject:
   m_Component:
   - component: {fileID: 720930590}
   - component: {fileID: 720930591}
+  - component: {fileID: 720930592}
   m_Layer: 0
   m_Name: Director
   m_TagString: Untagged
@@ -9138,6 +9139,19 @@ MonoBehaviour:
   Inventory: {fileID: 1340529171}
   LoadingMenu: {fileID: 1065507596}
   MainMenu: {fileID: 208318970}
+--- !u!114 &720930592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 720930589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e92fdea29879ea241a9a50f226d42972, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GameScriptSO: {fileID: 11400000, guid: 6d1e9427f6de42d45b85211187d740a0, type: 2}
 --- !u!1 &737705117
 GameObject:
   m_ObjectHideFlags: 0

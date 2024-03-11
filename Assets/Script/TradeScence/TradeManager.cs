@@ -15,6 +15,8 @@ public class TradeManager : MonoBehaviour
     public Text leftValueText;
     public Text rightValueText;
     [Space]
+    public int limitValue;
+    [Space]
     public InventoryUI TraderLeft;
     public InventoryUI TraderRight;
     public InventoryUI TraderPlayer;
@@ -22,7 +24,6 @@ public class TradeManager : MonoBehaviour
     [Space]
     private Inventory TraderLeftI;
     private Inventory TraderRightI;
-
     [Space]
     public ButtonOBJ ButtonTraderLeft;
     public ButtonOBJ ButtonTraderPlayer;
@@ -31,9 +32,8 @@ public class TradeManager : MonoBehaviour
     [Space]
     public UnityEngine.UI.Button FinishButton;
     public UnityEngine.UI.Button RejectButton;
-    public enum TradeEndType { Failed, FavorableToPlayer , Equal, FavorableToNPC}
-    public UnityEvent<TradeEndType> TradeEnd;
-
+    public delegate void _TradeEnd();
+    public _TradeEnd TradeEnd;
     public void StartTrader(string TargetInventoryID)
     {
         TraderObj.SetActive(true);
@@ -129,7 +129,7 @@ public class TradeManager : MonoBehaviour
 
         //print("??");
         int dif = leftValue - rightValue;
-        if (dif <= -500)
+        if (dif <= -1*limitValue)
         {
             FinishButton.gameObject.SetActive(false);
             RejectButton.gameObject.SetActive(true);
@@ -142,22 +142,6 @@ public class TradeManager : MonoBehaviour
     }
     public void FinishMethod()
     {
-        int dif = leftValue - rightValue;
-        if (dif <= -150)
-        {
-            TradeEnd?.Invoke(TradeEndType.FavorableToPlayer);
-            //print("?");
-        }
-        else if (dif >= -150 & dif <= 150)
-        {
-            TradeEnd?.Invoke(TradeEndType.Equal);
-            //print("?");
-        }
-        else if (dif >= 150)
-        {
-            TradeEnd?.Invoke(TradeEndType.FavorableToNPC);
-            //print("?");
-        }
         //print("end?");
         CombineInventory();
         CloseTrader();
@@ -165,7 +149,6 @@ public class TradeManager : MonoBehaviour
     public void RejectMethod()
     {
         //print("endr?");
-        TradeEnd?.Invoke(TradeEndType.Failed);
         CloseTrader();
     }
     public void UpdateValueOnScreen()

@@ -17,12 +17,12 @@ public class ItemSlotUI : MonoBehaviour
         if(slot != null)
         {
             //slot.SlotChanged -= UpdateSlotUI;
-            slot.SlotChanged.RemoveListener(UpdateSlotUI);
+            slot.SlotChanged -= UpdateSlotUI;
         }
         slot = _slot;
         UpdateSlotUI();
         //_slot.SlotChanged += this.UpdateSlotUI;
-        slot.SlotChanged.AddListener(UpdateSlotUI);
+        slot.SlotChanged += UpdateSlotUI;
     }
     public void UpdateSlotUI()
     {

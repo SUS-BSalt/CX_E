@@ -7,26 +7,24 @@ using UnityEngine.Events;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Information;
 using Unity.VisualScripting;
 
-
+public delegate void SlotChangedDelegate();
 /// <summary>
 /// 
 /// </summary>
 [Serializable]
-public class ItemSlot
+public class ItemSlot : IModel
 {
     /// <summary>
     /// 这里不用unityevent是因为unityevent本质还是一个需要实例化的类型，它并不线程安全
     /// </summary>
-    //public delegate void SlotChangedDelegate();
-    //public SlotChangedDelegate SlotChanged;
-    public UnityEvent SlotChanged;
-
+    public SlotChangedDelegate SlotChanged;
     public ItemSlotDataClass data;
     public enum SlotType
     {
         allType,mission,matter,information,relation,other
     }
     public SlotType type { get { return data.slotType; } set { data.slotType = value; } }
+
     public int ItemID { get { return data.ItemID; } set { data.ItemID = value; } }
     [Serialize]
     public ItemBase item;
@@ -37,7 +35,6 @@ public class ItemSlot
     {
         data = new();
         type = _type;
-        SlotChanged = new UnityEvent();
     }
 
     public ItemSlot(ItemSlotDataClass data)

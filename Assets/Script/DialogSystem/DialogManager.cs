@@ -7,13 +7,16 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class DialogManager : Singleton<DialogManager>
+public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector
 {
     public DialogDataClass data;
     public string bookPathLanguageModify;
     public string bookPath { get { return data.currentBookPath; } set { data.currentBookPath = value; } }
     public int bookMark { get { return data.bookMark; } set { data.bookMark = value; } }
     public int bookChapter { get { return data.currentBookChapter; } set { data.currentBookChapter = value;print("sb set chapter"); } }
+
+    public IDirector BaseDirector { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public IPerformance currentPerformance { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     public BookReader bookReader;
     public DialogController controller;
@@ -28,6 +31,7 @@ public class DialogManager : Singleton<DialogManager>
 
     public void OnLoad()
     {
+        ResetView();
         SetLanguage();
         data = SaveManager.Instance.LoadData<DialogDataClass>("Dialog");
         SetBook(bookPath,bookMark);
@@ -43,7 +47,10 @@ public class DialogManager : Singleton<DialogManager>
         characterManager.OnSave();
         print("saveDialog");
     }
-
+    public void ResetView()
+    {
+        characterManager.ResetView();
+    }
     public void ExecEvent(string EventString)
     {
         //Debug.Log(eventString);
@@ -83,7 +90,7 @@ public class DialogManager : Singleton<DialogManager>
             case "Trigger":
                 {
                     plotTrigger?.Invoke(eventArgv);
-
+                    print("t");
                     break;
                 }
             case "Jump":
@@ -134,8 +141,15 @@ public class DialogManager : Singleton<DialogManager>
         //SetBook(DataManager_Old.Instance.playerSaveData.bookPath, DataManager_Old.Instance.playerSaveData.bookMark);
         
     }
+
+    private void Start()
+    {
+        SaveManager.Instance.LoadEvent.AddListener(OnLoad);
+        SaveManager.Instance.SaveEvent.AddListener(OnSave);
+    }
     public void SetBook(string BookPath, int _bookMark = 1)
     {
+        ResetView();
         //print(Path.Combine(bookPathLanguageModify, BookPath));
         //bookReader = new BookReader(bookPathLanguageModify + BookPath);
         string path = Path.Combine(bookPathLanguageModify, BookPath);
@@ -284,6 +298,21 @@ public class DialogManager : Singleton<DialogManager>
             }//不是特殊符号，正常输出
         }
         return CurrentText;
+    }
+
+    public void PerformanceStart()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void PerformanceEnd()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void NextStep()
+    {
+        OnClick();
     }
 }
 [Serializable]

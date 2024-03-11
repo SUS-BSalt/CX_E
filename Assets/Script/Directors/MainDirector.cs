@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using static Starting;
 public interface IDirector
 {
     public IPerformance currentPerformance { get; set; }
+    public void NextStep();
 }
 public interface IPerformance
 {
@@ -22,6 +24,13 @@ public class MainDirector : Singleton<MainDirector>, IDirector
     [SerializeField]
     private TableDataSO GameScriptSO;
     private ITableDataReader GameScript;
+
+    public DialogManager Dialog;
+    public TradeManager Trader;
+    public InventoryManager Inventory;
+    public GameObject LoadingMenu;
+    public GameObject MainMenu;
+
     protected override void Awake()
     {
         base.Awake();
@@ -31,10 +40,57 @@ public class MainDirector : Singleton<MainDirector>, IDirector
     {
         SaveManager.Instance.SaveEvent.AddListener(OnSave);
         SaveManager.Instance.LoadEvent.AddListener(OnLoad);
+        Dialog.plotTrigger.AddListener(GamePlot);
+        Trader.TradeEnd += TradeEndMethod;
     }
     public void OnLoad()
     {
         _Date = SaveManager.Instance.LoadData<int>("Date");
+    }
+    public void NewGame()
+    {
+        LoadingMenu.SetActive(true);
+        this.Inventory.New();
+        Dialog.gameObject.SetActive(true);
+        Dialog.data = new(1, "", 1);
+        Dialog.SetBook("test.xlsx");
+        //print(Dialog.data.bookMark + "why?");
+        //print(Dialog.data.currentBookChapter+"why?");
+        Date = 1;
+        StartNewDay(Date);
+        Dialog.OnClick();
+
+        MainMenu.SetActive(false);
+        //print("fuck");
+        LoadingMenu.SetActive(false);
+    }
+    public void TradeEndMethod()
+    {
+        Dialog.NextStep();
+    }
+    public void GamePlot(string[] argv)
+    {
+        switch (argv[1])
+        {
+            case ("Add"):
+                {
+                    //Trigger-Add-InventoryID-ItemID-{ProfileJson}-number
+                    InventoryManager.Instance.AddItemToInventory(argv[2], int.Parse(argv[3]), argv[4], int.Parse(argv[5]));
+                    print("add");
+                    break;
+                }
+            case ("Trade"):
+                {
+                    Trader.StartTrader(argv[2]);
+                    break;
+                }
+            case ("TradeBranch"):
+                {
+                    //Trigger-TradeBranch-{"BranchName":"A","BookPath":"","Level":"1"}-{"BranchName":"B","BookPath":"","Level":"2"}-{"BranchName":"C","BookPath":"","Level":"3"}
+                    //RegisteTradeBranch(argv[2..]);
+                    break;
+                }
+        }
     }
     public void OnSave()
     {
@@ -47,15 +103,18 @@ public class MainDirector : Singleton<MainDirector>, IDirector
     }
     public void ExecEvent(string __EventString)
     {
-        List<string> _EventString = EventString.Unpack(__EventString);
-        switch (_EventString[0])
+        List<List<string>> Events = EventString.UnpackComplex(__EventString);
+        foreach(List<string> Eventpach in Events)
         {
-            ///If-{condition}-{true branch}-{fales branch}
-            case ("If"):
-                {
-                    IfEvent(_EventString.Skip(1).ToList());
-                    break;
-                }
+            switch (Eventpach[0])
+            {
+                ///If-{condition}-{true branch}-{fales branch}
+                case ("If"):
+                    {
+                        IfEvent(Eventpach.Skip(1).ToList());
+                        break;
+                    }
+            }
         }
     }
     public void IfEvent(List<string> _EventString)
@@ -112,5 +171,11 @@ public class MainDirector : Singleton<MainDirector>, IDirector
                     return 0;
                 }
         }
+    }
+
+    public void NextStep()
+    {
+        Date++;
+        StartNewDay(Date);
     }
 }
