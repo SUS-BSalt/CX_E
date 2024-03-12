@@ -9,7 +9,6 @@ using UnityEngine.UIElements;
 public class TradeManager : MonoBehaviour
 {
     public GameObject TraderObj;
-    public GameObject currentSelect;
     public int leftValue;
     public int rightValue;
     public Text leftValueText;
@@ -39,47 +38,54 @@ public class TradeManager : MonoBehaviour
         TraderObj.SetActive(false);
 
     }
-    public void LinkToInventory(string TargetInventoryID)
+    private void Start()
     {
         FinishButton.onClick.AddListener(FinishMethod);
         RejectButton.onClick.AddListener(RejectMethod);
+        TraderLeft.SlotOnClick += SlotOnClick;
+        TraderRight.SlotOnClick += SlotOnClick;
+        TraderTarget.SlotOnClick += SlotOnClick;
+        TraderPlayer.SlotOnClick += SlotOnClick;
+    }
+    public void LinkToInventory(string TargetInventoryID)
+    {
         TraderLeftI = new();
         TraderLeft.LinkToInventory(TraderLeftI);
-
+        
         TraderRightI = new();
         TraderRight.LinkToInventory(TraderRightI);
-
+        
         TraderTarget.LinkToInventory(InventoryManager.Instance.GetInventory(TargetInventoryID));
-
         TraderPlayer.LinkToInventory(InventoryManager.Instance.GetInventory("Player"));
 
+        limitValue = InventoryManager.Instance.GetInventory(TargetInventoryID).Trust;
         UpdateValueOnScreen();
     }
     public void SlotOnClick(ItemSlotUI slotUI)
     {
-        if(currentSelect == TraderLeft.gameObject)
+        if(slotUI.parent == TraderLeft)
         {
-            PushItemFromSelectToTarget(TraderLeft, TraderPlayer);
+            PushItemFromSelectToTarget(slotUI, TraderPlayer);
         }
-        else if(currentSelect == TraderPlayer.gameObject)
+        else if(slotUI.parent == TraderPlayer)
         {
-            PushItemFromSelectToTarget(TraderPlayer, TraderLeft);
+            PushItemFromSelectToTarget(slotUI, TraderLeft);
         }
-        else if (currentSelect == TraderRight.gameObject)
+        else if (slotUI.parent == TraderRight)
         {
-            PushItemFromSelectToTarget(TraderRight, TraderTarget);
+            PushItemFromSelectToTarget(slotUI, TraderTarget);
         }
-        else if (currentSelect == TraderTarget.gameObject)
+        else if (slotUI.parent == TraderTarget)
         {
-            PushItemFromSelectToTarget(TraderTarget, TraderRight);
+            PushItemFromSelectToTarget(slotUI, TraderRight);
         }
     }
-    public void PushItemFromSelectToTarget(InventoryUI Select,InventoryUI Target)
+    public void PushItemFromSelectToTarget(ItemSlotUI slotUI, InventoryUI Target)
     {
         //print("here");
-        ItemBase item = Select.currentSelectSlot.slot.item;
-        Target.inventory.AddItemWithAddSlotAuto(item, Select.inventory.RequestItem(item, 1));
-        Select.inventory.RemoveCleanSlot();
+        ItemBase item = slotUI.slot.item;
+        Target.inventory.AddItemWithAddSlotAuto(item, slotUI.parent.inventory.RequestItem(item, 1));
+        slotUI.parent.inventory.RemoveCleanSlot();
         Target.inventory.RemoveCleanSlot();
         UpdateValueOnScreen();
     }

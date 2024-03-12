@@ -12,7 +12,7 @@ public delegate void SlotListChangedDelegate();
 public class Inventory : IModel
 {
     public string InventoryID { get { return data.InventoryID; } set { data.InventoryID = value; } }
-    
+    public int Trust;
     public List<BuffBase> buffs;
 
     [SerializeField]
@@ -116,6 +116,7 @@ public class Inventory : IModel
             data = new();
         }
         data.Clear();
+        data.Trust = Trust;
         foreach(ItemSlot slot in slots)
         {
             slot.OnSave();
@@ -130,6 +131,7 @@ public class Inventory : IModel
     {
         slots.Clear();
         buffs.Clear();
+        Trust = data.Trust;
         for(int i = 0; i < data.ItemSlotData.Count; i++)
         {
             slots.Add(new(data.ItemSlotData[i]));
@@ -155,15 +157,18 @@ public class Inventory : IModel
 public class InventoryDataClass
 {
     public string InventoryID;
+    public int Trust;
     public List<ItemSlotDataClass> ItemSlotData;
     public List<string> BuffNames;
     public InventoryDataClass()
     {
+        Trust = 0;
         ItemSlotData = new();
         BuffNames = new();
     }
     public InventoryDataClass(string InventoryID)
     {
+        Trust = 0;
         ItemSlotData = new();
         BuffNames = new();
         this.InventoryID = InventoryID;
@@ -171,5 +176,7 @@ public class InventoryDataClass
     public void Clear()
     {
         ItemSlotData.Clear();
+        BuffNames.Clear();
+        Trust = 0;
     }
 }

@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public delegate void _ItemSlotOnSelect(ItemSlotUI SelectedItemSlotUI);
 public class ItemSlotUI : MonoBehaviour
 {
+    public InventoryUI parent;
     public ItemSlot slot;
     public GameObject itemObj;
     public Text numberText;
@@ -32,6 +33,14 @@ public class ItemSlotUI : MonoBehaviour
         //_slot.SlotChanged += this.UpdateSlotUI;
         slot.SlotChanged += UpdateSlotUI;
     }
+    public void OnDestroy()
+    {
+        if (slot != null)
+        {
+            //slot.SlotChanged -= UpdateSlotUI;
+            slot.SlotChanged -= UpdateSlotUI;
+        }
+    }
     public void UpdateSlotUI()
     {
         if(numberText != null)
@@ -55,7 +64,6 @@ public class ItemSlotUI : MonoBehaviour
             itemObj = Instantiate(itemObj, new Vector3(0, 0, 0), Quaternion.identity);
             itemObj.transform.SetParent(transform, false);
             itemObj.transform.SetAsFirstSibling();
-
         }
     }
 }

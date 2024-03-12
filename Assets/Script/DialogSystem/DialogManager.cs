@@ -26,7 +26,7 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector
     public DialogCharacterManager characterManager;
 
     [Serializable]
-    public class PlotTrigger : UnityEvent<string[]> { }
+    public delegate void PlotTrigger(List<string> EventPatch);
     public PlotTrigger plotTrigger;
 
     public void OnLoad()
@@ -51,10 +51,15 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector
     {
         characterManager.ResetView();
     }
-    public void ExecEvent(string EventString)
+    public void ExecEvent(string _EventString)
     {
-        //Debug.Log(eventString);
-        string[] eventArgv = EventString.Replace("\n","").Replace("\t","").Split("-");
+        Debug.Log(_EventString);
+        List<string> eventArgv = EventString.Unpack(_EventString);
+        ExecEvent(eventArgv);
+    }
+    public void ExecEvent(List<string> eventArgv)
+    {
+        //Debug.Log(eventArgv[0]);
         switch (eventArgv[0])
         {
             case "SetPos":
@@ -87,10 +92,10 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector
 
                     break;
                 }
-            case "Trigger":
+            case "GT":
                 {
                     plotTrigger?.Invoke(eventArgv);
-                    print("t");
+                    //print("t");
                     break;
                 }
             case "Jump":
@@ -116,15 +121,16 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector
 
     public void ExecPreEvent(string preEventString)
     {
-        //print(preEventString);
         if(preEventString == DataManager_Old.NODATA)
         {
             return;
         }
-        string[] events = preEventString.Split("+");
-        foreach (string _event in events)
+        //print(preEventString);
+        List<List<string>> Events = EventString.UnpackComplex(preEventString);
+        //print(Events.Count);
+        foreach (List<string> Eventpach in Events)
         {
-            ExecEvent(_event);
+            ExecEvent(Eventpach);
         }
     }
     public void SetLanguage()

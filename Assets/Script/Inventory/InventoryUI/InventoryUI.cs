@@ -9,7 +9,6 @@ public class InventoryUI : MonoBehaviour
     public Inventory inventory;
 
     public List<ItemSlotUI> slotUI;
-    public ItemSlotUI currentSelectSlot;
 
     [Header("物品分类以及对应分类的slot预制体")]
     public GameObject missionBar;
@@ -45,7 +44,6 @@ public class InventoryUI : MonoBehaviour
         {
             //print(slot == null);
             AddSlotUI(slot);
-
         }
     }
     public void CleanSlotBar(GameObject bar)
@@ -109,6 +107,7 @@ public class InventoryUI : MonoBehaviour
         _slotUI.OnSelect +=SlotBeSelect;
         _slotUI.OnUnselect += SlotBeUnselect;
         _slotUI.OnClick += SlotBeClick;
+        _slotUI.parent = this;
         _slotUI.LinkToSlot(slot);
         slotUI.Add(_slotUI);
     }

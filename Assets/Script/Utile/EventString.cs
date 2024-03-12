@@ -11,19 +11,27 @@ public class EventString
     /// <returns></returns>
     public static List<List<string>> UnpackComplex(string _OriginString)
     {
-        string cleanString = _OriginString.Replace("\n", "").Replace("\t", "");
         List<List<string>> Events = new();
         List<string> t_event = new();
+        if (_OriginString == null)
+        {
+            return Events;
+        }
+
+        Debug.Log(_OriginString);
+        string cleanString = _OriginString.Replace("\n", "").Replace("\t", "");
+        Debug.Log(cleanString);
+
         string tempString = "";
         int Index = 0;
         while(Index < cleanString.Length)
         {
-            string tempChar =  _OriginString[Index].ToString();
+            string tempChar = cleanString[Index].ToString();
             ///反编译符
             if (tempChar == "$")
             {
                 Index++;
-                tempString += _OriginString[Index];
+                tempString += cleanString[Index];
             }
             ///参数包
             else if (tempChar == "{")
@@ -33,11 +41,11 @@ public class EventString
                 Index++;
                 while (true)
                 {
-                    if(_OriginString[Index].ToString() == "{")
+                    if(cleanString[Index].ToString() == "{")
                     {
                         deepth++;
                     }
-                    else if(_OriginString[Index].ToString() == "}")
+                    else if(cleanString[Index].ToString() == "}")
                     {
                         if (deepth == 0)
                         {
@@ -45,7 +53,7 @@ public class EventString
                         }
                         deepth--;
                     }
-                    tempString += _OriginString[Index];
+                    tempString += cleanString[Index];
                     Index++;
                 }
             }
@@ -53,13 +61,20 @@ public class EventString
             else if (tempChar == "-")
             {
                 t_event.Add(tempString);
+                Debug.Log(tempString);
                 tempString = "";
             }
             ///事件分隔符
             else if (tempChar == "+")
             {
+                t_event.Add(tempString);
                 Events.Add(t_event);
                 t_event = new();
+                tempString = "";
+            }
+            else
+            {
+                tempString += cleanString[Index];
             }
             ///下一个字符
             Index++;
@@ -70,19 +85,24 @@ public class EventString
     }
     public static List<string> Unpack(string _OriginString)
     {
-        string cleanString = _OriginString.Replace("\n", "").Replace("\t", "");
-        List<List<string>> Events = new();
         List<string> t_event = new();
+        if (_OriginString == null)
+        {
+            return t_event;
+        }
+        Debug.Log(_OriginString);
+        string cleanString = _OriginString.Replace("\n", "").Replace("\t", "");
+        Debug.Log(cleanString);
         string tempString = "";
         int Index = 0;
         while (Index < cleanString.Length)
         {
-            string tempChar = _OriginString[Index].ToString();
+            string tempChar = cleanString[Index].ToString();
             ///反编译符
             if (tempChar == "$")
             {
                 Index++;
-                tempString += _OriginString[Index];
+                tempString += cleanString[Index];
             }
             ///参数包
             else if (tempChar == "{")
@@ -113,6 +133,10 @@ public class EventString
             {
                 t_event.Add(tempString);
                 tempString = "";
+            }
+            else
+            {
+                tempString += cleanString[Index];
             }
             ///下一个字符
             Index++;

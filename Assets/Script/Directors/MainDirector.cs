@@ -40,7 +40,7 @@ public class MainDirector : Singleton<MainDirector>, IDirector
     {
         SaveManager.Instance.SaveEvent.AddListener(OnSave);
         SaveManager.Instance.LoadEvent.AddListener(OnLoad);
-        Dialog.plotTrigger.AddListener(GamePlot);
+        Dialog.plotTrigger += GamePlot;
         Trader.TradeEnd += TradeEndMethod;
     }
     public void OnLoad()
@@ -68,15 +68,22 @@ public class MainDirector : Singleton<MainDirector>, IDirector
     {
         Dialog.NextStep();
     }
-    public void GamePlot(string[] argv)
+    public void GamePlot(List<string> argv)
     {
         switch (argv[1])
         {
             case ("Add"):
                 {
-                    //Trigger-Add-InventoryID-ItemID-{ProfileJson}-number
+                    //GT-Add-InventoryID-ItemID-{ProfileJson}-number
                     InventoryManager.Instance.AddItemToInventory(argv[2], int.Parse(argv[3]), argv[4], int.Parse(argv[5]));
-                    print("add");
+                    //print("add");
+                    break;
+                }
+            case ("Trust"):
+                {
+                    //GT-Trust-InventoryID-number
+                    InventoryManager.Instance.Inventorys[argv[2]].Trust = int.Parse(argv[3]);
+                    //print("add");
                     break;
                 }
             case ("Trade"):
@@ -86,8 +93,14 @@ public class MainDirector : Singleton<MainDirector>, IDirector
                 }
             case ("TradeBranch"):
                 {
-                    //Trigger-TradeBranch-{"BranchName":"A","BookPath":"","Level":"1"}-{"BranchName":"B","BookPath":"","Level":"2"}-{"BranchName":"C","BookPath":"","Level":"3"}
+                    //GT-TradeBranch-{"BranchName":"A","BookPath":"","Level":"1"}-{"BranchName":"B","BookPath":"","Level":"2"}-{"BranchName":"C","BookPath":"","Level":"3"}
                     //RegisteTradeBranch(argv[2..]);
+                    break;
+                }
+            ///If-{condition}-{true branch}-{fales branch}
+            case ("If"):
+                {
+                    IfEvent(argv.Skip(1).ToList());
                     break;
                 }
         }
@@ -164,7 +177,7 @@ public class MainDirector : Singleton<MainDirector>, IDirector
             case ("Inventory"):
                 {
                     ///Inventory-Player-ItemID
-                    return (float)InventoryManager.Instance.Inventorys[argvs[1]].FindItem(argvs[2]);
+                    return (float)InventoryManager.Instance.GetInventory(argvs[1]).FindItem(argvs[2]);
                 }
             default:
                 {
