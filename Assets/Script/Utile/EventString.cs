@@ -18,9 +18,7 @@ public class EventString
             return Events;
         }
 
-        Debug.Log(_OriginString);
         string cleanString = _OriginString.Replace("\n", "").Replace("\t", "");
-        Debug.Log(cleanString);
 
         string tempString = "";
         int Index = 0;
@@ -61,7 +59,7 @@ public class EventString
             else if (tempChar == "-")
             {
                 t_event.Add(tempString);
-                Debug.Log(tempString);
+                //Debug.Log(tempString);
                 tempString = "";
             }
             ///ÊÂ¼þ·Ö¸ô·û

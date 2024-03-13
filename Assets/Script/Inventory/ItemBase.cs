@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -17,7 +18,8 @@ public abstract class ItemBase
     ///  别忘了在构造函数中实例它
     /// </summary>
     public abstract ItemTypeBase ItemType { set; get; }
-    public abstract ItemMSGBoard MSG { get; set; }
+    public List<string> ItemTabs { set; get; }
+    public ItemMSGBoard MSG = new();
     /// <summary>
     /// 物品是否可堆叠
     /// </summary>
@@ -28,6 +30,34 @@ public abstract class ItemBase
     public int stackingLimite = 64;
 
     public int value = 0;
+    public bool IsTabExist(string tabName)
+    {
+        if(ItemTabs == null)
+        {
+            ItemTabs = new();
+            return false;
+        }
+        return ItemTabs.Contains(tabName);
+    }
+    public void AddTabs(string _OriginString)
+    {
+        if (ItemTabs == null)
+        {
+            ItemTabs = new();
+        }
+        if (_OriginString == null)
+        {
+            return;
+        }
+        foreach (string tabName in _OriginString.Split("+"))
+        {
+            if (!IsTabExist(tabName))
+            {
+                ItemTabs.Add(tabName);
+            }
+
+        }
+    }
     /// <summary>
     /// 物品将自己所需要保存的信息装成json字符串，保存系统就能保存它的返回值了
     /// </summary>
@@ -38,7 +68,16 @@ public abstract class ItemBase
     /// </summary>
     /// <param name="_JsonString"></param>
     public abstract void SetProfileFromJson(string _JsonString);
-    public abstract void SetProfileFromTable(ITableDataReader tableReader,int rowIndex);
+    public virtual void SetProfileFromTable(ITableDataReader tableReader,int rowIndex)
+    {
+
+        ItemID = rowIndex;
+        MSG.ItemName = tableReader.GetData<string>(rowIndex, 2);
+        MSG.ItemDescribe = tableReader.GetData<string>(rowIndex, 3);
+        value = tableReader.GetData<int>(rowIndex, 4);
+        MSG.ItemValueDescribe = value.ToString();
+        AddTabs(tableReader.GetData<string>(rowIndex, 5));
+    }
 
 
     /// <summary>

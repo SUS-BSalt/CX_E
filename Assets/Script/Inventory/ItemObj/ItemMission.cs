@@ -9,8 +9,6 @@ public class ItemMission : ItemBase , ITimeLimitItem
     public override ItemTypeBase ItemType { get; set; }
     public override int ItemID { get => _ItemID; set => _ItemID = value; }
     private int _ItemID;
-    public override ItemMSGBoard MSG { get => _MSG; set => _MSG = value; }
-    private ItemMSGBoard _MSG = new();
     public int leftTime { get => data.leftTime; set => data.leftTime = value; }
 
     public ProfileData data = new();
@@ -28,7 +26,7 @@ public class ItemMission : ItemBase , ITimeLimitItem
     {
         ///Ã»Ð´Íê
         var copy = new ItemMoney();
-        copy.MSG = _MSG;
+        copy.MSG = MSG;
         copy.ItemID = ItemID;
         copy.ItemType = ItemType;
         return copy;
@@ -37,7 +35,7 @@ public class ItemMission : ItemBase , ITimeLimitItem
     public override GameObject GetInstance(string _Profile)
     {
         GameObject obj =  Resources.Load<GameObject>("Prefab/Inventory/ItemOBJ/Mission");
-        obj.GetComponent<Text>().text = _MSG.ItemName;
+        obj.GetComponent<Text>().text = MSG.ItemName;
         return obj;
     }
 
@@ -54,12 +52,9 @@ public class ItemMission : ItemBase , ITimeLimitItem
 
     public override void SetProfileFromTable(ITableDataReader tableReader, int rowIndex)
     {
-        ItemID = rowIndex;
-        _MSG.ItemName = tableReader.GetData<string>(rowIndex, 2);
-        _MSG.ItemDescribe = tableReader.GetData<string>(rowIndex, 3);
-        value = tableReader.GetData<int>(rowIndex, 4);
-        _MSG.ItemValueDescribe = value.ToString();
-        leftTime = tableReader.GetData<int>(rowIndex, 5);
+        base.SetProfileFromTable(tableReader,rowIndex);
+        leftTime = tableReader.GetData<int>(rowIndex, 6);
+        MSG.ItemLeftTime = leftTime.ToString();
     }
 
     public void OnTimePass(int _passedDay)

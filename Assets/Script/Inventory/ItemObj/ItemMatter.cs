@@ -7,7 +7,6 @@ public class ItemMatter : ItemBase
     public override ItemTypeBase ItemType { get; set; }
     public override int ItemID { get => _ItemID; set => _ItemID = value; }
     private int _ItemID;
-    public override ItemMSGBoard MSG { get; set; }
 
     public ItemMatter()
     {
@@ -54,7 +53,6 @@ public class ItemMoney : ItemBase
     public override ItemTypeBase ItemType { get; set; }
     public override int ItemID { get => _ItemID; set => _ItemID = value; }
     private int _ItemID;
-    public override ItemMSGBoard MSG { get=> _MSG; set=> _MSG = value; }
     private ItemMSGBoard _MSG = new();
 
     public ItemMoney()
@@ -93,11 +91,7 @@ public class ItemMoney : ItemBase
 
     public override void SetProfileFromTable(ITableDataReader tableReader, int rowIndex)
     {
-        ItemID = rowIndex;
-        _MSG.ItemName = tableReader.GetData<string>(rowIndex, 2);
-        _MSG.ItemDescribe = tableReader.GetData<string>(rowIndex, 3);
-        value = tableReader.GetData<int>(rowIndex, 4);
-        _MSG.ItemValueDescribe = value.ToString();
+        base.SetProfileFromTable(tableReader,rowIndex);
     }
 }
 

@@ -18,7 +18,6 @@ public class TestMissionItem : ItemBase,ITimeLimitItem
 
     public override ItemTypeBase ItemType { get; set; }
     public override int ItemID { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-    public override ItemMSGBoard MSG { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
     public TestMissionItem()
     {

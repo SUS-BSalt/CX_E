@@ -115,13 +115,13 @@ public class TradeManager : MonoBehaviour
         int dif = leftValue - rightValue;
         if (dif <= -1*limitValue)
         {
-            FinishButton.gameObject.SetActive(false);
-            RejectButton.gameObject.SetActive(true);
+            FinishButton.interactable = false;
+            RejectButton.interactable = true;
         }
         else
         {
-            FinishButton.gameObject.SetActive(true);
-            RejectButton.gameObject.SetActive(false);
+            FinishButton.interactable = true;
+            RejectButton.interactable = false;
         }
     }
     public void FinishMethod()
