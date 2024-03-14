@@ -36,7 +36,8 @@ public class TradeManager : MonoBehaviour
     public void CloseTrader()
     {
         TraderObj.SetActive(false);
-
+        CombineInventory();
+        TradeEnd?.Invoke();
     }
     private void Start()
     {
@@ -92,7 +93,7 @@ public class TradeManager : MonoBehaviour
 
     public void CombineInventory()
     {
-        foreach (ItemSlot slot in TraderLeftI.slots)
+        foreach (ItemSlot slot in TraderRightI.slots)
         {
             if (slot.item != null)
             {
@@ -100,7 +101,7 @@ public class TradeManager : MonoBehaviour
             }
         }
 
-        foreach (ItemSlot slot in TraderRightI.slots)
+        foreach (ItemSlot slot in TraderLeftI.slots)
         {
             if (slot.item != null)
             {
@@ -127,7 +128,6 @@ public class TradeManager : MonoBehaviour
     public void FinishMethod()
     {
         //print("end?");
-        CombineInventory();
         CloseTrader();
     }
     public void RejectMethod()

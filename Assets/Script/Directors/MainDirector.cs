@@ -66,6 +66,7 @@ public class MainDirector : Singleton<MainDirector>, IDirector
     }
     public void TradeEndMethod()
     {
+        print("s");
         Dialog.NextStep();
     }
     public void GamePlot(List<string> argv)
@@ -112,22 +113,31 @@ public class MainDirector : Singleton<MainDirector>, IDirector
     public void StartNewDay(int Date)
     {
         _Date = Date;
-        ExecEvent(GameScript.GetData<string>(_Date + 1, 2));
+        ExecEvents(GameScript.GetData<string>(_Date + 1, 2));
     }
-    public void ExecEvent(string __EventString)
+    public void ExecEvents(string __EventString)
     {
         List<List<string>> Events = EventString.UnpackComplex(__EventString);
         foreach(List<string> Eventpach in Events)
         {
-            switch (Eventpach[0])
-            {
-                ///If-{condition}-{true branch}-{fales branch}
-                case ("If"):
-                    {
-                        IfEvent(Eventpach.Skip(1).ToList());
-                        break;
-                    }
-            }
+            ExecEvent(Eventpach);
+        }
+    }
+    public void ExecEvent(List<string> Eventpach)
+    {
+        switch (Eventpach[0])
+        {
+            ///If-{condition}-{true branch}-{fales branch}
+            case ("If"):
+                {
+                    IfEvent(Eventpach.Skip(1).ToList());
+                    break;
+                }
+            case "Jump":
+                {
+                    Dialog.bookMark = int.Parse(eventArgv[1]);
+                    break;
+                }
         }
     }
     public void IfEvent(List<string> _EventString)
@@ -151,11 +161,11 @@ public class MainDirector : Singleton<MainDirector>, IDirector
         }
         if (_conditionResult)
         {
-            ExecEvent(_EventString[1]);
+            ExecEvents(_EventString[1]);
         }
         else
         {
-            ExecEvent(_EventString[2]);
+            ExecEvents(_EventString[2]);
         }
     }
     public bool Bigger(List<string> _EventString)

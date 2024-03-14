@@ -319,6 +319,7 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector
     public void NextStep()
     {
         OnClick();
+        OnClick();
     }
 }
 [Serializable]
