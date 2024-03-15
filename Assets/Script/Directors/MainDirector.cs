@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using static Starting;
+using Newtonsoft.Json.Bson;
 public interface IDirector
 {
     public IPerformance currentPerformance { get; set; }
@@ -66,45 +67,12 @@ public class MainDirector : Singleton<MainDirector>, IDirector
     }
     public void TradeEndMethod()
     {
-        print("s");
+        //print("s");
         Dialog.NextStep();
     }
     public void GamePlot(List<string> argv)
     {
-        switch (argv[1])
-        {
-            case ("Add"):
-                {
-                    //GT-Add-InventoryID-ItemID-{ProfileJson}-number
-                    InventoryManager.Instance.AddItemToInventory(argv[2], int.Parse(argv[3]), argv[4], int.Parse(argv[5]));
-                    //print("add");
-                    break;
-                }
-            case ("Trust"):
-                {
-                    //GT-Trust-InventoryID-number
-                    InventoryManager.Instance.Inventorys[argv[2]].Trust = int.Parse(argv[3]);
-                    //print("add");
-                    break;
-                }
-            case ("Trade"):
-                {
-                    Trader.StartTrader(argv[2]);
-                    break;
-                }
-            case ("TradeBranch"):
-                {
-                    //GT-TradeBranch-{"BranchName":"A","BookPath":"","Level":"1"}-{"BranchName":"B","BookPath":"","Level":"2"}-{"BranchName":"C","BookPath":"","Level":"3"}
-                    //RegisteTradeBranch(argv[2..]);
-                    break;
-                }
-            ///If-{condition}-{true branch}-{fales branch}
-            case ("If"):
-                {
-                    IfEvent(argv.Skip(1).ToList());
-                    break;
-                }
-        }
+        ExecEvent(argv.Skip(1).ToList());
     }
     public void OnSave()
     {
@@ -123,19 +91,52 @@ public class MainDirector : Singleton<MainDirector>, IDirector
             ExecEvent(Eventpach);
         }
     }
-    public void ExecEvent(List<string> Eventpach)
+    public void ExecEvent(List<string> eventArgv)
     {
-        switch (Eventpach[0])
+        switch (eventArgv[0])
         {
-            ///If-{condition}-{true branch}-{fales branch}
             case ("If"):
                 {
-                    IfEvent(Eventpach.Skip(1).ToList());
+                    ///If-{condition}-{true branch}-{fales branch}
+                    IfEvent(eventArgv.Skip(1).ToList());
                     break;
                 }
             case "Jump":
                 {
                     Dialog.bookMark = int.Parse(eventArgv[1]);
+                    break;
+                }
+            case "Chapter":
+                {
+                    Dialog.bookChapter = int.Parse(eventArgv[1]);
+                    Dialog.bookReader.ChangeBookChapter(Dialog.bookChapter);
+                    Dialog.bookMark = 2;
+                    break;
+                }
+            case "Book":
+                {
+                    Dialog.SetBook(eventArgv[1]);
+                    Dialog.bookMark = 2;
+                    break;
+                }
+            case ("Add"):
+                {
+                    //Add-InventoryID-ItemID-{ProfileJson}-number
+                    InventoryManager.Instance.AddItemToInventory(eventArgv[1], int.Parse(eventArgv[2]), eventArgv[3], int.Parse(eventArgv[4]));
+                    //print("add");
+                    break;
+                }
+            case ("Trust"):
+                {
+                    //Trust-InventoryID-number
+                    InventoryManager.Instance.Inventorys[eventArgv[1]].Trust = int.Parse(eventArgv[2]);
+                    //print("add");
+                    break;
+                }
+            case ("Trade"):
+                {
+                    //GT-Trade-InventoryID-number
+                    Trader.StartTrader(eventArgv[1]);
                     break;
                 }
         }
@@ -150,6 +151,10 @@ public class MainDirector : Singleton<MainDirector>, IDirector
             ///If-{condition}-{true branch}-{fales branch}
             case ("Bigger"):
                 {
+                    foreach(var s in _conditionString)
+                    {
+                        print(s);
+                    }
                     _conditionResult = Bigger(_conditionString.Skip(1).ToList());
                     break;
                 }
@@ -172,7 +177,7 @@ public class MainDirector : Singleton<MainDirector>, IDirector
     {
         ///{float-1}-{Find-Date}
         ///{float-5}-{Inventory-Player-ItemID}
-        return Find(_EventString[1]) > Find(_EventString[2]);
+        return Find(_EventString[0]) > Find(_EventString[1]);
     }
     public float Find(string _EventString)
     {
@@ -187,6 +192,7 @@ public class MainDirector : Singleton<MainDirector>, IDirector
             case ("Inventory"):
                 {
                     ///Inventory-Player-ItemID
+                    print((float)InventoryManager.Instance.GetInventory(argvs[1]).FindItem(argvs[2]));
                     return (float)InventoryManager.Instance.GetInventory(argvs[1]).FindItem(argvs[2]);
                 }
             default:

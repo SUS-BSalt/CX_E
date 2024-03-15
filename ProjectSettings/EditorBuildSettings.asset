@@ -11,10 +11,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/SaveTest.unity
     guid: 7e97bd8282081f5478508bc85bd15c7f
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: 50185613d2a7f6a459b9ad44a404c035
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/New Scene.unity
     guid: 881cfe30147c578438dec547dd80b49d
   m_configObjects:

@@ -88,9 +88,9 @@ public class EventString
         {
             return t_event;
         }
-        Debug.Log(_OriginString);
+        //Debug.Log(_OriginString);
         string cleanString = _OriginString.Replace("\n", "").Replace("\t", "");
-        Debug.Log(cleanString);
+        //Debug.Log(cleanString);
         string tempString = "";
         int Index = 0;
         while (Index < cleanString.Length)

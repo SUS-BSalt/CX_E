@@ -98,24 +98,7 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector
                     //print("t");
                     break;
                 }
-            case "Jump":
-                {
-                    bookMark = int.Parse(eventArgv[1]);
-                    break;
-                }
-            case "Chapter":
-                {
-                    bookChapter = int.Parse(eventArgv[1]);
-                    bookReader.ChangeBookChapter(bookChapter);
-                    bookMark = 2;
-                    break;
-                }
-            case "Book":
-                {
-                    SetBook(eventArgv[1]);
-                    bookMark = 2;
-                    break;
-                }
+
         }
     }
 

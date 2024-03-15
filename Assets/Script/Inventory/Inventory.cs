@@ -1,3 +1,4 @@
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Information;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -107,7 +108,15 @@ public class Inventory : IModel
     }
     public int FindItem(string _itemID)
     {
-        return 0;
+        int temp = 0;
+        for (int i = slots.Count - 1; i >= 0; i--)
+        {
+            if (int.Parse(_itemID) == slots[i].item.ItemID)
+            {
+                temp += slots[i].stackingQuantity;
+            }
+        }
+        return temp;
     }
     public void OnSave()
     {
