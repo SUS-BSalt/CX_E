@@ -15,10 +15,19 @@ public class ItemMSGShower : MonoBehaviour
 
     private void Start()
     {
-        inventoryUI.SlotOnSelect +=UpdateView;
-        inventoryUI.SlotOnUnselect += CleanView;
-        inventoryUI2.SlotOnSelect += UpdateView;
-        inventoryUI2.SlotOnUnselect += CleanView;
+        if (inventoryUI != null)
+        {
+            inventoryUI.SlotOnSelect += UpdateView;
+            inventoryUI.SlotOnClick += UpdateView;
+            inventoryUI.SlotOnUnselect += CleanView;
+        }
+        if (inventoryUI2 != null)
+        {
+            inventoryUI2.SlotOnSelect += UpdateView;
+            inventoryUI2.SlotOnClick += UpdateView;
+            inventoryUI2.SlotOnUnselect += CleanView;
+        }
+
     }
     public void UpdateView(ItemSlotUI slotUI)
     {

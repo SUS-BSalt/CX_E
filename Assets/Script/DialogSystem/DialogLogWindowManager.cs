@@ -11,6 +11,8 @@ public class DialogLogWindowManager : MonoBehaviour
     public RotationWindow rotationWindow;
     public int bookMarkLogs;//专属于logs界面的bookMakr
 
+    public List<string> Logs = new(500);
+
     private void Awake()
     {
         rotationWindow.onFocusObjectChanged.AddListener(UpdateLogMenu);
@@ -19,7 +21,7 @@ public class DialogLogWindowManager : MonoBehaviour
 
     public void OnOpenLogMenu()
     {
-        RefreshLogMenu(Manager.bookMark);
+        RefreshLogMenu();
     }
 
     public void CleanLogMenu()
@@ -29,6 +31,7 @@ public class DialogLogWindowManager : MonoBehaviour
             rotationWindow.content.GetChild(i).GetChild(0).GetComponent<Text>().text = "";
         }
         rotationWindow.MoveToNormalizePos(new Vector2(0, 0));
+        Logs.Clear();
     }
     public void UpdateLogMenu(bool updateDirection)//rotaionWindow的更新方向
     {
@@ -42,7 +45,7 @@ public class DialogLogWindowManager : MonoBehaviour
 
         bookMarkLogs = updateDirection ? bookMarkLogs + 1: bookMarkLogs - 1;
 
-        if(bookMarkLogs >= Manager.bookMark)
+        if(bookMarkLogs >= Logs.Count-1)
         {
             rotationWindow.isTouchBottomBorder = true;
             rotationWindow.isTouchUpBorder = false;
@@ -62,16 +65,29 @@ public class DialogLogWindowManager : MonoBehaviour
 
         if (updateDirection)
         {
-            rotationWindow.content.GetChild(rotationWindow.content.childCount - 1).GetChild(0).GetComponent<Text>().text = 
-                Manager.GetLogString(bookMarkLogs - rotationWindow.content.childCount + rotationWindow.content.childCount);
+            rotationWindow.content.GetChild(rotationWindow.content.childCount - 1).GetChild(0).GetComponent<Text>().text =
+                GetLogString(bookMarkLogs);
+                //Manager.GetLogString(bookMarkLogs - rotationWindow.content.childCount + rotationWindow.content.childCount);
         }
         else
         {
             rotationWindow.content.GetChild(0).GetChild(0).GetComponent<Text>().text =
-                Manager.GetLogString(bookMarkLogs - rotationWindow.content.childCount + 1);
+                GetLogString(bookMarkLogs - rotationWindow.content.childCount + 1);
+            //Manager.GetLogString(bookMarkLogs - rotationWindow.content.childCount + 1);
         }
     }//每当rotationWindow焦点物体变动时调用，根据变动方向更新头部或尾部的text框
-    public void RefreshLogMenu(int bookMark)
+    public string GetLogString(int bookMark)
+    {
+        try
+        {
+            return Logs[bookMark];
+        }
+        catch
+        {
+            return "";
+        }
+    }
+    public void RefreshLogMenu()
     {
         if (!LogMenu.activeInHierarchy)//如果LogMenu活跃，才进行更新
         {
@@ -81,14 +97,14 @@ public class DialogLogWindowManager : MonoBehaviour
         rotationWindow.isTouchBottomBorder = true;
         rotationWindow.isTouchUpBorder = false;
 
+        bookMarkLogs = Logs.Count - 1;
 
         for (int i = 0; i < rotationWindow.content.childCount; i++)
         {
-            rotationWindow.content.GetChild(i).GetChild(0).GetComponent<Text>().text = Manager.GetLogString(bookMark - rotationWindow.content.childCount + i + 1);
+            rotationWindow.content.GetChild(i).GetChild(0).GetComponent<Text>().text = GetLogString(bookMarkLogs - rotationWindow.content.childCount + i + 1);
         }
-
         rotationWindow.MoveToNormalizePos(new Vector2(0, 0));
         //print(rotationWindow.normalizedPosition);
-        bookMarkLogs = bookMark;
+
     }//刷新logs界面，每次进入logs菜单时调用
 }

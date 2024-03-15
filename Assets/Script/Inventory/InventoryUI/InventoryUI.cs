@@ -114,15 +114,16 @@ public class InventoryUI : MonoBehaviour
     public void SlotBeSelect(ItemSlotUI slotUI)
     {
         SlotOnSelect?.Invoke(slotUI);
-        //print("here?");
+       //print("Select here?");
     }
     public void SlotBeUnselect(ItemSlotUI slotUI)
     {
         SlotOnUnselect?.Invoke();
-        //print("here?");
+        //print("Unselect here?");
     }
     public void SlotBeClick(ItemSlotUI slotUI)
     {
         SlotOnClick?.Invoke(slotUI);
+        //print("Click here?");
     }
 }

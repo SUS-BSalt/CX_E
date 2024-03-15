@@ -146,8 +146,8 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector
         //print(path);
         bookPath = BookPath;
         bookReader = new BookReader(path);
-
         bookMark = _bookMark;
+        logWindow.CleanLogMenu();
     }
 
     public void OnClick()
@@ -161,7 +161,8 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector
             bookMark += 1;
             ExecPreEvent(bookReader.GetConcept(bookMark, 1));
             StartTypingWord();
-            logWindow.RefreshLogMenu(bookMark);
+            logWindow.Logs.Add(GetLogString(bookMark));
+            logWindow.RefreshLogMenu();
         }
     }
     public string GetLogString(int _bookMark)

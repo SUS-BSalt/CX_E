@@ -7,9 +7,12 @@ using UnityEngine;
 public class Test : MonoBehaviour
 {
     public string testString;
+    public List<string> s = new(100);
     private void Start()
     {
-        print(EventString.Unpack(testString)[0]);
+        print(s.Count);
+        s[10] = "1";
+        s[200] = "2";
     }
 }
 

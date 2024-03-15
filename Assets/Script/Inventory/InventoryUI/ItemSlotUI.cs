@@ -18,7 +18,9 @@ public class ItemSlotUI : MonoBehaviour
     private void Awake()
     {
         UGUIElement.BeHighlight.AddListener(ctx=>OnSelect?.Invoke(this));
+        //UGUIElement.BeSelected.AddListener(ctx => OnSelect?.Invoke(this));
         UGUIElement.UnHighlight.AddListener(ctx => OnUnselect?.Invoke(this));
+        //UGUIElement.UnSelected.AddListener(ctx => OnUnselect?.Invoke(this));
         UGUIElement.onClick.AddListener(() => OnClick?.Invoke(this));
     }
     public void LinkToSlot(ItemSlot _slot)
