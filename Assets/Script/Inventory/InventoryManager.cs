@@ -15,11 +15,6 @@ public class InventoryManager : Singleton<InventoryManager>
         InventoryData = new();
         Inventorys = new();
     }
-    private void Start()
-    {
-        SaveManager.Instance.SaveEvent.AddListener(OnSave);
-        SaveManager.Instance.LoadEvent.AddListener(OnLoad);
-    }
     public void New()
     {
         InventoryData = new();

@@ -131,11 +131,7 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector
         
     }
 
-    private void Start()
-    {
-        SaveManager.Instance.LoadEvent.AddListener(OnLoad);
-        SaveManager.Instance.SaveEvent.AddListener(OnSave);
-    }
+
     public void SetBook(string BookPath, int _bookMark = 1)
     {
         ResetView();

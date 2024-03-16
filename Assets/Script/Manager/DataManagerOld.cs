@@ -21,8 +21,6 @@ public class DataManager_Old : Singleton<DataManager_Old>
     public Dictionary<string, Dictionary<string, string>> CharacterData;
     public Dictionary<string, Dictionary<string, string>> LanguageData;
 
-    public PlayerSaveData playerSaveData;
-
     public static readonly string NODATA = "NoData";
 
     QuickSaveReader reader { get; set; }
@@ -65,7 +63,6 @@ public class DataManager_Old : Singleton<DataManager_Old>
     {
         base.Awake();
         LoadData();
-        playerSaveData = new("SaveData01.json");
     }
 
 
@@ -105,50 +102,5 @@ public class DataManager_Old : Singleton<DataManager_Old>
     }
 
 }
-public class PlayerSaveData
-{
-    public Dictionary<string, Dictionary<string, string>> JsonSaveData;
-    public string JsonSavePath;
 
-    public string bookPath;
-    public int bookMark;
-
-    int Money;
-
-    Dictionary<string, int> PlayerItem;
-
-    public PlayerSaveData(string SaveName)
-    {
-        LoadSaveData(SaveName);
-    }
-    public void SaveData()
-    {
-        bookPath = DialogManager.Instance.bookReader.BookPath;
-        bookMark = DialogManager.Instance.bookMark;
-
-        JsonSaveData["Dialog"]["BookPath"] = bookPath;
-        JsonSaveData["Dialog"]["BookMark"] = bookMark.ToString();
-
-
-        string tempJson = JsonConvert.SerializeObject(JsonSaveData, Formatting.Indented);
-        File.WriteAllText(JsonSavePath, tempJson);
-    }
-
-    public void LoadSaveData(string SaveName)
-    {
-        string tempJson;
-
-        JsonSavePath = Path.Combine(Application.streamingAssetsPath, "SaveData", SaveName);
-        tempJson = File.ReadAllText(JsonSavePath);
-        JsonSaveData = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(tempJson);
-
-        bookPath = JsonSaveData["Dialog"]["BookPath"];
-        bookMark = int.Parse(JsonSaveData["Dialog"]["BookMark"]);
-
-        //DialogManager.Instance.SetBook(bookPath);
-        //DialogManager.Instance.bookMark = bookMark;
-        
-    }
-
-}
 

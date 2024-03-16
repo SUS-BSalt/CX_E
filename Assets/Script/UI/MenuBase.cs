@@ -13,4 +13,23 @@ public class MenuBase : MonoBehaviour
     {
         gameObject.SetActive(true);
     }
+    public virtual void OnToggleEnter()
+    {
+
+    }
+    public virtual void OnToggleExit()
+    {
+
+    }
+    public virtual void Toggle(bool toggle)
+    {
+        if (toggle)
+        {
+            OnToggleEnter();
+        }
+        else
+        {
+            OnToggleExit();
+        }
+    }
 }

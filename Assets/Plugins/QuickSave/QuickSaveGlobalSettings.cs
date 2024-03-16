@@ -1,5 +1,6 @@
 ﻿using CI.QuickSave.Core.Serialisers;
 using Newtonsoft.Json;
+using System.IO;
 using UnityEngine;
 
 namespace CI.QuickSave
@@ -9,7 +10,7 @@ namespace CI.QuickSave
         /// <summary>
         /// The path to save data to - defaults to Application.persistentDataPath
         /// </summary>
-        public static string StorageLocation { get; set; } = Application.persistentDataPath;
+        public static string StorageLocation { get; set; } = Path.Combine(Application.streamingAssetsPath,"SaveData");
 
         /// <summary>
         /// Register a new json converter

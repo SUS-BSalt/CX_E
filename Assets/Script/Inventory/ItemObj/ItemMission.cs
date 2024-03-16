@@ -46,7 +46,6 @@ public class ItemMission : ItemBase , ITimeLimitItem
 
     public override void SetProfileFromJson(string _JsonString)
     {
-        _JsonString = "{" + _JsonString + "}";
         data = JsonConvert.DeserializeObject<ProfileData>(_JsonString);
     }
 

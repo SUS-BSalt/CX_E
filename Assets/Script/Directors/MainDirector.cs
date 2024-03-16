@@ -47,6 +47,15 @@ public class MainDirector : Singleton<MainDirector>, IDirector
     public void OnLoad()
     {
         _Date = SaveManager.Instance.LoadData<int>("Date");
+        Dialog.gameObject.SetActive(true);
+        Dialog.OnLoad();
+        Inventory.OnLoad();
+    }
+    public void OnSave()
+    {
+        SaveManager.Instance.SaveData<int>("Date", _Date);
+        Dialog.OnSave();
+        Inventory.OnSave();
     }
     public void NewGame()
     {
@@ -74,10 +83,7 @@ public class MainDirector : Singleton<MainDirector>, IDirector
     {
         ExecEvent(argv.Skip(1).ToList());
     }
-    public void OnSave()
-    {
-        SaveManager.Instance.SaveData<int>("Date",_Date);
-    }
+
     public void StartNewDay(int Date)
     {
         _Date = Date;
@@ -103,11 +109,13 @@ public class MainDirector : Singleton<MainDirector>, IDirector
                 }
             case "Jump":
                 {
+                    ///Jump-index
                     Dialog.bookMark = int.Parse(eventArgv[1]);
                     break;
                 }
             case "Chapter":
                 {
+                    ///Chapter
                     Dialog.bookChapter = int.Parse(eventArgv[1]);
                     Dialog.bookReader.ChangeBookChapter(Dialog.bookChapter);
                     Dialog.bookMark = 2;
