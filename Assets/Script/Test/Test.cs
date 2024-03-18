@@ -6,13 +6,13 @@ using UnityEngine;
 
 public class Test : MonoBehaviour
 {
-    public string testString;
-    public List<string> s = new(100);
-    private void Start()
+    private void OnEnable()
     {
-        print(s.Count);
-        s[10] = "1";
-        s[200] = "2";
+        print("e");
+    }
+    private void OnDisable()
+    {
+        print("d");
     }
 }
 
