@@ -16,12 +16,9 @@ public interface IPerformance
     public void PerformanceEnd();
 }
 
-public class MainDirector : Singleton<MainDirector>, IDirector
+public class MainDirector : Singleton<MainDirector>, IDirector, IDataUser
 {
-    public IPerformance currentPerformance { get => _currentPerformance; set => _currentPerformance = value; }
-    private IPerformance _currentPerformance;
-    public int Date { get => _Date; private set => _Date = value; }
-    private int _Date;
+    public IPerformance currentPerformance { get; set; }
     [SerializeField]
     private TableDataSO GameScriptSO;
     private ITableDataReader GameScript;
@@ -32,6 +29,14 @@ public class MainDirector : Singleton<MainDirector>, IDirector
     public GameObject LoadingMenu;
     public GameObject MainMenu;
 
+    public MainDirectorData GlobalData;
+
+    public int Date { get; set; }
+
+    string IDataUser.PackName { get { return "Global"; } }
+
+    bool IDataUser.IndividualizedSave { get { return true; } }
+
     protected override void Awake()
     {
         base.Awake();
@@ -39,24 +44,23 @@ public class MainDirector : Singleton<MainDirector>, IDirector
     }
     private void Start()
     {
-        SaveManager.Instance.SaveEvent.AddListener(OnSave);
-        SaveManager.Instance.LoadEvent.AddListener(OnLoad);
-        Dialog.plotTrigger += GamePlot;
+        //SaveManager.Instance.SaveEvent.AddListener(OnSave);
+        //SaveManager.Instance.LoadEvent.AddListener(OnLoad);
         Trader.TradeEnd += TradeEndMethod;
     }
-    public void OnLoad()
-    {
-        _Date = SaveManager.Instance.LoadData<int>("Date");
-        Dialog.gameObject.SetActive(true);
-        Dialog.OnLoad();
-        Inventory.OnLoad();
-    }
-    public void OnSave()
-    {
-        SaveManager.Instance.SaveData<int>("Date", _Date);
-        Dialog.OnSave();
-        Inventory.OnSave();
-    }
+    //public void OnLoad()
+    //{
+    //    _Date = SaveManager.Instance.LoadData<int>("Date");
+    //    Dialog.gameObject.SetActive(true);
+    //    Dialog.OnLoad();
+    //    Inventory.OnLoad();
+    //}
+    //public void OnSave()
+    //{
+    //    SaveManager.Instance.SaveData<int>("Date", _Date);
+    //    Dialog.OnSave();
+    //    Inventory.OnSave();
+    //}
     public void NewGame()
     {
         LoadingMenu.SetActive(true);
@@ -67,7 +71,7 @@ public class MainDirector : Singleton<MainDirector>, IDirector
         //print(Dialog.data.bookMark + "why?");
         //print(Dialog.data.currentBookChapter+"why?");
         Date = 1;
-        StartNewDay(Date);
+        NextStep();
         Dialog.OnClick();
 
         MainMenu.SetActive(false);
@@ -82,12 +86,6 @@ public class MainDirector : Singleton<MainDirector>, IDirector
     public void GamePlot(List<string> argv)
     {
         ExecEvent(argv.Skip(1).ToList());
-    }
-
-    public void StartNewDay(int Date)
-    {
-        _Date = Date;
-        ExecEvents(GameScript.GetData<string>(_Date + 1, 2));
     }
     public void ExecEvents(string __EventString)
     {
@@ -145,6 +143,12 @@ public class MainDirector : Singleton<MainDirector>, IDirector
                 {
                     //GT-Trade-InventoryID-number
                     Trader.StartTrader(eventArgv[1]);
+                    break;
+                }
+            case ("NextDay"):
+                {
+                    //NextDay
+                    NextDay();
                     break;
                 }
         }
@@ -210,9 +214,30 @@ public class MainDirector : Singleton<MainDirector>, IDirector
         }
     }
 
+    public void NextDay()
+    {
+        GlobalData.Date += 1;
+    }
+
     public void NextStep()
     {
-        Date++;
-        StartNewDay(Date);
+        GlobalData.GameScriptIndex += 1;
+        string _EventString = DataManager.Instance.GetData<string>("Profile", "MainDirectorScript", GlobalData.GameScriptIndex.ToString(),"1");
+        ExecEvents(_EventString);
+    }
+
+    DataPack IDataUser.SerializedToDataPack()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    T IDataUser.GetData<T>(params string[] argv)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    bool IDataUser.SetData<T>(T value, params string[] argv)
+    {
+        throw new System.NotImplementedException();
     }
 }

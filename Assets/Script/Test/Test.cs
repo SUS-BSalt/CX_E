@@ -6,14 +6,15 @@ using UnityEngine;
 
 public class Test : MonoBehaviour
 {
-    private void OnEnable()
+    private void Start()
     {
-        print("e");
+        //print(DataManager.Instance.GetData<int>("Profile", "TestTable", "1", "1"));
+        //DataManager.Instance.SetData<int>(5,"Profile", "TestTable", "1", "1");
+        //print(DataManager.Instance.GetData<int>("Profile", "TestTable", "1", "1"));
+        //DataManager.Instance.SetData<int>(2, "Profile", "TestTable", "1", "1");
+        //print(DataManager.Instance.GetData<int>("Profile", "TestTable", "1", "1"));
     }
-    private void OnDisable()
-    {
-        print("d");
-    }
+
 }
 
 

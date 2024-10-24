@@ -29,27 +29,27 @@ public class DialogCharacterManager : MonoBehaviour
             }
         }
     }
-    public void OnSave()
-    {
-        foreach (string characters in characterDict.Keys)
-        {
-            data.charactersData[characters] = characterDict[characters].data;
-        }
-        SaveManager.Instance.SaveData<DialogCharacterManagerData>("DialogCharacterManagerData",data);
-    }
-    public void OnLoad()
-    {
-        data = SaveManager.Instance.LoadData<DialogCharacterManagerData>("DialogCharacterManagerData");
-        foreach(string characters in characterDict.Keys)
-        {
-            characterDict[characters].data = data.charactersData[characters];
-            if (characterDict[characters].isOnStage)
-            {
-                characterDict[characters].OnAppear();
-            }
-        }
+    //public void OnSave()
+    //{
+    //    foreach (string characters in characterDict.Keys)
+    //    {
+    //        data.charactersData[characters] = characterDict[characters].data;
+    //    }
+    //    SaveManager.Instance.SaveData<DialogCharacterManagerData>("DialogCharacterManagerData",data);
+    //}
+    //public void OnLoad()
+    //{
+    //    data = SaveManager.Instance.LoadData<DialogCharacterManagerData>("DialogCharacterManagerData");
+    //    foreach(string characters in characterDict.Keys)
+    //    {
+    //        characterDict[characters].data = data.charactersData[characters];
+    //        if (characterDict[characters].isOnStage)
+    //        {
+    //            characterDict[characters].OnAppear();
+    //        }
+    //    }
 
-    }
+    //}
     public void SetCharacter(string _characterName, string face, Vector2 anchorPos)
     {
         SetCharacterFace(_characterName, face);

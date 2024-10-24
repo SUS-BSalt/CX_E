@@ -8,16 +8,19 @@ public class SaveSysMSG : MonoBehaviour
     public SaveField selectedSaveField;
 
     public Text text;
+    public Text 存档时间;
+    public Text 存档类型;
 
     public Button savebut;
     public Button loadbut;
-
 
     public void SelectSaveField(GameObject gameObject)
     {
         selectedSaveField = gameObject.GetComponent<SaveField>();
 
-        text.text = gameObject.name;
+        text.text = selectedSaveField.header.DMSG;
+        存档时间.text = selectedSaveField.header.LastModifyTime.ToString("yyyy.M.d  HH:mm");
+        存档类型.text = selectedSaveField.header.存档类型;
 
         if (savebut != null)
         {
@@ -30,20 +33,5 @@ public class SaveSysMSG : MonoBehaviour
         
         //print(gameObject.name);
     }
-    public void NewGame()
-    {
-
-    }
-    public void Load()
-    {
-        print("SaveSysMSG Load");
-        SaveManager.Instance.ChangeSaveField(selectedSaveField);
-        SaveManager.Instance.LoadFromFile();
-    }
-    public void Save()
-    {
-        //print("SaveSysMSG Save");
-        SaveManager.Instance.ChangeSaveField(selectedSaveField);
-        SaveManager.Instance.SaveToFile();
-    }
+    
 }

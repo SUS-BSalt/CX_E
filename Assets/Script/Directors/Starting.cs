@@ -73,20 +73,20 @@ public class Starting : MonoBehaviour
         //Dialog.OnClick();
         //Dialog.OnClick();
     }
-    public void OnLoad()
-    {
-        print("Director Load");
-        Dialog.gameObject.SetActive(true);
-        Dialog.OnLoad();
+    //public void OnLoad()
+    //{
+    //    print("Director Load");
+    //    Dialog.gameObject.SetActive(true);
+    //    Dialog.OnLoad();
         
-        Inventory.OnLoad();
-    }
-    public void OnSave()
-    {
-        print("Director Save");
-        Dialog.OnSave();
-        Inventory.OnSave();
-    }
+    //    Inventory.OnLoad();
+    //}
+    //public void OnSave()
+    //{
+    //    print("Director Save");
+    //    Dialog.OnSave();
+    //    Inventory.OnSave();
+    //}
     public void StartTradingScence()
     {
 

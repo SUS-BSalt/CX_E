@@ -20,27 +20,27 @@ public class InventoryManager : Singleton<InventoryManager>
         InventoryData = new();
         Inventorys = new();
     }
-    public void OnSave()
-    {
-        foreach(Inventory i in Inventorys.Values)
-        {
-            i.OnSave();
-            SetData(i.data);
-        }
-        SaveManager.Instance.SaveData<Dictionary<string, InventoryDataClass>>("InventoryData", InventoryData);
-    }
-    public void OnLoad()
-    {
-        Inventorys.Clear();
-        InventoryData = SaveManager.Instance.LoadData<Dictionary<string, InventoryDataClass>>("InventoryData");
-        foreach(InventoryDataClass i in InventoryData.Values)
-        {
-            Inventory inventory = new();
-            inventory.data = i;
-            inventory.OnLoad();
-            Inventorys.Add(inventory.InventoryID, inventory);
-        }
-    }
+    //public void OnSave()
+    //{
+    //    foreach(Inventory i in Inventorys.Values)
+    //    {
+    //        i.OnSave();
+    //        SetData(i.data);
+    //    }
+    //    SaveManager.Instance.SaveData<Dictionary<string, InventoryDataClass>>("InventoryData", InventoryData);
+    //}
+    //public void OnLoad()
+    //{
+    //    Inventorys.Clear();
+    //    InventoryData = SaveManager.Instance.LoadData<Dictionary<string, InventoryDataClass>>("InventoryData");
+    //    foreach(InventoryDataClass i in InventoryData.Values)
+    //    {
+    //        Inventory inventory = new();
+    //        inventory.data = i;
+    //        inventory.OnLoad();
+    //        Inventorys.Add(inventory.InventoryID, inventory);
+    //    }
+    //}
     public InventoryDataClass GetData(string InventoryID)
     {
         if (!InventoryData.ContainsKey(InventoryID))

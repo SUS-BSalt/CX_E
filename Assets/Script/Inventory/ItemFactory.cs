@@ -20,7 +20,7 @@ public class ItemFactory : Singleton<ItemFactory>
         {
             return null;
         }
-        ITableDataReader ItemTable = GameDataManager.Instance.Tables["ItemData"];
+        ITableDataReader ItemTable = DataManager.Instance.GetData<ITableDataReader>("Profile","ItemData");
         ItemBase item = CreateItemInstance(ItemTable.GetData<string>(ItemID, 1));
         item.SetProfileFromTable(ItemTable, ItemID);
         item.SetProfileFromJson(_ItemProfileJsonString);

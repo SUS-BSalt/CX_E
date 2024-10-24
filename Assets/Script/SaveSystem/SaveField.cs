@@ -15,47 +15,56 @@ public class SaveField : MonoBehaviour
     public bool canSave = true;
     public bool canLoad = true;
     public bool isSaveFileExist;
-
     public Text text;
-
-    public void LoadHeader()
+    public void Init()
     {
         canSave = true;
         canLoad = true;
-        text.text = "NoData";
-        QuickSaveReader reader;
+        text.text = gameObject.name;
+    }
+    public bool LoadHeader(out SaveDataHeader header)
+    {
+        header = new SaveDataHeader();
         try
         {
-            reader = QuickSaveReader.Create(gameObject.name);
+            QuickSaveReader reader = QuickSaveReader.Create(gameObject.name);
 
-            if (reader.TryRead<SaveDataHeader>("Header", out header))
+            if (reader.TryRead<SaveDataHeader>("SaveDataHeader", out header))
             {
-                text.text = header.LastModifyTime.ToString();
-                return;
+                return true;
             }
             else
             {
-                canLoad = false;
+                header.DMSG = "文件损坏";
+                return false;
                 //print(gameObject.name + "大概是文件损坏");
             }
         }
         catch (QuickSaveException)
         {
-            isSaveFileExist = false;
-            canLoad = false;
+            header.DMSG = "空存档位";
+            return false;
             //print(gameObject.name + "文件不存在");
         }
     }
-
-    public void CreatHeader()
+    private void Start()
     {
-        header = new SaveDataHeader();
-        header.LastModifyTime = DateTime.Now;
+        Init();
+        if(LoadHeader(out header))
+        {
+            text.text = header.DMSG;
+        }
+        else
+        {
+            canLoad = false;
+            text.text = header.DMSG;
+        }
     }
+}
 
-    private void OnEnable()
-    {
-        LoadHeader();
-    }
-
+public class SaveDataHeader
+{
+    public DateTime LastModifyTime;
+    public string DMSG = "空";
+    public string 存档类型 = "";
 }

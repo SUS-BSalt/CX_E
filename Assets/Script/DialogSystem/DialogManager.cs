@@ -25,28 +25,25 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector
     public DialogPrintingManager printWindow;
     public DialogCharacterManager characterManager;
 
-    [Serializable]
-    public delegate void PlotTrigger(List<string> EventPatch);
-    public PlotTrigger plotTrigger;
 
-    public void OnLoad()
-    {
-        ResetView();
-        SetLanguage();
-        data = SaveManager.Instance.LoadData<DialogDataClass>("Dialog");
-        SetBook(bookPath,bookMark);
-        bookReader.ChangeBookChapter(data.currentBookChapter);
-        bookMark -= 1;
-        characterManager.OnLoad();
-        OnClick();
-        print("loadDialog");
-    }
-    public void OnSave()
-    {
-        SaveManager.Instance.SaveData<DialogDataClass>("Dialog",data);
-        characterManager.OnSave();
-        print("saveDialog");
-    }
+    //public void OnLoad()
+    //{
+    //    ResetView();
+    //    SetLanguage();
+    //    data = SaveManager.Instance.LoadData<DialogDataClass>("Dialog");
+    //    SetBook(bookPath,bookMark);
+    //    bookReader.ChangeBookChapter(data.currentBookChapter);
+    //    bookMark -= 1;
+    //    characterManager.OnLoad();
+    //    OnClick();
+    //    print("loadDialog");
+    //}
+    //public void OnSave()
+    //{
+    //    SaveManager.Instance.SaveData<DialogDataClass>("Dialog",data);
+    //    characterManager.OnSave();
+    //    print("saveDialog");
+    //}
     public void ResetView()
     {
         characterManager.ResetView();
@@ -94,7 +91,7 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector
                 }
             case "GT":
                 {
-                    plotTrigger?.Invoke(eventArgv);
+                    MainDirector.Instance.ExecEvent(eventArgv);
                     //print("t");
                     break;
                 }
