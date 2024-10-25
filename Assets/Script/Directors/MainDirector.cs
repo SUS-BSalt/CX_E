@@ -32,7 +32,7 @@ public class MainDirector : Singleton<MainDirector>, IDirector, IDataUser
 
     public MainDirectorData GlobalData;
 
-    public int Date { get; set; }
+    public int Date { get=> GlobalData.Date; set=> GlobalData.Date=value; }
 
     string IDataUser.PackName { get { return "Global"; } }
 
@@ -55,20 +55,19 @@ public class MainDirector : Singleton<MainDirector>, IDirector, IDataUser
         StopEveryThing();
         if(GlobalData.currentPerformance == "Dialog")
         {
-            Dialog.PerformanceStart();
+            //Dialog.PerformanceStart();
         }
     }
     public void StopEveryThing()
     {
-        Dialog.PerformanceEnd();
+        //Dialog.PerformanceEnd();
     }
     public void NewGame()
     {
         LoadingMenu.SetActive(true);
         this.Inventory.New();
-        Dialog.gameObject.SetActive(true);
-        Dialog.data = new(1, "", 1);
-        Dialog.SetBook("test.xlsx");
+        //Dialog.PerformanceStart();
+        Dialog.Init("test.xlsx");
         //print(Dialog.data.bookMark + "why?");
         //print(Dialog.data.currentBookChapter+"why?");
         Date = 1;
@@ -116,13 +115,13 @@ public class MainDirector : Singleton<MainDirector>, IDirector, IDataUser
                 {
                     ///Chapter
                     Dialog.bookChapter = int.Parse(eventArgv[1]);
-                    Dialog.bookReader.ChangeBookChapter(Dialog.bookChapter);
+                    Dialog.ReadManager.bookReader.ChangeBookChapter(Dialog.bookChapter);
                     Dialog.bookMark = 2;
                     break;
                 }
             case "Book":
                 {
-                    Dialog.SetBook(eventArgv[1]);
+                    Dialog.ReadManager.SetBook(eventArgv[1]);
                     Dialog.bookMark = 2;
                     break;
                 }

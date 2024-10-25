@@ -11,7 +11,7 @@ public class DialogReadManager : MonoBehaviour
 
     public string bookPath { get { return DialogManager.Instance.bookPath; } set { DialogManager.Instance.bookPath = value; } }
     public int bookMark { get { return DialogManager.Instance.bookMark; } set { DialogManager.Instance.bookMark = value; } }
-    public int bookChapter { get { return DialogManager.Instance.bookChapter; } set { DialogManager.Instance.bookChapter = value; print("sb set chapter"); } }
+    public int bookChapter { get { return DialogManager.Instance.bookChapter; } set { DialogManager.Instance.bookChapter = value;} }
 
     public void SetLanguage()
     {
@@ -66,14 +66,14 @@ public class DialogReadManager : MonoBehaviour
         }
         if (names.Count() == 1)
         {
-            return "[" + characterManager.GetCharacterColorInRichText(names[0]) + names[0] + "</color>" + "]";
+            return "[" + DialogManager.Instance.characterManager.GetCharacterColorInRichText(names[0]) + names[0] + "</color>" + "]";//DataManager.Instance.GetData<string>("Profile","Character","") 
         }
         else
         {
-            output = "[" + characterManager.GetCharacterColorInRichText(names[0]) + names[0] + "</color>";
+            output = "[" + DialogManager.Instance.characterManager.GetCharacterColorInRichText(names[0]) + names[0] + "</color>";
             for (int i = 1; i < names.Count(); i++)
             {
-                output = output + "&" + characterManager.GetCharacterColorInRichText(names[i]) + names[i] + "</color>";
+                output = output + "&" + DialogManager.Instance.characterManager.GetCharacterColorInRichText(names[i]) + names[i] + "</color>";
             }
             return output + "]";
         }

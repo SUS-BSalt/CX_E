@@ -63,9 +63,11 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector,IDa
         data = JsonConvert.DeserializeObject<DialogDataClass>(DataManager.Instance.GetDataPack("Dialog").DeserializeData);
         logWindow.Logs = data.Logs;
     }
-    public void NewSet()
+    public void Init(string BookPath)
     {
-
+        ResetView();
+        data = new();
+        ReadManager.SetBook(BookPath);
     }
 
     void IPerformance.PerformanceEnd()

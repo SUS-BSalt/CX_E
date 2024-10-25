@@ -13973,6 +13973,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1710249163}
     m_Modifications:
+    - target: {fileID: 1415738469947187629, guid: 29e0c76d6351e5442b41b16200252caa, type: 3}
+      propertyPath: characterIndex
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8860515399658606963, guid: 29e0c76d6351e5442b41b16200252caa, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -26403,11 +26407,13 @@ MonoBehaviour:
     bookMark: 0
     currentBookPath: 
     currentBookChapter: 0
-  bookPathLanguageModify: 
+    Logs: []
   controller: {fileID: 1815984506}
   logWindow: {fileID: 1815984509}
   printWindow: {fileID: 1815984508}
   characterManager: {fileID: 1815984507}
+  ReadManager: {fileID: 0}
+  DialogMenu: {fileID: 0}
 --- !u!114 &1815984505
 MonoBehaviour:
   m_ObjectHideFlags: 0
