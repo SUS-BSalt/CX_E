@@ -6,7 +6,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
-public class TradeManager : MonoBehaviour
+public class TradeManager : MonoBehaviour,IPerformance
 {
     public GameObject TraderObj;
     public int leftValue;
@@ -28,6 +28,9 @@ public class TradeManager : MonoBehaviour
     public UnityEngine.UI.Button RejectButton;
     public delegate void _TradeEnd();
     public _TradeEnd TradeEnd;
+
+    IDirector IPerformance.BaseDirector { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
     public void StartTrader(string TargetInventoryID)
     {
         TraderObj.SetActive(true);
@@ -157,4 +160,13 @@ public class TradeManager : MonoBehaviour
         TradeCheck();
     }
 
+    void IPerformance.PerformanceStart()
+    {
+        throw new NotImplementedException();
+    }
+
+    void IPerformance.PerformanceEnd()
+    {
+        throw new NotImplementedException();
+    }
 }

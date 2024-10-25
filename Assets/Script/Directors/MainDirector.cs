@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 using static Starting;
 using Newtonsoft.Json.Bson;
+using Newtonsoft.Json;
 public interface IDirector
 {
     public IPerformance currentPerformance { get; set; }
@@ -12,8 +13,8 @@ public interface IDirector
 public interface IPerformance
 {
     public IDirector BaseDirector { get; set; }
-    public void PerformanceStart();
-    public void PerformanceEnd();
+    public void PerformanceStart();//这两个方法由导演调用，场景只需要在结束时调用导演的NextStep方法
+    public void PerformanceEnd();//这两个方法由导演调用，场景只需要在结束时调用导演的NextStep方法
 }
 
 public class MainDirector : Singleton<MainDirector>, IDirector, IDataUser
@@ -48,19 +49,19 @@ public class MainDirector : Singleton<MainDirector>, IDirector, IDataUser
         //SaveManager.Instance.LoadEvent.AddListener(OnLoad);
         Trader.TradeEnd += TradeEndMethod;
     }
-    //public void OnLoad()
-    //{
-    //    _Date = SaveManager.Instance.LoadData<int>("Date");
-    //    Dialog.gameObject.SetActive(true);
-    //    Dialog.OnLoad();
-    //    Inventory.OnLoad();
-    //}
-    //public void OnSave()
-    //{
-    //    SaveManager.Instance.SaveData<int>("Date", _Date);
-    //    Dialog.OnSave();
-    //    Inventory.OnSave();
-    //}
+    public void OnLoad()
+    {
+        GlobalData = JsonConvert.DeserializeObject<MainDirectorData>( DataManager.Instance.GetDataPack("GlobalData").DeserializeData);
+        StopEveryThing();
+        if(GlobalData.currentPerformance == "Dialog")
+        {
+            Dialog.PerformanceStart();
+        }
+    }
+    public void StopEveryThing()
+    {
+        Dialog.PerformanceEnd();
+    }
     public void NewGame()
     {
         LoadingMenu.SetActive(true);

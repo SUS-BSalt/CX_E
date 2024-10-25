@@ -27,7 +27,6 @@ public class Starting : MonoBehaviour
 
         Dialog.gameObject.SetActive(true);
         Dialog.SetBook("Conversation/01.xlsx");
-        Dialog.plotTrigger += GamePlot;
         Dialog.OnClick();
         
         MainMenu.SetActive(false);
@@ -40,7 +39,6 @@ public class Starting : MonoBehaviour
         Dialog.gameObject.SetActive(true);
         Dialog.data = new(1,"", 1);
         Dialog.SetBook("test.xlsx");
-        Dialog.plotTrigger += GamePlot;
         Dialog.OnClick();
         //print(Dialog.data.bookMark + "why?");
         //print(Dialog.data.currentBookChapter+"why?");

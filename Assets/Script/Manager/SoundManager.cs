@@ -12,5 +12,11 @@ public class SoundManager : Singleton<SoundManager>
     public void ChangeMasterVolume(float value)
     {
         AudioListener.volume = value;
+        DataManager.Instance.SetData<float>(value, "Profile", "LocalOption", "3", "2");
+    }
+    protected override void Awake()
+    {
+        base.Awake();
+        ChangeMasterVolume(DataManager.Instance.GetData<float>("Profile", "LocalOption", "3","2"));
     }
 }

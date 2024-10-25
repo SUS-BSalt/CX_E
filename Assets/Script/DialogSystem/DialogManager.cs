@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -7,10 +8,10 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector
+public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector,IDataUser
 {
     public DialogDataClass data;
-    public string bookPathLanguageModify;
+
     public string bookPath { get { return data.currentBookPath; } set { data.currentBookPath = value; } }
     public int bookMark { get { return data.bookMark; } set { data.bookMark = value; } }
     public int bookChapter { get { return data.currentBookChapter; } set { data.currentBookChapter = value;print("sb set chapter"); } }
@@ -18,35 +19,65 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector
     public IDirector BaseDirector { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public IPerformance currentPerformance { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-    public BookReader bookReader;
+    string IDataUser.PackName => throw new NotImplementedException();
+
+    bool IDataUser.IndividualizedSave => throw new NotImplementedException();
+
+    IDirector IPerformance.BaseDirector { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
     public DialogController controller;
     //public
     public DialogLogWindowManager logWindow;
     public DialogPrintingManager printWindow;
     public DialogCharacterManager characterManager;
+    public DialogReadManager ReadManager;
+    public GameObject DialogMenu;
+
+    DataPack IDataUser.SerializedToDataPack()
+    {
+        DataPack newpack = new();
+        newpack.PackName = "Dialog";
+        data.Logs = logWindow.Logs;
+        newpack.DeserializeData = JsonConvert.SerializeObject(data);
+        return newpack;
+    }
+
+    T IDataUser.GetData<T>(params string[] argv)
+    {
+        throw new NotImplementedException();
+    }
+
+    bool IDataUser.SetData<T>(T value, params string[] argv)
+    {
+        throw new NotImplementedException();
+    }
+
+    void IPerformance.PerformanceStart()
+    {
+        DialogMenu.SetActive(true);
+    }
+
+    public void Load()
+    {
+        ResetView();
+        data = JsonConvert.DeserializeObject<DialogDataClass>(DataManager.Instance.GetDataPack("Dialog").DeserializeData);
+        logWindow.Logs = data.Logs;
+    }
+    public void NewSet()
+    {
+
+    }
+
+    void IPerformance.PerformanceEnd()
+    {
+        DialogMenu.SetActive(false);
+    }
 
 
-    //public void OnLoad()
-    //{
-    //    ResetView();
-    //    SetLanguage();
-    //    data = SaveManager.Instance.LoadData<DialogDataClass>("Dialog");
-    //    SetBook(bookPath,bookMark);
-    //    bookReader.ChangeBookChapter(data.currentBookChapter);
-    //    bookMark -= 1;
-    //    characterManager.OnLoad();
-    //    OnClick();
-    //    print("loadDialog");
-    //}
-    //public void OnSave()
-    //{
-    //    SaveManager.Instance.SaveData<DialogDataClass>("Dialog",data);
-    //    characterManager.OnSave();
-    //    print("saveDialog");
-    //}
     public void ResetView()
     {
         characterManager.ResetView();
+        logWindow.CleanLogMenu();
     }
     public void ExecEvent(string _EventString)
     {
@@ -113,35 +144,9 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector
             ExecEvent(Eventpach);
         }
     }
-    public void SetLanguage()
-    {
-        bookPathLanguageModify = "Book/CN/";
-        //print("setLan");
-    }
-
-    private void OnEnable()
-    {
-        //print("Lan？");
-        SetLanguage();
-        //print(bookPathLanguageModify);
-        //SetBook(DataManager_Old.Instance.playerSaveData.bookPath, DataManager_Old.Instance.playerSaveData.bookMark);
-        
-    }
 
 
-    public void SetBook(string BookPath, int _bookMark = 1)
-    {
-        ResetView();
-        //print(Path.Combine(bookPathLanguageModify, BookPath));
-        //bookReader = new BookReader(bookPathLanguageModify + BookPath);
-        string path = Path.Combine(bookPathLanguageModify, BookPath);
-        //print(bookPathLanguageModify);
-        //print(path);
-        bookPath = BookPath;
-        bookReader = new BookReader(path);
-        bookMark = _bookMark;
-        logWindow.CleanLogMenu();
-    }
+
 
     public void OnClick()
     {
@@ -152,24 +157,19 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector
         else
         {
             bookMark += 1;
-            ExecPreEvent(bookReader.GetConcept(bookMark, 1));
+            ExecPreEvent(ReadManager.bookReader.GetConcept(bookMark, 1));
             StartTypingWord();
-            logWindow.Logs.Add(GetLogString(bookMark));
+            logWindow.Logs.Add(ReadManager.GetLogString(bookMark));
             logWindow.RefreshLogMenu();
         }
     }
-    public string GetLogString(int _bookMark)
-    {
-        string nameString = CombineSpiltedNameArry(SpiltNameNode(_bookMark));
-        string textString = GetCleanMainText(_bookMark);
-        return nameString + textString;
-    }//干净
+
     /// <summary>
     /// 开始打印文字
     /// </summary>
     public void StartTypingWord()
     {
-        printWindow.StartNewTyping(NameMethod(bookMark) + bookReader.GetConcept(bookMark, 4));
+        printWindow.StartNewTyping(NameMethod(bookMark) + ReadManager.bookReader.GetConcept(bookMark, 4));
         //printWindow.StartNewTyping();
     }
     public void StopTypingWord()
@@ -179,125 +179,30 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector
     }
 
 
-    public string ReadSentence(int _bookMark, bool isLogView)
-    {
-        if (isLogView)
-        {
-            
-        }
-        //bookReader.GetConcept(_bookMark);
-        return "";
-    }
     public string NameMethod(int _bookMark)//处理正文的名字一格
     {
         //TODO isSpeak是临时变量
         bool isSpeak = true;
         
-        string[] names = SpiltNameNode(_bookMark);
+        string[] names = ReadManager.SpiltNameNode(_bookMark);
 
         foreach(string name in names)
         {
             characterManager.PlayCharacterSpeakAnimation(name, isSpeak);
         }
-        return CombineSpiltedNameArry(names);
+        return ReadManager.CombineSpiltedNameArry(names);
     }
-    public string[] SpiltNameNode(int _bookMark)
-    {
-        string nameString;
-        try
-        {
-            nameString = bookReader.GetConcept(_bookMark, 3);
-        }
-        catch
-        {
-            return new string[0];
-        }
+ 
 
-        if (nameString == "NoData")
-        {
-            return new string[0];
-        }
-        return nameString.Split("+");
-    }//将正文名字格拆开
-    public string CombineSpiltedNameArry(string[] names)
-    {
-        string output;
-        if (names.Count() == 0)
-        {
-            return "";
-        }
-        if (names.Count() == 1)
-        {
-            return "[" + characterManager.GetCharacterColorInRichText(names[0]) + names[0] + "</color>" + "]";
-        }
-        else
-        {
-            output = "[" + characterManager.GetCharacterColorInRichText(names[0]) + names[0] + "</color>";
-            for (int i = 1; i < names.Count(); i++)
-            {
-                output = output + "&" + characterManager.GetCharacterColorInRichText(names[i]) + names[i] + "</color>";
-            }
-            return output + "]";
-        }
-    }//将拆开后的名字格合起来
-    public string GetCleanMainText(int _bookMark)
-    {
-        int currentWordIndex = 0;
-        string TargetText = bookReader.GetConcept(_bookMark, 4);
-        string CurrentText = "";
 
-        while (currentWordIndex < TargetText.Length)
-        {
-            if (TargetText[currentWordIndex].ToString() == "$")
-            {
-                currentWordIndex++;
-                CurrentText += TargetText[currentWordIndex].ToString();
-                currentWordIndex++;//指向下一个字符
-            }//当遇到$字符时，直接把下一个字符输出到屏幕上，不做特殊处理
-            else if (TargetText[currentWordIndex].ToString() == "[")
-            {
-                do
-                {
-                    CurrentText += TargetText[currentWordIndex].ToString();
-                    currentWordIndex++;
-                }
-                while (TargetText[currentWordIndex].ToString() != "]");//
-                CurrentText += TargetText[currentWordIndex].ToString();
-                currentWordIndex++;//指向下一个字符
-            }//当遇到[方括号时，直接把括号内，包括括号本身输出，不对括号内的特殊符号做处理
-            else if (TargetText[currentWordIndex].ToString() == "{")
-            {
-                currentWordIndex++;//跳过{
-                while (TargetText[currentWordIndex].ToString() != "}")
-                {
-                    currentWordIndex++;
-                }//跳过所有{}
-                currentWordIndex++;//指向下一个字符
-            }//当遇到{花括号时，意味着有自定义的方法需要执行，全部跳过
-            else
-            {
-                CurrentText += TargetText[currentWordIndex].ToString();
-                currentWordIndex++;//指向下一个字符
-            }//不是特殊符号，正常输出
-        }
-        return CurrentText;
-    }
-
-    public void PerformanceStart()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void PerformanceEnd()
-    {
-        throw new NotImplementedException();
-    }
 
     public void NextStep()
     {
         OnClick();
         OnClick();
     }
+
+
 }
 [Serializable]
 public class DialogDataClass
@@ -305,6 +210,7 @@ public class DialogDataClass
     public int bookMark;
     public string currentBookPath;
     public int currentBookChapter;
+    public List<string> Logs = new(500);
 
 
     public DialogDataClass(int _bookMark = 1, string _currentBookPath = "", int _currentBookChapter = 1)

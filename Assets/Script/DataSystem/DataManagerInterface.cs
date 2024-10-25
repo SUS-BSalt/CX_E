@@ -35,7 +35,7 @@ public interface IDataUser
     /// </summary>
     public bool IndividualizedSave { get; }
     /// <summary>
-    /// DataManager从此属性取得需要保存到本地的数据
+    /// DataManager从此属性取得需要保存到本地的数据，其实该方法就相当于保存时所需执行的操作
     /// </summary>
     public DataPack SerializedToDataPack();
 

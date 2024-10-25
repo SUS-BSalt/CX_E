@@ -72,9 +72,6 @@ public class ProfileDataManager : Singleton<ProfileDataManager>, IDataUser
         {
             Tables.Add(table.tableName, table.GetTable());
         }
-    }
-    private void OnEnable()
-    {
         DataManager.Instance.RegisterDataUser(this);
     }
 }

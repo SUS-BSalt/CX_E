@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: LocalOption
   m_EditorClassIdentifier: 
   filePath: GameData/LocalOption.xlsx
-  tableName: ItemData
+  tableName: LocalOption
   sheet: 1
   fileType: 0
