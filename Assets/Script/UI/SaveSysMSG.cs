@@ -17,10 +17,24 @@ public class SaveSysMSG : MonoBehaviour
     public void SelectSaveField(GameObject gameObject)
     {
         selectedSaveField = gameObject.GetComponent<SaveField>();
+        selectedSaveField.LoadHeader();
 
-        text.text = selectedSaveField.header.DMSG;
-        存档时间.text = selectedSaveField.header.LastModifyTime.ToString("yyyy.M.d  HH:mm");
-        存档类型.text = selectedSaveField.header.存档类型;
+        if (selectedSaveField.header.isExist)
+        {
+            text.text = selectedSaveField.header.DMSG;
+            存档时间.text = selectedSaveField.header.LastModifyTime.ToString("yyyy.M.d  HH:mm");
+            存档类型.text = selectedSaveField.header.存档类型;
+        }
+        else
+        {
+            text.text = selectedSaveField.header.DMSG;
+            存档时间.text = "";
+            存档类型.text = "";
+        }
+        if(selectedSaveField.SaveFileName == SaveManager.Instance.AutoSaveFiled.SaveFileName)
+        {
+            selectedSaveField.canSave = false;
+        }
 
         if (savebut != null)
         {
@@ -30,8 +44,17 @@ public class SaveSysMSG : MonoBehaviour
         {
             loadbut.interactable = selectedSaveField.canLoad;
         }
+        SaveManager.Instance.ChangeSaveField(selectedSaveField);
         
         //print(gameObject.name);
+    }
+    public void Load()
+    {
+        SaveManager.Instance.LoadFromFile();
+    }
+    public void Save()
+    {
+        SaveManager.Instance.SaveToFile();
     }
     
 }

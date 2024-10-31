@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class Test : MonoBehaviour
 {
+    public float ©чак;
     private void Start()
     {
         //print(DataManager.Instance.GetData<int>("Profile", "TestTable", "1", "1"));
@@ -14,7 +15,14 @@ public class Test : MonoBehaviour
         //DataManager.Instance.SetData<int>(2, "Profile", "TestTable", "1", "1");
         //print(DataManager.Instance.GetData<int>("Profile", "TestTable", "1", "1"));
     }
-
+    private void Awake()
+    {
+        print("fff");
+    }
+    private void OnEnable()
+    {
+        print("eee");
+    }
 }
 
 

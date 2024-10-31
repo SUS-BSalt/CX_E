@@ -49,7 +49,7 @@ public class ProfileDataManager : Singleton<ProfileDataManager>, IDataUser
             }
             catch
             {
-                throw new DataGetException($"在访问{argv[0]}的数据时遇到错误，访问者传递了:'{argv}'的参数");
+                throw new DataGetException($"在访问{argv[0]}的数据时遇到错误，访问者传递了:'{argv[1]}'的参数");
             }
         }
         else

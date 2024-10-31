@@ -15,7 +15,8 @@ public class DialogReadManager : MonoBehaviour
 
     public void SetLanguage()
     {
-        bookPathLanguageModify = "Book/CN/";
+        int lanIndex = DataManager.Instance.GetData<int>("Profile","LocalOption","2","2");
+        bookPathLanguageModify = DataManager.Instance.GetData<string>("Profile", "LanguageMap", lanIndex.ToString(), "2");
         //print("setLan");
     }
     // Start is called before the first frame update
@@ -39,6 +40,8 @@ public class DialogReadManager : MonoBehaviour
     }
     public void SetBook(string BookPath, int _bookMark = 1)
     {
+        //print("where are yous");
+        SetLanguage();
         //print(Path.Combine(bookPathLanguageModify, BookPath));
         //bookReader = new BookReader(bookPathLanguageModify + BookPath);
         string path = Path.Combine(bookPathLanguageModify, BookPath);

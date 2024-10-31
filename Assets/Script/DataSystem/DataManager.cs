@@ -7,7 +7,6 @@ public class DataManager : Singleton<DataManager>
 {
     private DataManagerBase worker;
 
-    public UnityEvent Loaded;
     public void RegisterDataUser(IDataUser dataUser){ worker.RegisterDataUser(dataUser);}
     public DataPack GetDataPack(string packName) { return worker.GetDataPack(packName); }
     public T GetData<T>(params string[] argv) { return worker.GetData<T>(argv); }
@@ -16,7 +15,6 @@ public class DataManager : Singleton<DataManager>
     public void LoadFromFile(string SaveData)
     {
         worker.Init(SaveData);
-        Loaded.Invoke();
     }
     public string SaveToFile()
     {

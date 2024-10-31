@@ -79,6 +79,10 @@ public class DataManagerBase
         Org_datas = new();
         DataUsers = new();
         Org_datas = JsonConvert.DeserializeObject<Dictionary<string, DataPack>>(Json_Org_Data);
+        foreach(string key in Org_datas.Keys)
+        {
+            Debug.Log(key);
+        }
     }
     public string SerializeDatas()
     {
@@ -93,12 +97,14 @@ public class DataManagerBase
             {
                 Modifided_data.Add(key,Org_datas[key]);
             }
+            Debug.Log(key);
         }
         foreach(string key in DataUsers.Keys)
         {
             if (!Modifided_data.ContainsKey(key) && DataUsers[key].IndividualizedSave)//检查这份数据是否需要保存到本地
             {
                 Modifided_data.Add(key, DataUsers[key].SerializedToDataPack());
+                Debug.Log(key);
             }
         }
         return JsonConvert.SerializeObject(Modifided_data, Formatting.Indented);
@@ -122,7 +128,7 @@ public class DataManagerBase
     }
     public DataPack GetDataPack(string packName)
     {
-        if (!DataUsers.ContainsKey(packName))
+        if (!Org_datas.ContainsKey(packName))
         {
             throw new Exception("未找到数据包:" + packName);
         }

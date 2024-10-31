@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0870a1870338c2b478b95eba4eaf8148, type: 3}
   m_Name: LocalOption
   m_EditorClassIdentifier: 
-  filePath: GameData/LocalOption.xlsx
+  filePath: LocalOption.xlsx
   tableName: LocalOption
   sheet: 1
   fileType: 0

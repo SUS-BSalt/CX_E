@@ -19,9 +19,9 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector,IDa
     public IDirector BaseDirector { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public IPerformance currentPerformance { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-    string IDataUser.PackName => throw new NotImplementedException();
+    string IDataUser.PackName => "Dialog";
 
-    bool IDataUser.IndividualizedSave => throw new NotImplementedException();
+    bool IDataUser.IndividualizedSave => true;
 
     IDirector IPerformance.BaseDirector { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
@@ -38,7 +38,7 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector,IDa
         DataPack newpack = new();
         newpack.PackName = "Dialog";
         data.Logs = logWindow.Logs;
-        newpack.DeserializeData = JsonConvert.SerializeObject(data);
+        newpack.DeserializeData = JsonConvert.SerializeObject(data,Formatting.Indented);
         return newpack;
     }
 
@@ -52,25 +52,41 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector,IDa
         throw new NotImplementedException();
     }
 
-    void IPerformance.PerformanceStart()
+    public void PerformanceStart()
     {
         DialogMenu.SetActive(true);
+        InputManager.Instance.GrabControl(controller);
+        try
+        {
+            DataManager.Instance.RegisterDataUser(this);
+        }
+        catch
+        {
+
+        }
     }
 
     public void Load()
     {
-        ResetView();
+        print("load");
         data = JsonConvert.DeserializeObject<DialogDataClass>(DataManager.Instance.GetDataPack("Dialog").DeserializeData);
+        characterManager.Init();
+        ResetView();
         logWindow.Logs = data.Logs;
+        logWindow.RefreshLogMenu();
+        ReadManager.SetBook(data.currentBookPath, data.bookMark);
+        printWindow.textBox.text = ReadManager.GetLogString(data.bookMark);
     }
     public void Init(string BookPath)
     {
-        ResetView();
+        //print("where are you");
         data = new();
+        characterManager.Init();
+        ResetView();
         ReadManager.SetBook(BookPath);
     }
 
-    void IPerformance.PerformanceEnd()
+    public void PerformanceEnd()
     {
         DialogMenu.SetActive(false);
     }
@@ -147,7 +163,11 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector,IDa
         }
     }
 
-
+    protected override void Awake()
+    {
+        base.Awake();
+        //print("where are youawake");
+    }
 
 
     public void OnClick()

@@ -25,22 +25,26 @@ public class MainDirector : Singleton<MainDirector>, IDirector, IDataUser
     private ITableDataReader GameScript;
 
     public DialogManager Dialog;
+    public MenuBase DialogMenu;
     public TradeManager Trader;
     public InventoryManager Inventory;
+    public MenuBase Phone;
     public GameObject LoadingMenu;
-    public GameObject MainMenu;
+    public MenuBase MainMenu;
 
     public MainDirectorData GlobalData;
 
     public int Date { get=> GlobalData.Date; set=> GlobalData.Date=value; }
 
-    string IDataUser.PackName { get { return "Global"; } }
+    string IDataUser.PackName { get { return "GlobalData"; } }
 
     bool IDataUser.IndividualizedSave { get { return true; } }
 
     protected override void Awake()
     {
         base.Awake();
+        GlobalData = new();
+        DataManager.Instance.RegisterDataUser(this);
         GameScript = GameScriptSO.GetTable();
     }
     private void Start()
@@ -48,6 +52,7 @@ public class MainDirector : Singleton<MainDirector>, IDirector, IDataUser
         //SaveManager.Instance.SaveEvent.AddListener(OnSave);
         //SaveManager.Instance.LoadEvent.AddListener(OnLoad);
         Trader.TradeEnd += TradeEndMethod;
+        SaveManager.Instance.Loaded.AddListener(OnLoad);
     }
     public void OnLoad()
     {
@@ -55,26 +60,47 @@ public class MainDirector : Singleton<MainDirector>, IDirector, IDataUser
         StopEveryThing();
         if(GlobalData.currentPerformance == "Dialog")
         {
-            //Dialog.PerformanceStart();
+            Dialog.PerformanceStart();
+            Dialog.Load();
+            MainMenu.OnExit(Phone);
         }
     }
     public void StopEveryThing()
     {
-        //Dialog.PerformanceEnd();
+        Dialog.PerformanceEnd();
+        Phone.gameObject.SetActive(false);
     }
     public void NewGame()
     {
+        GlobalData = new();
         LoadingMenu.SetActive(true);
         this.Inventory.New();
-        //Dialog.PerformanceStart();
+        currentPerformance = Dialog;
+        Dialog.PerformanceStart();
         Dialog.Init("test.xlsx");
         //print(Dialog.data.bookMark + "why?");
         //print(Dialog.data.currentBookChapter+"why?");
         Date = 1;
         NextStep();
         Dialog.OnClick();
-
-        MainMenu.SetActive(false);
+        MainMenu.OnExit(Phone);
+        //print("fuck");
+        LoadingMenu.SetActive(false);
+    }
+    public void TestScence()
+    {
+        GlobalData = new();
+        LoadingMenu.SetActive(true);
+        this.Inventory.New();
+        currentPerformance = Dialog;
+        Dialog.PerformanceStart();
+        Dialog.Init("test.xlsx");
+        //print(Dialog.data.bookMark + "why?");
+        //print(Dialog.data.currentBookChapter+"why?");
+        Date = 1;
+        NextStep();
+        Dialog.OnClick();
+        MainMenu.OnExit(Phone);
         //print("fuck");
         LoadingMenu.SetActive(false);
     }
@@ -149,6 +175,11 @@ public class MainDirector : Singleton<MainDirector>, IDirector, IDataUser
                 {
                     //NextDay
                     NextDay();
+                    break;
+                }
+            case ("AutoSave"):
+                {
+                    SaveManager.Instance.AutoSave();
                     break;
                 }
         }
@@ -228,12 +259,27 @@ public class MainDirector : Singleton<MainDirector>, IDirector, IDataUser
 
     DataPack IDataUser.SerializedToDataPack()
     {
-        throw new System.NotImplementedException();
+        if ((object)currentPerformance == Dialog)
+        {
+            GlobalData.currentPerformance = "Dialog";
+        }
+        DataPack newpack = new();
+        newpack.PackName = "GlobalData";
+        newpack.DeserializeData = JsonConvert.SerializeObject(GlobalData);
+
+        return newpack;
     }
 
     T IDataUser.GetData<T>(params string[] argv)
     {
-        throw new System.NotImplementedException();
+        switch (argv[0])
+        {
+            case ("Date"):
+            {
+                    return (T)(object)Date;
+            }
+        }
+        throw new System.Exception($"没有该成员:{argv[0]}");
     }
 
     bool IDataUser.SetData<T>(T value, params string[] argv)

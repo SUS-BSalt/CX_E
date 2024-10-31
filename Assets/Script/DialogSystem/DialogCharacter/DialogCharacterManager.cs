@@ -163,16 +163,21 @@ public class DialogCharacterManager : MonoBehaviour
     }
     private void Awake()
     {
+        Init();
+
+        //CharacterData = new BookReader();
+    }
+
+    public void Init()
+    {
         data = new();
         characterDict = new Dictionary<string, DialogCharacter>();
         charactersData = new Dictionary<string, DialogcharacterDataStruct>();
         foreach (DialogCharacter character in characterList)
         {
-            characterDict.Add(DataManager_Old.Instance.CharacterName[character.characterIndex], character);
-            charactersData.Add(DataManager_Old.Instance.CharacterName[character.characterIndex], character.data);
+            characterDict.Add(character.characterIndex, character);
+            charactersData.Add(character.characterIndex, character.data);
         }
-        //print("where are you");
-        //CharacterData = new BookReader();
     }
 }
 
