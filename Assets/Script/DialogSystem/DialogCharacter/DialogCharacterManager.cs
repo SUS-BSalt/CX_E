@@ -9,47 +9,45 @@ using UnityEngine.TextCore.Text;
 
 public class DialogCharacterManager : MonoBehaviour
 {
-    public DialogCharacterManagerData data;
-    
     public BookReader CharacterData;
 
     public List<DialogCharacter> characterList;//它的目的仅限于方便的批量导入角色信息到下面的字典里
 
     public Dictionary<string, DialogCharacter> characterDict;//用角色名字访问，是为了方便作者写文
-    public Dictionary<string,DialogcharacterDataStruct> charactersData { get { return data.charactersData; }set { data.charactersData = value; } }
 
     public void ResetView()
     {
         foreach (string characters in characterDict.Keys)
         {
-            characterDict[characters].data = data.charactersData[characters];
             if (characterDict[characters].isOnStage)
             {
                 characterDict[characters].OnDisappear();
             }
         }
     }
-    //public void OnSave()
-    //{
-    //    foreach (string characters in characterDict.Keys)
-    //    {
-    //        data.charactersData[characters] = characterDict[characters].data;
-    //    }
-    //    SaveManager.Instance.SaveData<DialogCharacterManagerData>("DialogCharacterManagerData",data);
-    //}
-    //public void OnLoad()
-    //{
-    //    data = SaveManager.Instance.LoadData<DialogCharacterManagerData>("DialogCharacterManagerData");
-    //    foreach(string characters in characterDict.Keys)
-    //    {
-    //        characterDict[characters].data = data.charactersData[characters];
-    //        if (characterDict[characters].isOnStage)
-    //        {
-    //            characterDict[characters].OnAppear();
-    //        }
-    //    }
+    public void OnSave()
+    {
+        foreach (string characters in characterDict.Keys)
+        {
+            if (DialogManager.Instance.data.charactersData.ContainsKey(characters))
+            {
+                DialogManager.Instance.data.charactersData[characters] = characterDict[characters].data;
+            }
+            DialogManager.Instance.data.charactersData.Add(characters, characterDict[characters].data);
+        }
 
-    //}
+    }
+    public void OnLoad()
+    {
+        foreach (string characters in characterDict.Keys)
+        {
+            characterDict[characters].data = DialogManager.Instance.data.charactersData[characters];
+            if (characterDict[characters].isOnStage)
+            {
+                characterDict[characters].OnAppear();
+            }
+        }
+    }
     public void SetCharacter(string _characterName, string face, Vector2 anchorPos)
     {
         SetCharacterFace(_characterName, face);
@@ -170,19 +168,13 @@ public class DialogCharacterManager : MonoBehaviour
 
     public void Init()
     {
-        data = new();
         characterDict = new Dictionary<string, DialogCharacter>();
-        charactersData = new Dictionary<string, DialogcharacterDataStruct>();
         foreach (DialogCharacter character in characterList)
         {
-            characterDict.Add(character.characterIndex, character);
-            charactersData.Add(character.characterIndex, character.data);
+            characterDict.Add(DataManager.Instance.GetData<string>("Profile","CharacterName",character.characterIndex, DataManager.Instance.GetData<int>("Profile","LocalOption","2","2").ToString()), character);
+            //characterDict添加数据，key值为角色名字，坐标是角色的编号以及语言的编号
         }
     }
 }
 
-public class DialogCharacterManagerData
-{
-    public Dictionary<string,DialogcharacterDataStruct> charactersData;
-}
 

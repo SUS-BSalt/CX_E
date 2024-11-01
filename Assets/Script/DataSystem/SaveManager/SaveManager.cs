@@ -51,7 +51,7 @@ public class SaveManager : Singleton<SaveManager>
 
         header.DMSG = formattedDate;
 
-        if (currentSaveField == AutoSaveFiled)
+        if (currentSaveField.SaveFileName == AutoSaveFiled.SaveFileName)
         {
             header.存档类型 = "自动保存";
         }
@@ -64,9 +64,9 @@ public class SaveManager : Singleton<SaveManager>
     }
     public void AutoSave()
     {
+        ChangeSaveField(AutoSaveFiled);
         QuickSaveWriter writer = QuickSaveWriter.Create(AutoSaveFiled.gameObject.name);
         SaveDataHeader Header = CreatHeader();
-
         writer.Write<SaveDataHeader>("SaveDataHeader", CreatHeader());
         writer.Write<string>("SaveData", DataManager.Instance.SaveToFile());
         writer.Commit();

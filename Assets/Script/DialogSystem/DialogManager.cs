@@ -140,7 +140,7 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector,IDa
                 }
             case "GT":
                 {
-                    MainDirector.Instance.ExecEvent(eventArgv);
+                    MainDirector.Instance.ExecEvent(eventArgv.Skip(1).ToList());
                     //print("t");
                     break;
                 }
@@ -233,6 +233,7 @@ public class DialogDataClass
     public string currentBookPath;
     public int currentBookChapter;
     public List<string> Logs = new(500);
+    public Dictionary<string, DialogcharacterDataStruct> charactersData = new();
 
 
     public DialogDataClass(int _bookMark = 1, string _currentBookPath = "", int _currentBookChapter = 1)

@@ -75,6 +75,7 @@ public class MainDirector : Singleton<MainDirector>, IDirector, IDataUser
         GlobalData = new();
         LoadingMenu.SetActive(true);
         this.Inventory.New();
+        MainMenu.OnExit(Phone);
         currentPerformance = Dialog;
         Dialog.PerformanceStart();
         Dialog.Init("test.xlsx");
@@ -83,7 +84,7 @@ public class MainDirector : Singleton<MainDirector>, IDirector, IDataUser
         Date = 1;
         NextStep();
         Dialog.OnClick();
-        MainMenu.OnExit(Phone);
+        
         //print("fuck");
         LoadingMenu.SetActive(false);
     }
@@ -179,6 +180,7 @@ public class MainDirector : Singleton<MainDirector>, IDirector, IDataUser
                 }
             case ("AutoSave"):
                 {
+                    print("autoSave");
                     SaveManager.Instance.AutoSave();
                     break;
                 }
