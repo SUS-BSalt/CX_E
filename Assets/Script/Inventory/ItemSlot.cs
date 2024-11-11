@@ -7,39 +7,34 @@ using UnityEngine.Events;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Information;
 using Unity.VisualScripting;
 
-public delegate void SlotChangedDelegate();
 /// <summary>
 /// 
 /// </summary>
 [Serializable]
-public class ItemSlot : IModel
+public class ItemSlot
 {
     /// <summary>
     /// 这里不用unityevent是因为unityevent本质还是一个需要实例化的类型，它并不线程安全
     /// </summary>
-    public SlotChangedDelegate SlotChanged;
-    public ItemSlotDataClass data;
-    public enum SlotType
-    {
-        allType,mission,matter,information,relation,other
-    }
-    public SlotType type { get { return data.slotType; } set { data.slotType = value; } }
-
-    public int ItemID { get { return data.ItemID; } set { data.ItemID = value; } }
-    [Serialize]
+    [JsonIgnore]
+    public UnityEvent SlotChanged = new();
+    /// <summary>
+    /// Slot是否为空
+    /// </summary>
+    public bool isClean = true;
+    [JsonIgnore]
     public ItemBase item;
-    public string itemClassName;
-    public const string NO_ITEM = "NO_ITEM";
-    public int stackingQuantity { get { return data.stackingQuantity; } set { data.stackingQuantity = value; } }
-    public ItemSlot(SlotType _type)
+    public int itemID;
+    public string SerializedString;
+    /// <summary>
+    /// 物品堆叠数量
+    /// </summary>
+    public int stackingQuantity;
+    public ItemSlot()
     {
-        data = new();
-        type = _type;
     }
-
-    public ItemSlot(ItemSlotDataClass data)
+    public ItemSlot(string profileString)
     {
-        OnLoad(data);
     }
     /// <summary>
     /// 取得当前item的用于显示在屏幕上的UI元素
@@ -69,10 +64,6 @@ public class ItemSlot : IModel
     public bool CanThisStack(ItemBase _item)
     {
         if(_item == null)//传入物品为空，返回false
-        {
-            return false;
-        }
-        if (_item.ItemType.SlotType != type && type != SlotType.allType)// 如果物品的存储类型与该slot不兼容，返回false
         {
             return false;
         }
@@ -165,9 +156,10 @@ public class ItemSlot : IModel
         {
             stackingQuantity += _addNumber;
         }
+        isClean = false;
+
+
         SlotChanged?.Invoke();
-        itemClassName =  item.GetType().ToString();
-        ItemID = item.ItemID;
         return true;
     }
     /// <summary>
@@ -192,36 +184,23 @@ public class ItemSlot : IModel
     public void CleanSlot()
     {
         item = null;
-        itemClassName = NO_ITEM;
-        ItemID = ItemFactory.NULL_ITEM_ID;
         stackingQuantity = 0;
+        isClean = true;
         SlotChanged?.Invoke();
     }
 
     public void OnSave()
     {
-        if(item != null)
-        {
-            data.ItemProfileInfo = item.GetProfileJson();
-        }
-        else
-        {
-            data.ItemID = ItemFactory.NULL_ITEM_ID;
-        }
+        if (isClean) { return; }
+        itemID = item.ItemID;
+        SerializedString = item.GetProfileJson();
     }
-    public void OnLoad(ItemSlotDataClass data)
+    public void OnLoad()
     {
-        this.data = data;
-        this.item = ItemFactory.CreateItem(data.ItemID, data.ItemProfileInfo);
+        if (isClean) { return; }
+        this.item = ItemFactory.CreateItem(itemID, SerializedString);
     }
 
 }
 
-public class ItemSlotDataClass
-{
-    public ItemSlot.SlotType slotType;
-    public int stackingQuantity;
-    public int ItemID;
-    public string ItemProfileInfo;
-}
 

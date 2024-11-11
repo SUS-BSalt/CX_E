@@ -49,20 +49,7 @@ public class Starting : MonoBehaviour
     }
     public void GamePlot(List<string> argv)
     {
-        switch (argv[1])
-        {
-            case ("Add"):
-                {
-                    //Trigger-Add-InventoryID-ItemID-{ProfileJson}-number
-                    InventoryManager.Instance.AddItemToInventory(argv[2], int.Parse(argv[3]), argv[4], int.Parse(argv[5]));
-                    break;
-                }
-            case ("Trade"):
-                {
-                    Trader.StartTrader(argv[2]);
-                    break;
-                }
-        }
+
     }
     public void TraderEndMethod()
     {

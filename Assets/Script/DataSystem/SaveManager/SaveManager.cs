@@ -28,7 +28,7 @@ public class SaveManager : Singleton<SaveManager>
     public void LoadFromFile()
     {
         QuickSaveReader reader = QuickSaveReader.Create(currentSaveField.SaveFileName);
-        DataManager.Instance.LoadFromFile(reader.Read<string>("SaveData"));
+        DataManager.Instance.LoadFromFile(reader.Read<Dictionary<string, DataPack>>("SaveData"));
         DataManager.Instance.RegisterDataUser(ProfileDataManager.Instance);
         Loaded.Invoke();
     }
@@ -38,7 +38,8 @@ public class SaveManager : Singleton<SaveManager>
         SaveDataHeader Header = CreatHeader();
 
         writer.Write<SaveDataHeader>("SaveDataHeader", CreatHeader());
-        writer.Write<string>("SaveData", DataManager.Instance.SaveToFile());
+
+        writer.Write<Dictionary<string, DataPack>>("SaveData", DataManager.Instance.SaveToFile());
         writer.Commit();
         currentSaveField.LoadHeader();
     }
@@ -68,7 +69,7 @@ public class SaveManager : Singleton<SaveManager>
         QuickSaveWriter writer = QuickSaveWriter.Create(AutoSaveFiled.gameObject.name);
         SaveDataHeader Header = CreatHeader();
         writer.Write<SaveDataHeader>("SaveDataHeader", CreatHeader());
-        writer.Write<string>("SaveData", DataManager.Instance.SaveToFile());
+        writer.Write<Dictionary<string, DataPack>>("SaveData", DataManager.Instance.SaveToFile());
         writer.Commit();
     }
 

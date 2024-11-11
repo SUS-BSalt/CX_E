@@ -74,17 +74,16 @@ public class DataManagerBase
             }
         }
     }
-    public void Init(string Json_Org_Data)
+    public void Init(Dictionary<string, DataPack> Org_Data)
     {
-        Org_datas = new();
+        Org_datas = Org_Data;
         DataUsers = new();
-        Org_datas = JsonConvert.DeserializeObject<Dictionary<string, DataPack>>(Json_Org_Data);
         foreach(string key in Org_datas.Keys)
         {
-            Debug.Log(key);
+            //Debug.Log(key);
         }
     }
-    public string SerializeDatas()
+    public Dictionary<string, DataPack> SerializeDatas()
     {
         Dictionary<string, DataPack> Modifided_data = new();
         foreach(string key in Org_datas.Keys)
@@ -104,10 +103,10 @@ public class DataManagerBase
             if (!Modifided_data.ContainsKey(key) && DataUsers[key].IndividualizedSave)//检查这份数据是否需要保存到本地
             {
                 Modifided_data.Add(key, DataUsers[key].SerializedToDataPack());
-                Debug.Log(key);
+                //Debug.Log(key);
             }
         }
-        return JsonConvert.SerializeObject(Modifided_data, Formatting.Indented);
+        return Modifided_data;
     }
     public void RegisterDataUser(IDataUser dataUser)
     {
@@ -116,7 +115,7 @@ public class DataManagerBase
             throw new Exception("DataUser已注册:" + dataUser.PackName);
         }
         DataUsers.Add(dataUser.PackName, dataUser);
-        Debug.Log($"DataUser注册成功:{dataUser.PackName}");
+        //Debug.Log($"DataUser注册成功:{dataUser.PackName}");
     }
     public void UnrigisterDataUser(IDataUser dataUser)
     {

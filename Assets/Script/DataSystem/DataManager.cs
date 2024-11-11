@@ -12,11 +12,11 @@ public class DataManager : Singleton<DataManager>
     public T GetData<T>(params string[] argv) { return worker.GetData<T>(argv); }
     public bool SetData<T>(T value, params string[] argv) { return worker.SetData<T>(value, argv); }
     
-    public void LoadFromFile(string SaveData)
+    public void LoadFromFile(Dictionary<string, DataPack> SaveData)
     {
         worker.Init(SaveData);
     }
-    public string SaveToFile()
+    public Dictionary<string, DataPack> SaveToFile()
     {
         return worker.SerializeDatas();
     }

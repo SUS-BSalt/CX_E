@@ -16,8 +16,8 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector,IDa
     public int bookMark { get { return data.bookMark; } set { data.bookMark = value; } }
     public int bookChapter { get { return data.currentBookChapter; } set { data.currentBookChapter = value;print("sb set chapter"); } }
 
-    public IDirector BaseDirector { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    public IPerformance currentPerformance { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public IDirector BaseDirector { get; set; }
+    public IPerformance currentPerformance { get; set; }
 
     string IDataUser.PackName => "Dialog";
 
@@ -38,6 +38,8 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector,IDa
         DataPack newpack = new();
         newpack.PackName = "Dialog";
         data.Logs = logWindow.Logs;
+        characterManager.OnSave();
+        //print(data.charactersData["南希"].anchorPos);
         newpack.DeserializeData = JsonConvert.SerializeObject(data,Formatting.Indented);
         return newpack;
     }
@@ -52,8 +54,9 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector,IDa
         throw new NotImplementedException();
     }
 
-    public void PerformanceStart()
+    public void PerformanceStart(IDirector Caller)
     {
+        BaseDirector = Caller;
         DialogMenu.SetActive(true);
         InputManager.Instance.GrabControl(controller);
         try
@@ -68,10 +71,9 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector,IDa
 
     public void Load()
     {
-        print("load");
-        data = JsonConvert.DeserializeObject<DialogDataClass>(DataManager.Instance.GetDataPack("Dialog").DeserializeData);
-        characterManager.Init();
         ResetView();
+        data = JsonConvert.DeserializeObject<DialogDataClass>(DataManager.Instance.GetDataPack("Dialog").DeserializeData);
+        characterManager.OnLoad();
         logWindow.Logs = data.Logs;
         logWindow.RefreshLogMenu();
         ReadManager.SetBook(data.currentBookPath, data.bookMark);
@@ -108,6 +110,26 @@ public class DialogManager : Singleton<DialogManager>,IPerformance,IDirector,IDa
         //Debug.Log(eventArgv[0]);
         switch (eventArgv[0])
         {
+            case "Jump":
+                {
+                    ///Jump-index
+                    bookMark = int.Parse(eventArgv[1]);
+                    break;
+                }
+            case "Chapter":
+                {
+                    ///Chapter
+                    bookChapter = int.Parse(eventArgv[1]);
+                    ReadManager.bookReader.ChangeBookChapter(bookChapter);
+                    bookMark = 2;
+                    break;
+                }
+            case "Book":
+                {
+                    ReadManager.SetBook(eventArgv[1]);
+                    bookMark = 2;
+                    break;
+                }
             case "SetPos":
                 {
                     characterManager.SetCharacterPos(eventArgv[1], new Vector2(float.Parse(eventArgv[2]), float.Parse(eventArgv[3])));
@@ -233,7 +255,7 @@ public class DialogDataClass
     public string currentBookPath;
     public int currentBookChapter;
     public List<string> Logs = new(500);
-    public Dictionary<string, DialogcharacterDataStruct> charactersData = new();
+    public Dictionary<string, DialogcharacterData> charactersData = new();
 
 
     public DialogDataClass(int _bookMark = 1, string _currentBookPath = "", int _currentBookChapter = 1)

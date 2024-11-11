@@ -29,19 +29,25 @@ public class DialogCharacterManager : MonoBehaviour
     {
         foreach (string characters in characterDict.Keys)
         {
+            characterDict[characters].data.OnSave();
             if (DialogManager.Instance.data.charactersData.ContainsKey(characters))
             {
                 DialogManager.Instance.data.charactersData[characters] = characterDict[characters].data;
             }
-            DialogManager.Instance.data.charactersData.Add(characters, characterDict[characters].data);
+            else
+            {
+                DialogManager.Instance.data.charactersData.Add(characters, characterDict[characters].data);
+            }
         }
 
     }
     public void OnLoad()
     {
+        Init();
         foreach (string characters in characterDict.Keys)
         {
             characterDict[characters].data = DialogManager.Instance.data.charactersData[characters];
+            characterDict[characters].data.OnLoad();
             if (characterDict[characters].isOnStage)
             {
                 characterDict[characters].OnAppear();
@@ -172,6 +178,7 @@ public class DialogCharacterManager : MonoBehaviour
         foreach (DialogCharacter character in characterList)
         {
             characterDict.Add(DataManager.Instance.GetData<string>("Profile","CharacterName",character.characterIndex, DataManager.Instance.GetData<int>("Profile","LocalOption","2","2").ToString()), character);
+            character.Init();
             //characterDict添加数据，key值为角色名字，坐标是角色的编号以及语言的编号
         }
     }

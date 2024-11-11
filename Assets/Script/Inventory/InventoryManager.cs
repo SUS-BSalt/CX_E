@@ -1,86 +1,100 @@
+using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
 /// 一坨屎，别看，因为看了折寿
 /// </summary>
-public class InventoryManager : Singleton<InventoryManager>
+public class InventoryManager : Singleton<InventoryManager>, IDataUser
 {
-    public Dictionary<string, InventoryDataClass> InventoryData;
     public Dictionary<string, Inventory> Inventorys;
-    
+
+    public T GetData<T>(params string[] argv)
+    {
+        throw new System.Exception("请用InventoryManager内建的函数查找物体");
+    }
+    public bool SetData<T>(T value, params string[] argv)
+    {
+        throw new System.Exception("请用InventoryManager内建的函数添加物体");
+    }
+
+    public string PackName => "Inventory";
+
+    public bool IndividualizedSave => true;
+
     protected override void Awake()
     {
         base.Awake();
-        InventoryData = new();
-        Inventorys = new();
     }
     public void New()
     {
-        InventoryData = new();
         Inventorys = new();
-    }
-    //public void OnSave()
-    //{
-    //    foreach(Inventory i in Inventorys.Values)
-    //    {
-    //        i.OnSave();
-    //        SetData(i.data);
-    //    }
-    //    SaveManager.Instance.SaveData<Dictionary<string, InventoryDataClass>>("InventoryData", InventoryData);
-    //}
-    //public void OnLoad()
-    //{
-    //    Inventorys.Clear();
-    //    InventoryData = SaveManager.Instance.LoadData<Dictionary<string, InventoryDataClass>>("InventoryData");
-    //    foreach(InventoryDataClass i in InventoryData.Values)
-    //    {
-    //        Inventory inventory = new();
-    //        inventory.data = i;
-    //        inventory.OnLoad();
-    //        Inventorys.Add(inventory.InventoryID, inventory);
-    //    }
-    //}
-    public InventoryDataClass GetData(string InventoryID)
-    {
-        if (!InventoryData.ContainsKey(InventoryID))
-        {
-
-            InventoryData.Add(InventoryID, new(InventoryID));
-
-        }
-        return InventoryData[InventoryID];
+        Init();
     }
     public Inventory GetInventory(string InventoryID)
     {
-        if (!InventoryData.ContainsKey(InventoryID))
+        if (!Inventorys.ContainsKey(InventoryID))
         {
-            Inventory inventory = new();
-            inventory.data = GetData(InventoryID);
-            inventory.OnLoad();
+            Inventory inventory = new(InventoryID);
             Inventorys.Add(inventory.InventoryID, inventory);
         }
         return Inventorys[InventoryID];
     }
-    public void SetData(InventoryDataClass data)
-    {
-        if (!InventoryData.ContainsKey(data.InventoryID))
-        {
-            InventoryData.Add(data.InventoryID, data);
-        }
-        else
-        {
-            InventoryData[data.InventoryID] = data;
-        }
-    }
-    public void AddItemToInventory(string InventoryID,int ItemID,string ItemProfileString, int number)
+
+    public void AddItemToInventoryWithSlotAuto(string InventoryID, int ItemID, string ItemProfileString, int number)
     {
         var item = ItemFactory.CreateItem(ItemID, ItemProfileString);
         GetInventory(InventoryID).AddItemWithAddSlotAuto(item, number);
     }
-    public int RequestItemFromInventory(string InventoryID, int ItemID, string ItemProfileString, int number)
+    public int RequestItemFromInventoryWithSlotAuto(string InventoryID, int ItemID, string ItemProfileString, int number)
     {
         var item = ItemFactory.CreateItem(ItemID, ItemProfileString);
-        return Inventorys[InventoryID].RequestItem(item, number);
+        int i = Inventorys[InventoryID].RequestItem(item, number);
+        Inventorys[InventoryID].RemoveCleanSlot();
+        return i;
+    }
+
+    public DataPack SerializedToDataPack()
+    {
+        foreach (Inventory i in Inventorys.Values)
+        {
+            i.OnSave();
+        }
+        DataPack newpack = new();
+        newpack.PackName = "Inventory";
+        newpack.DeserializeData = JsonConvert.SerializeObject(Inventorys,Formatting.Indented);
+        return newpack;
+    }
+    public void Init()
+    {
+        try
+        {
+            DataManager.Instance.RegisterDataUser(this);
+        }
+        catch
+        {
+
+        }
+        try
+        {
+            
+            OnLoad();
+            
+        }
+        catch
+        {
+            Inventorys = new();
+        }
+        
+    }
+    public void OnLoad()
+    {
+        string DeserializeData = DataManager.Instance.GetDataPack(PackName).DeserializeData;
+        Inventorys = JsonConvert.DeserializeObject<Dictionary<string, Inventory>>(DeserializeData);
+        foreach(Inventory i in Inventorys.Values)
+        {
+            i.OnLoad();
+        }
     }
 }

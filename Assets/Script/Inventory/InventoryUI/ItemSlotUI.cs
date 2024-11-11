@@ -15,6 +15,7 @@ public class ItemSlotUI : MonoBehaviour
     public event _ItemSlotOnSelect OnSelect;
     public event _ItemSlotOnSelect OnUnselect;
     public event _ItemSlotOnSelect OnClick;
+    public event _ItemSlotOnSelect SlotChanged;
     private void Awake()
     {
         UGUIElement.BeHighlight.AddListener(ctx=>OnSelect?.Invoke(this));
@@ -28,24 +29,27 @@ public class ItemSlotUI : MonoBehaviour
         if(slot != null)
         {
             //slot.SlotChanged -= UpdateSlotUI;
-            slot.SlotChanged -= UpdateSlotUI;
+            slot.SlotChanged.RemoveListener(UpdateSlotUI);
         }
+        
+
         slot = _slot;
-        UpdateSlotUI();
         //_slot.SlotChanged += this.UpdateSlotUI;
-        slot.SlotChanged += UpdateSlotUI;
+        slot.SlotChanged.AddListener(UpdateSlotUI);
+        UpdateSlotUI();
+
     }
     public void OnDestroy()
     {
         if (slot != null)
         {
             //slot.SlotChanged -= UpdateSlotUI;
-            slot.SlotChanged -= UpdateSlotUI;
+            slot.SlotChanged.RemoveListener(UpdateSlotUI);
         }
     }
     public void UpdateSlotUI()
     {
-        if(numberText != null)
+        if (numberText != null)
         {
             if(slot.stackingQuantity == 0)
             {
@@ -63,9 +67,10 @@ public class ItemSlotUI : MonoBehaviour
         itemObj = slot.GetItemUIIsntance();
         if(itemObj != null)
         {
-            itemObj = Instantiate(itemObj, new Vector3(0, 0, 0), Quaternion.identity);
-            itemObj.transform.SetParent(transform, false);
+            
+            itemObj.transform.SetParent(transform,false);
             itemObj.transform.SetAsFirstSibling();
         }
+        SlotChanged?.Invoke(this);
     }
 }

@@ -5,17 +5,7 @@ using System.Linq;
 using static Starting;
 using Newtonsoft.Json.Bson;
 using Newtonsoft.Json;
-public interface IDirector
-{
-    public IPerformance currentPerformance { get; set; }
-    public void NextStep();
-}
-public interface IPerformance
-{
-    public IDirector BaseDirector { get; set; }
-    public void PerformanceStart();//这两个方法由导演调用，场景只需要在结束时调用导演的NextStep方法
-    public void PerformanceEnd();//这两个方法由导演调用，场景只需要在结束时调用导演的NextStep方法
-}
+
 
 public class MainDirector : Singleton<MainDirector>, IDirector, IDataUser
 {
@@ -58,9 +48,10 @@ public class MainDirector : Singleton<MainDirector>, IDirector, IDataUser
     {
         GlobalData = JsonConvert.DeserializeObject<MainDirectorData>( DataManager.Instance.GetDataPack("GlobalData").DeserializeData);
         StopEveryThing();
-        if(GlobalData.currentPerformance == "Dialog")
+        Inventory.Init();
+        if (GlobalData.currentPerformance == "Dialog")
         {
-            Dialog.PerformanceStart();
+            Dialog.PerformanceStart(this);
             Dialog.Load();
             MainMenu.OnExit(Phone);
         }
@@ -76,15 +67,14 @@ public class MainDirector : Singleton<MainDirector>, IDirector, IDataUser
         LoadingMenu.SetActive(true);
         this.Inventory.New();
         MainMenu.OnExit(Phone);
-        currentPerformance = Dialog;
-        Dialog.PerformanceStart();
-        Dialog.Init("test.xlsx");
+        //currentPerformance = Dialog;
+        //Dialog.PerformanceStart(this);
+        //Dialog.Init("test.xlsx");
         //print(Dialog.data.bookMark + "why?");
         //print(Dialog.data.currentBookChapter+"why?");
         Date = 1;
         NextStep();
-        Dialog.OnClick();
-        
+        //Dialog.OnClick();
         //print("fuck");
         LoadingMenu.SetActive(false);
     }
@@ -93,15 +83,9 @@ public class MainDirector : Singleton<MainDirector>, IDirector, IDataUser
         GlobalData = new();
         LoadingMenu.SetActive(true);
         this.Inventory.New();
-        currentPerformance = Dialog;
-        Dialog.PerformanceStart();
-        Dialog.Init("test.xlsx");
-        //print(Dialog.data.bookMark + "why?");
-        //print(Dialog.data.currentBookChapter+"why?");
         Date = 1;
-        NextStep();
-        Dialog.OnClick();
         MainMenu.OnExit(Phone);
+        StartDialogPerformance("test.xlsx");
         //print("fuck");
         LoadingMenu.SetActive(false);
     }
@@ -109,10 +93,6 @@ public class MainDirector : Singleton<MainDirector>, IDirector, IDataUser
     {
         //print("s");
         Dialog.NextStep();
-    }
-    public void GamePlot(List<string> argv)
-    {
-        ExecEvent(argv.Skip(1).ToList());
     }
     public void ExecEvents(string __EventString)
     {
@@ -132,37 +112,28 @@ public class MainDirector : Singleton<MainDirector>, IDirector, IDataUser
                     IfEvent(eventArgv.Skip(1).ToList());
                     break;
                 }
-            case "Jump":
+            case ("Dialog"):
                 {
-                    ///Jump-index
-                    Dialog.bookMark = int.Parse(eventArgv[1]);
+                    ///Dialog-BookPath
+                    StartDialogPerformance(eventArgv[1]);
                     break;
                 }
-            case "Chapter":
+            case ("DialogSet"):
                 {
-                    ///Chapter
-                    Dialog.bookChapter = int.Parse(eventArgv[1]);
-                    Dialog.ReadManager.bookReader.ChangeBookChapter(Dialog.bookChapter);
-                    Dialog.bookMark = 2;
-                    break;
-                }
-            case "Book":
-                {
-                    Dialog.ReadManager.SetBook(eventArgv[1]);
-                    Dialog.bookMark = 2;
+                    Dialog.ExecEvent(eventArgv.Skip(1).ToList());
                     break;
                 }
             case ("Add"):
                 {
                     //Add-InventoryID-ItemID-{ProfileJson}-number
-                    InventoryManager.Instance.AddItemToInventory(eventArgv[1], int.Parse(eventArgv[2]), eventArgv[3], int.Parse(eventArgv[4]));
+                    InventoryManager.Instance.AddItemToInventoryWithSlotAuto(eventArgv[1], int.Parse(eventArgv[2]), eventArgv[3], int.Parse(eventArgv[4]));
                     //print("add");
                     break;
                 }
-            case ("Trust"):
+            case ("Remove"):
                 {
-                    //Trust-InventoryID-number
-                    InventoryManager.Instance.Inventorys[eventArgv[1]].Trust = int.Parse(eventArgv[2]);
+                    //Remove-InventoryID-ItemID-{ProfileJson}-number
+                    InventoryManager.Instance.RequestItemFromInventoryWithSlotAuto(eventArgv[1], int.Parse(eventArgv[2]), eventArgv[3], int.Parse(eventArgv[4]));
                     //print("add");
                     break;
                 }
@@ -178,9 +149,20 @@ public class MainDirector : Singleton<MainDirector>, IDirector, IDataUser
                     NextDay();
                     break;
                 }
+            case ("End"):
+                {
+                    //End
+                    currentPerformance.PerformanceEnd();
+                    NextStep();
+                    break;
+                }
+            case ("Next"):
+                {
+                    NextStep();
+                    break;
+                }
             case ("AutoSave"):
                 {
-                    print("autoSave");
                     SaveManager.Instance.AutoSave();
                     break;
                 }
@@ -257,6 +239,14 @@ public class MainDirector : Singleton<MainDirector>, IDirector, IDataUser
         GlobalData.GameScriptIndex += 1;
         string _EventString = DataManager.Instance.GetData<string>("Profile", "MainDirectorScript", GlobalData.GameScriptIndex.ToString(),"1");
         ExecEvents(_EventString);
+    }
+
+    public void StartDialogPerformance(string bookPath)
+    {
+        currentPerformance = Dialog;
+        Dialog.PerformanceStart(this);
+        Dialog.Init(bookPath);
+        Dialog.OnClick();
     }
 
     DataPack IDataUser.SerializedToDataPack()

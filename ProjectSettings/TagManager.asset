@@ -11,8 +11,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - MapLabel
+  - MapLine
   - 
   - 
   - 
@@ -43,4 +43,10 @@ TagManager:
     locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: MapLabel
+    uniqueID: 3165375115
+    locked: 0
+  - name: MapLine
+    uniqueID: 768835199
     locked: 0

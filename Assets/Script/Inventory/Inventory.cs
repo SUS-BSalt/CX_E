@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Information;
 using System;
 using System.Collections;
@@ -6,47 +7,60 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-public delegate void SlotListChangedDelegate();
 /// <summary>
 /// 对Inventory来说，slot实际上是“空间”概念的具象，Inventory需要slot的概念来规定空间的安排，而它不应该做更多事了，slot如何显示，显示在哪之类的信息该是由UI来全权负责
 /// </summary>
-public class Inventory : IModel
+public class Inventory
 {
-    public string InventoryID { get { return data.InventoryID; } set { data.InventoryID = value; } }
-    public int Trust;
-    public List<BuffBase> buffs;
-
-    [SerializeField]
-    public InventoryDataClass data;
-    [Serialize]
+    public string InventoryID;
     public List<ItemSlot> slots;
-    public SlotListChangedDelegate SlotListChanged;
-    public Inventory()
+
+    [Serialize]
+    [JsonIgnore]
+    public UnityEvent OnLoadE = new();
+    [JsonIgnore]
+    public UnityEvent<List<ItemSlot>> SlotRemoved = new();
+    [JsonIgnore]
+    public UnityEvent<List<ItemSlot>> SlotAdded = new();
+    public Inventory(string InventoryID)
     {
         slots = new();
-        buffs = new();
+        this.InventoryID = InventoryID;
     }
     public void CleanSlots()
     {
         slots = new();
     }
     
-    public void AddSlot(ItemSlot.SlotType type)
+    public void AddSlot()
     {
         if (slots == null)
         {
             slots = new();
         }
-        slots.Add(new ItemSlot(type));
-        SlotListChanged?.Invoke();
+        ItemSlot NewSlot = new();
+        slots.Add(NewSlot);
+
+        List<ItemSlot> ChangedSlot = new();
+        ChangedSlot.Add(NewSlot);
+        SlotAdded?.Invoke(ChangedSlot);
     }
     /// <summary>
     /// 清除空的Slot
     /// </summary>
     public void RemoveCleanSlot()
     {
-        slots.RemoveAll(_slot => _slot.item == null);
-        SlotListChanged?.Invoke();
+        List<ItemSlot> ChangedSlot = new();
+        foreach(ItemSlot slot in slots)
+        {
+            if (slot.isClean == true)
+            {
+                ChangedSlot.Add(slot);
+            }
+        }
+        SlotRemoved?.Invoke(ChangedSlot);
+        slots.RemoveAll(_slot => _slot.isClean == true);
+        
     }
     /// <summary>
     /// 添加物品，返回没能添加进库存的物品的数量
@@ -69,13 +83,14 @@ public class Inventory : IModel
     }
     public void AddItemWithAddSlotAuto(ItemBase item, int number)
     {
+
         int left = number;
         while(true)
         {
             left = AddItem(item, left);
             if(left != 0)
             {
-                AddSlot(item.ItemType.SlotType);
+                AddSlot();
             }
             if(left == 0)
             {
@@ -120,72 +135,18 @@ public class Inventory : IModel
     }
     public void OnSave()
     {
-        if (data == null)
-        {
-            data = new();
-        }
-        data.Clear();
-        data.Trust = Trust;
-        foreach(ItemSlot slot in slots)
+        foreach (ItemSlot slot in slots)
         {
             slot.OnSave();
-            data.ItemSlotData.Add(slot.data);
-        }
-        foreach(BuffBase buff in buffs)
-        {
-            data.BuffNames.Add(buff.GetType().ToString());
         }
     }
     public void OnLoad()
     {
-        slots.Clear();
-        buffs.Clear();
-        Trust = data.Trust;
-        for(int i = 0; i < data.ItemSlotData.Count; i++)
+        foreach(ItemSlot slot in slots)
         {
-            slots.Add(new(data.ItemSlotData[i]));
+            slot.OnLoad();
         }
-        SlotListChanged?.Invoke();
-        foreach(string buffname in data.BuffNames)
-        {
-            buffs.Add(BuffFactory.CreateBuffInstance(buffname));
-        }
-
-    }
-    public int GetItemValueAfterBuff(ItemBase item)
-    {
-        int value = 0;
-
-        foreach(BuffBase buff in buffs)
-        {
-            value += buff.ValueCheck(item) - item.value;
-        }
-        return value + item.value;
+        OnLoadE?.Invoke();
     }
 }
-public class InventoryDataClass
-{
-    public string InventoryID;
-    public int Trust;
-    public List<ItemSlotDataClass> ItemSlotData;
-    public List<string> BuffNames;
-    public InventoryDataClass()
-    {
-        Trust = 0;
-        ItemSlotData = new();
-        BuffNames = new();
-    }
-    public InventoryDataClass(string InventoryID)
-    {
-        Trust = 0;
-        ItemSlotData = new();
-        BuffNames = new();
-        this.InventoryID = InventoryID;
-    }
-    public void Clear()
-    {
-        ItemSlotData.Clear();
-        BuffNames.Clear();
-        Trust = 0;
-    }
-}
+

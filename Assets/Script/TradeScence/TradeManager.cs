@@ -29,7 +29,7 @@ public class TradeManager : MonoBehaviour,IPerformance
     public delegate void _TradeEnd();
     public _TradeEnd TradeEnd;
 
-    IDirector IPerformance.BaseDirector { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public IDirector BaseDirector { get ; set ; }
 
     public void StartTrader(string TargetInventoryID)
     {
@@ -53,16 +53,15 @@ public class TradeManager : MonoBehaviour,IPerformance
     }
     public void LinkToInventory(string TargetInventoryID)
     {
-        TraderLeftI = new();
+        TraderLeftI = new("TraderLeftI");
         TraderLeft.LinkToInventory(TraderLeftI);
         
-        TraderRightI = new();
+        TraderRightI = new("TraderRightI");
         TraderRight.LinkToInventory(TraderRightI);
         
         TraderTarget.LinkToInventory(InventoryManager.Instance.GetInventory(TargetInventoryID));
         TraderPlayer.LinkToInventory(InventoryManager.Instance.GetInventory("Player"));
 
-        limitValue = InventoryManager.Instance.GetInventory(TargetInventoryID).Trust;
         UpdateValueOnScreen();
     }
     public void SlotOnClick(ItemSlotUI slotUI)
@@ -136,32 +135,33 @@ public class TradeManager : MonoBehaviour,IPerformance
     }
     public void UpdateValueOnScreen()
     {
-        int tValue = 0;
-        foreach(ItemSlot slot in TraderLeftI.slots)
-        {
-            if (slot.item != null)
-            {
-                tValue += (TraderPlayer.inventory.GetItemValueAfterBuff(slot.item) * slot.stackingQuantity);
-            }
-        }
-        leftValueText.text = tValue.ToString();
-        leftValue = tValue;
+        //int tValue = 0;
+        //foreach(ItemSlot slot in TraderLeftI.slots)
+        //{
+        //    if (slot.item != null)
+        //    {
+        //        tValue += (TraderPlayer.inventory.GetItemValueAfterBuff(slot.item) * slot.stackingQuantity);
+        //    }
+        //}
+        //leftValueText.text = tValue.ToString();
+        //leftValue = tValue;
 
-        tValue = 0;
-        foreach (ItemSlot slot in TraderRightI.slots)
-        {
-            if (slot.item != null)
-            {
-                tValue += (TraderTarget.inventory.GetItemValueAfterBuff(slot.item) * slot.stackingQuantity);
-            }
-        }
-        rightValueText.text = tValue.ToString();
-        rightValue = tValue;
-        TradeCheck();
+        //tValue = 0;
+        //foreach (ItemSlot slot in TraderRightI.slots)
+        //{
+        //    if (slot.item != null)
+        //    {
+        //        tValue += (TraderTarget.inventory.GetItemValueAfterBuff(slot.item) * slot.stackingQuantity);
+        //    }
+        //}
+        //rightValueText.text = tValue.ToString();
+        //rightValue = tValue;
+        //TradeCheck();
     }
 
-    void IPerformance.PerformanceStart()
+    void IPerformance.PerformanceStart(IDirector Caller)
     {
+        BaseDirector = Caller;
         throw new NotImplementedException();
     }
 
