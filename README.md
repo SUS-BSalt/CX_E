@@ -17,6 +17,7 @@
 
 **语法表：**
 https://docs.qq.com/sheet/DVUZ3aWpibnVEeVBN?tab=BB08J2
+
 **控制台打开方式：**
 进入游戏后在Esc菜单按i键
 控制台是按照全局语法运行，并没有对全部指令进行测试
